@@ -2,3 +2,18 @@ import NextAuth from "next-auth";
 import { authOptions } from "../../../server/auth";
 
 export default NextAuth(authOptions);
+
+// import RedditProvider from "next-auth/providers/reddit";
+
+// export const authOptions = {
+//   // Configure one or more authentication providers
+//   providers: [
+//     RedditProvider({
+//       clientId: process.env.REDDIT_CLIENT_ID,
+//       clientSecret: process.env.REDDIT_CLIENT_SECRET,
+//     }),
+//     // ...add more providers here
+//   ],
+// };
+
+// export default NextAuth(authOptions);

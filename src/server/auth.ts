@@ -8,6 +8,8 @@ import DiscordProvider from "next-auth/providers/discord";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "../env/server.mjs";
 import { prisma } from "./db";
+import RedditProvider from "next-auth/providers/reddit";
+import { getToken } from "next-auth/jwt/index.js";
 
 /**
  * Module augmentation for `next-auth` types
@@ -21,6 +23,7 @@ declare module "next-auth" {
       id: string;
       // ...other properties
       // role: UserRole;
+      token: string | null;
     } & DefaultSession["user"];
   }
 
@@ -37,19 +40,38 @@ declare module "next-auth" {
  **/
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session({ session, user }) {
+    async session({ session, user }) {
+      const getToken = await prisma.account.findFirst({
+        where: {
+          userId: user.id,
+        },
+      });
+
+      let accessToken: string | null = null;
+      if (getToken) {
+        accessToken = getToken.access_token!;
+      }
+
       if (session.user) {
         session.user.id = user.id;
+        session.user.token = accessToken;
+
         // session.user.role = user.role; <-- put other properties on the session here
       }
       return session;
     },
+    jwt({ token, user, account, profile, isNewUser }) {
+      if (account?.accessToken) {
+        token.accessToken = account.accessToken;
+      }
+      return token;
+    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
-    DiscordProvider({
-      clientId: env.DISCORD_CLIENT_ID,
-      clientSecret: env.DISCORD_CLIENT_SECRET,
+    RedditProvider({
+      clientId: process.env.REDDIT_CLIENT_ID,
+      clientSecret: process.env.REDDIT_CLIENT_SECRET,
     }),
     /**
      * ...add more providers here
