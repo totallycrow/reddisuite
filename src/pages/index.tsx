@@ -2,6 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Snoowrap from "snoowrap";
 
 import { api } from "../utils/api";
 import { useEffect } from "react";
@@ -10,9 +11,19 @@ import { getToken } from "next-auth/jwt";
 const Home: NextPage = () => {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
   // const hello2 = api.example.test.useQuery();
+  const hello2 = api.example.getToken.useQuery();
 
+  // const r = new Snoowrap({
+  //   userAgent: "userAgent",
+  //   clientId: "put your client id here",
+  //   clientSecret: "put your client secret here",
+  //   refreshToken: "put your refresh token here",
+  // });
 
-  
+  // useEffect(() => {
+  //   console.log("object");
+
+  //   console.log(hello2.data);
 
   return (
     <>
@@ -67,7 +78,32 @@ export default Home;
 
 const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
-  console.log(sessionData);
+  console.log("SESSION");
+  console.log(sessionData?.user.token);
+
+  console.log("TEST");
+  const hello2 = api.example.getToken.useQuery();
+  // console.log(hello2.data?.access_token);
+  const test1231 = hello2.data?.access_token;
+  console.log(test1231);
+  const response = api.example.test2.useQuery(String(sessionData?.user.token));
+
+  console.log("RESSSS");
+  console.log(response.isSuccess);
+  console.log(response.data);
+
+  useEffect(() => {
+    console.log("object");
+
+    // const url = "https://oauth.reddit.com/api/v1/me/karma";
+
+    // let response = fetch(url, {
+    //   headers: {
+    //     Authentication: `Bearer ${hello2.data?.access_token}`,
+    //     "Access-Control-Allow-Headers": "*",
+    //   },
+    // });
+  }, [sessionData]);
 
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
     undefined, // no input

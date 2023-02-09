@@ -60,18 +60,14 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    jwt({ token, user, account, profile, isNewUser }) {
-      if (account?.accessToken) {
-        token.accessToken = account.accessToken;
-      }
-      return token;
-    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
     RedditProvider({
       clientId: process.env.REDDIT_CLIENT_ID,
       clientSecret: process.env.REDDIT_CLIENT_SECRET,
+      authorization:
+        "https://www.reddit.com/api/v1/authorize?scope=identity+edit+mysubreddits+read+save+submit+flair",
     }),
     /**
      * ...add more providers here
