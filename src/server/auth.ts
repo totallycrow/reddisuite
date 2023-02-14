@@ -33,6 +33,10 @@ declare module "next-auth" {
   // }
 }
 
+// const get
+
+// LEAN
+
 /**
  * Options for NextAuth.js used to configure
  * adapters, providers, callbacks, etc.

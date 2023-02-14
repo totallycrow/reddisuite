@@ -2,7 +2,6 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
-import Snoowrap from "snoowrap";
 
 import { api } from "../utils/api";
 import { useEffect } from "react";
@@ -11,7 +10,7 @@ import { getToken } from "next-auth/jwt";
 const Home: NextPage = () => {
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
   // const hello2 = api.example.test.useQuery();
-  const hello2 = api.example.getToken.useQuery();
+  // const hello2 = api.example.getToken.useQuery();
 
   // const r = new Snoowrap({
   //   userAgent: "userAgent",
@@ -105,10 +104,33 @@ const AuthShowcase: React.FC = () => {
     // });
   }, [sessionData]);
 
+  // const queryClient = useQueryClient();
+
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
     undefined, // no input
-    { enabled: sessionData?.user !== undefined }
+    {
+      enabled: sessionData?.user !== undefined,
+      refetchOnMount: false,
+      initialData: () => {
+        // if (props.cos) {
+        //   queryClient.cancelQueries(["getSecretMessage"])
+        //   return props.cos
+        // }
+      },
+    }
   );
+
+  // todo
+  // TODO dont delete
+  // cherry pick
+  // -- addapt to new api (pdf upload field)
+  // const { data: secretMessage } = api.example.getSecretMessage.useQuery(
+  //   undefined, // no input
+  // asd
+  // asd
+  // ads
+  //   { enabled: sessionData?.user !== undefined }
+  // );
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
@@ -116,6 +138,9 @@ const AuthShowcase: React.FC = () => {
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
       </p>
+      {/* -- add new file upload component */}
+      {process.env.NODE_ENV === "development" && <div></div>}
+      {/* git push -f */}
       <button
         className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
         onClick={sessionData ? () => void signOut() : () => void signIn()}

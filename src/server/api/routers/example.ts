@@ -2,6 +2,8 @@ import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 
+// axios<{prefs:[]}>
+
 export const exampleRouter = createTRPCRouter({
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
@@ -24,7 +26,6 @@ export const exampleRouter = createTRPCRouter({
       },
     });
   }),
-
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),
@@ -59,6 +60,8 @@ export const exampleRouter = createTRPCRouter({
       console.log("_________________________RES____________________________");
       console.log(response);
 
-      return response.json();
+      // versje noda
+
+      return (await response.json()) as [];
     }),
 });
