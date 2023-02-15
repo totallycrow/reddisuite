@@ -3,6 +3,7 @@ import {
   getServerSession,
   type NextAuthOptions,
   type DefaultSession,
+  TokenSet,
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
@@ -33,10 +34,6 @@ declare module "next-auth" {
   // }
 }
 
-// const get
-
-// LEAN
-
 /**
  * Options for NextAuth.js used to configure
  * adapters, providers, callbacks, etc.
@@ -45,11 +42,102 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, user }) {
+      const [reddit] = await prisma.account.findMany({
+        where: { userId: user.id, provider: "reddit" },
+      });
+      if (!reddit) throw new Error("error");
+
       const getToken = await prisma.account.findFirst({
         where: {
           userId: user.id,
         },
       });
+
+      console.log(
+        "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+      );
+
+      console.log("EXPIRES AT");
+      console.log(reddit.expires_at);
+      console.log("NOW");
+      console.log(Math.floor(new Date().getTime() / 1000.0));
+
+      // reddit.expires_at < Date.now()
+      if (
+        reddit.expires_at &&
+        reddit.refresh_token &&
+        reddit.expires_at < Math.floor(new Date().getTime() / 1000.0)
+      ) {
+        try {
+          console.log(
+            "*************************** REFRESH ******************************************************"
+          );
+
+          const user = process.env.REDDIT_CLIENT_ID;
+          const pass = process.env.REDDIT_CLIENT_SECRET;
+
+          console.log(user);
+          console.log(pass);
+          console.log(reddit.refresh_token);
+          console.log(reddit.access_token);
+
+          const base64encodedData = Buffer.from(user + ":" + pass).toString(
+            "base64"
+          );
+
+          const response = await fetch(
+            "https://www.reddit.com/api/v1/access_token",
+            {
+              headers: {
+                Authorization: `Basic ${base64encodedData}`,
+              },
+              body: new URLSearchParams({
+                grant_type: "refresh_token",
+                refresh_token: reddit.refresh_token,
+              }),
+              method: "POST",
+            }
+          );
+
+          const tokens: TokenSet = (await response.json()) as TokenSet;
+          if (!response.ok) throw tokens;
+
+          console.log(
+            "*************************** REFRESH ******************************************************"
+          );
+          console.log(response);
+          console.log("VVVVVVVVV");
+          console.log(tokens);
+          console.log(
+            "*************************** REFRESH ******************************************************"
+          );
+          console.log(tokens.expires_in);
+          console.log(Math.floor(new Date().getTime() / 1000.0));
+
+          console.log(
+            Math.floor(new Date().getTime() / 1000.0) +
+              parseInt(parseInt(tokens.expires_in))
+          );
+
+          await prisma.account.update({
+            data: {
+              access_token: tokens.access_token,
+              expires_at:
+                Math.floor(new Date().getTime() / 1000.0) +
+                parseInt(parseInt(tokens.expires_in)),
+              refresh_token: tokens.refresh_token ?? reddit.refresh_token,
+            },
+            where: {
+              provider_providerAccountId: {
+                provider: "reddit",
+                providerAccountId: reddit.providerAccountId,
+              },
+            },
+          });
+        } catch (error) {
+          console.error("Error refreshing access token", error);
+        }
+      }
 
       let accessToken: string | null = null;
       if (getToken) {

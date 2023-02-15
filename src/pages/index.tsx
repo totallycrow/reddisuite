@@ -24,6 +24,9 @@ const Home: NextPage = () => {
 
   //   console.log(hello2.data);
 
+  const secret = process.env.NEXTAUTH_SECRET
+
+
   return (
     <>
       <Head>

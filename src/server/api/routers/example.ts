@@ -35,6 +35,7 @@ export const exampleRouter = createTRPCRouter({
   }),
   test2: publicProcedure
     .input((val: unknown) => {
+
       // If the value is of type string, return it.
       // TypeScript now knows that this value is a string.
       if (typeof val === "string") return val;
@@ -50,6 +51,7 @@ export const exampleRouter = createTRPCRouter({
       console.log("&^^^^^^^^^^^^^^^^^^^ REQ EXAMPLE");
       console.log(url);
       console.log(input);
+      
 
       const response = await fetch(url, {
         headers: {
@@ -62,6 +64,6 @@ export const exampleRouter = createTRPCRouter({
 
       // versje noda
 
-      return (await response.json()) as [];
+      return response.json();
     }),
 });
