@@ -158,8 +158,12 @@ export const authOptions: NextAuthOptions = {
     RedditProvider({
       clientId: process.env.REDDIT_CLIENT_ID,
       clientSecret: process.env.REDDIT_CLIENT_SECRET,
-      authorization:
-        "https://www.reddit.com/api/v1/authorize?scope=identity+edit+mysubreddits+read+save+submit+flair",
+      authorization: {
+        params: {
+          duration: "permanent",
+          scope: "identity edit mysubreddits read save submit flair",
+        },
+      },
     }),
     /**
      * ...add more providers here
