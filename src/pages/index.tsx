@@ -6,26 +6,22 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { api } from "../utils/api";
 import { useEffect } from "react";
 import { getToken } from "next-auth/jwt";
+import { useMutation } from "@tanstack/react-query";
 
 const Home: NextPage = () => {
+  const { data: sessionData } = useSession();
+  console.log(sessionData?.user.token);
+
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
   // const hello2 = api.example.test.useQuery();
   // const hello2 = api.example.getToken.useQuery();
-
-  // const r = new Snoowrap({
-  //   userAgent: "userAgent",
-  //   clientId: "put your client id here",
-  //   clientSecret: "put your client secret here",
-  //   refreshToken: "put your refresh token here",
-  // });
 
   // useEffect(() => {
   //   console.log("object");
 
   //   console.log(hello2.data);
 
-  const secret = process.env.NEXTAUTH_SECRET
-
+  const secret = process.env.NEXTAUTH_SECRET;
 
   return (
     <>
@@ -94,6 +90,38 @@ const AuthShowcase: React.FC = () => {
   console.log(response.isSuccess);
   console.log(response.data);
 
+  const mutation = api.example.sendPost.useMutation();
+
+  const handlePost = () => {
+    const res = mutation.mutate(sessionData?.user.token);
+    // console.log(res);
+    // return res;
+    // console.log("click");
+    // const input = sessionData?.user.token;
+    // const url = "https://oauth.reddit.com/api/v1/api/submit";
+    // console.log("&^^^^^^^^^^^^^^^^^^^ REQ EXAMPLE");
+    // console.log(url);
+    // console.log(input);
+    // const response = fetch(url, {
+    //   headers: {
+    //     Authorization: `bearer ${input}`,
+    //   },
+    //   body: new URLSearchParams({
+    //     sr: "test",
+    //     title: "test",
+    //     text: "test",
+    //   }),
+    //   method: "POST",
+    // });
+    // console.log("_________________________RES____________________________");
+    // console.log(response);
+    // return res;
+    // versje noda
+    // await response.json();
+    // console.log(res);
+    // return res;
+  };
+
   useEffect(() => {
     console.log("object");
 
@@ -149,6 +177,20 @@ const AuthShowcase: React.FC = () => {
         onClick={sessionData ? () => void signOut() : () => void signIn()}
       >
         {sessionData ? "Sign out" : "Sign in"}
+      </button>
+      <button
+        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+        onClick={
+          sessionData
+            ? () => {
+                const res = handlePost();
+                console.log(res);
+                console.log("HANDLE CLICK HANDLE CLICK");
+              }
+            : () => ""
+        }
+      >
+        {sessionData ? "Send test post" : "Log in to send a test post"}
       </button>
     </div>
   );
