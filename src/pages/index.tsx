@@ -4,7 +4,7 @@ import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "../utils/api";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getToken } from "next-auth/jwt";
 import { useMutation } from "@tanstack/react-query";
 
@@ -75,6 +75,7 @@ const Home: NextPage = () => {
 export default Home;
 
 const AuthShowcase: React.FC = () => {
+  const [testState, setTestState] = useState("");
   const { data: sessionData } = useSession();
   console.log("SESSION");
   console.log(sessionData?.user.token);
@@ -83,7 +84,9 @@ const AuthShowcase: React.FC = () => {
   const hello2 = api.example.getToken.useQuery();
   // console.log(hello2.data?.access_token);
   const test1231 = hello2.data?.access_token;
-  console.log(test1231);
+  console.log("___________ACCESS TOKEN_______________");
+
+  console.log(sessionData?.user.token);
   const response = api.example.test2.useQuery(String(sessionData?.user.token));
 
   console.log("RESSSS");
@@ -133,6 +136,9 @@ const AuthShowcase: React.FC = () => {
     //     "Access-Control-Allow-Headers": "*",
     //   },
     // });
+    if (!sessionData || !sessionData.user.token) return;
+
+    // setTestState(r.getSubmission("2np694").author.name);
   }, [sessionData]);
 
   // const queryClient = useQueryClient();

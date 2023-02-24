@@ -1,5 +1,5 @@
 import { z } from "zod";
-
+import FormData from "form-data";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 
 // axios<{prefs:[]}>
@@ -78,6 +78,8 @@ export const exampleRouter = createTRPCRouter({
       const { input } = req;
       const url = "https://oauth.reddit.com/api/submit";
 
+      // https://www.reddit.com/api/v1/
+
       console.log("&^^^^^^^^^^^^^^^^^^^ REQ EXAMPLE");
       console.log(url);
       console.log(input);
@@ -94,6 +96,10 @@ export const exampleRouter = createTRPCRouter({
       //   resubmit: "false",
       //   nsfw: "false",
       // });
+
+      // npm install snoowrap
+      // npm install @types/snoowrap
+
       const parambody = new URLSearchParams({
         ad: "false",
         api_type: "json",
@@ -118,18 +124,7 @@ export const exampleRouter = createTRPCRouter({
           Authorization: `bearer ${input}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: new URLSearchParams({
-          ad: "false",
-          api_type: "json",
-          app: "test",
-
-          sr: "test",
-          title: "test",
-          text: "test",
-          kind: "self",
-          resubmit: "false",
-          nsfw: "false",
-        }),
+        body: parambody,
       });
 
       console.log("_________________________RES____________________________");

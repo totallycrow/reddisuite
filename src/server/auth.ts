@@ -66,7 +66,7 @@ export const authOptions: NextAuthOptions = {
       if (
         reddit.expires_at &&
         reddit.refresh_token &&
-        reddit.expires_at < Math.floor(new Date().getTime() / 1000.0)
+        reddit.expires_at <= Math.floor(new Date().getTime() / 1000.0)
       ) {
         try {
           console.log(
@@ -145,6 +145,8 @@ export const authOptions: NextAuthOptions = {
       }
 
       if (session.user) {
+        console.log("____________ACCESS TOKEN_____________");
+        console.log(accessToken);
         session.user.id = user.id;
         session.user.token = accessToken;
 
