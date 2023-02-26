@@ -10,7 +10,6 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "../env/server.mjs";
 import { prisma } from "./db";
 import RedditProvider from "next-auth/providers/reddit";
-import { getToken } from "next-auth/jwt/index.js";
 
 /**
  * Module augmentation for `next-auth` types
@@ -41,17 +40,28 @@ declare module "next-auth" {
  **/
 export const authOptions: NextAuthOptions = {
   callbacks: {
+    async signIn({ user, account, profile, email, credentials }) {
+      console.log(
+        "++++++++++++++++++++++++++ SIGN IN ++++++++++++++++++++++++++++++++"
+      );
+      console.log(user);
+      console.log(account);
+      console.log(profile);
+
+      if (account) {
+        return true;
+      } else {
+        // Return false to display a default error message
+        return false;
+        // Or you can return a URL to redirect to:
+        // return '/unauthorized'
+      }
+    },
     async session({ session, user }) {
       const [reddit] = await prisma.account.findMany({
         where: { userId: user.id, provider: "reddit" },
       });
       if (!reddit) throw new Error("error");
-
-      const getToken = await prisma.account.findFirst({
-        where: {
-          userId: user.id,
-        },
-      });
 
       console.log(
         "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
@@ -138,6 +148,13 @@ export const authOptions: NextAuthOptions = {
           console.error("Error refreshing access token", error);
         }
       }
+      // ***********************************
+
+      const getToken = await prisma.account.findFirst({
+        where: {
+          userId: user.id,
+        },
+      });
 
       let accessToken: string | null = null;
       if (getToken) {

@@ -180,7 +180,11 @@ const AuthShowcase: React.FC = () => {
       {/* git push -f */}
       <button
         className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
+        onClick={
+          sessionData
+            ? () => void signOut()
+            : () => void signIn("reddit", { callbackUrl: "/dashboard" })
+        }
       >
         {sessionData ? "Sign out" : "Sign in"}
       </button>
