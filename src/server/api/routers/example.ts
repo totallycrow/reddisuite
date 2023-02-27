@@ -65,17 +65,13 @@ export const exampleRouter = createTRPCRouter({
       return response.json();
     }),
   getSubreddit: publicProcedure
-    .input((val: unknown) => {
-      // If the value is of type string, return it.
-      // TypeScript now knows that this value is a string.
-      if (typeof val === "string") return val;
-
-      // Uh oh, looks like that input wasn't a string.
-      // We will throw an error instead of running the procedure.
-      throw new Error(`Invalid input: ${typeof val}`);
-    })
+    .input(z.object({ input: z.string() }))
     .query(async (req) => {
-      const { input } = req;
+      const input = req.input.input;
+      console.log(
+        "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+      );
+      console.log(input);
       const url = "https://oauth.reddit.com//r/cosplay/api/link_flair";
 
       console.log("&^^^^^^^^^^^^^^^^^^^ REQ EXAMPLE");

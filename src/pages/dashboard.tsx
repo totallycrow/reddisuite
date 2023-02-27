@@ -9,22 +9,21 @@ export default function Dashboard() {
   const [inputData, setInputData] = useState("");
   const [dataGet, setDataGet] = useState("");
   console.log(dataGet);
-  console.log(dataGet[0].text);
 
   const { data: sessionData } = useSession();
 
   const { data, refetch } = api.example.getSubreddit.useQuery(
-    sessionData?.user.token,
+    { input: sessionData?.user.token },
     {
       enabled: false,
     }
   );
 
-  const getData = async (token: string) => {
-    console.log(data);
-    await refetch();
-
-    setDataGet(data);
+  console.log(data);
+  const getData = () => {
+    console.log("ONCLICK");
+    void refetch();
+    console.log("ONCLICK END");
     return;
   };
 
@@ -33,7 +32,9 @@ export default function Dashboard() {
       <div>
         <h1>Protected Page</h1>
         <p>You can view this page because you are signed in.</p>
+
         <p>Returned info: {""}</p>
+        <div>{data ? data[0].text : ""}</div>
         <div>
           <input
             className="border-2 border-gray-800"
