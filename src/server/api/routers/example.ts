@@ -92,24 +92,24 @@ export const exampleRouter = createTRPCRouter({
       return response.json();
     }),
   sendPost: publicProcedure
-    .input((val: unknown) => {
-      // If the value is of type string, return it.
-      // TypeScript now knows that this value is a string.
-      if (typeof val === "string") return val;
-
-      // Uh oh, looks like that input wasn't a string.
-      // We will throw an error instead of running the procedure.
-      throw new Error(`Invalid input: ${typeof val}`);
-    })
+    .input(
+      z.object({
+        title: z.string(),
+        link: z.string(),
+        sub: z.string(),
+        token: z.string(),
+      })
+    )
     .mutation(async (req) => {
-      const { input } = req;
-      const url = "https://oauth.reddit.com/api/submit";
+      const { title, link, sub, token } = req.input;
+
+      const url = `https://oauth.reddit.com/api/submit`;
 
       // https://www.reddit.com/api/v1/
 
       console.log("&^^^^^^^^^^^^^^^^^^^ REQ EXAMPLE");
       console.log(url);
-      console.log(input);
+      // console.log(input);
 
       // const parambody = new URLSearchParams({
       //   ad: "false",
@@ -131,12 +131,12 @@ export const exampleRouter = createTRPCRouter({
         ad: "false",
         api_type: "json",
         app: "test",
-
-        sr: "test",
-        title: "test",
-        text: "test",
-        kind: "self",
-        resubmit: "false",
+        extension: "json",
+        sr: sub,
+        title: title,
+        url: link,
+        kind: "link",
+        resubmit: "true",
         nsfw: "false",
       });
 
@@ -148,7 +148,7 @@ export const exampleRouter = createTRPCRouter({
       const response = await fetch(url, {
         method: "POST",
         headers: {
-          Authorization: `bearer ${input}`,
+          Authorization: `bearer ${token}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: parambody,
