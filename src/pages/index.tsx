@@ -4,15 +4,24 @@ import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 import { api } from "../utils/api";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getToken } from "next-auth/jwt";
+import { useMutation } from "@tanstack/react-query";
 
 const Home: NextPage = () => {
+  const { data: sessionData } = useSession();
+  console.log(sessionData?.user.token);
+
   // const hello = api.example.hello.useQuery({ text: "from tRPC" });
   // const hello2 = api.example.test.useQuery();
+  // const hello2 = api.example.getToken.useQuery();
 
+  // useEffect(() => {
+  //   console.log("object");
 
-  
+  //   console.log(hello2.data);
+
+  const secret = process.env.NEXTAUTH_SECRET;
 
   return (
     <>
@@ -66,13 +75,108 @@ const Home: NextPage = () => {
 export default Home;
 
 const AuthShowcase: React.FC = () => {
+  const [testState, setTestState] = useState("");
   const { data: sessionData } = useSession();
-  console.log(sessionData);
+  console.log("SESSION");
+  console.log(sessionData?.user.token);
+
+  console.log("TEST");
+  const hello2 = api.example.getToken.useQuery();
+  // console.log(hello2.data?.access_token);
+
+  const test1231 = hello2.data?.access_token;
+  console.log("___________ACCESS TOKEN_______________");
+
+  console.log(sessionData?.user.token);
+  const response = api.example.test2.useQuery(String(sessionData?.user.token));
+
+  console.log("RESSSS");
+  console.log(response.isSuccess);
+  console.log(response.data);
+
+  const mutation = api.example.sendPost.useMutation();
+
+  const handlePost = async () => {
+    // /api/v1/subreddit/post_requirements
+    // const res = mutation.mutate(sessionData?.user.token);
+    // TEST KEY
+    // const data = api.example.getSubreddit.useQuery("askUK");
+    // const data = await fetch(
+    //   "https://oauth.reddit.com/api/v1/askUK/post_requirements"
+    // );
+    // console.log("++++++++++++++++ TEST GET REQUEST ++++++++++++++++++++");
+    // console.log(data);
+    // console.log(res);
+    // return res;
+    // console.log("click");
+    // const input = sessionData?.user.token;
+    // const url = "https://oauth.reddit.com/api/v1/api/submit";
+    // console.log("&^^^^^^^^^^^^^^^^^^^ REQ EXAMPLE");
+    // console.log(url);
+    // console.log(input);
+    // const response = fetch(url, {
+    //   headers: {
+    //     Authorization: `bearer ${input}`,
+    //   },
+    //   body: new URLSearchParams({
+    //     sr: "test",
+    //     title: "test",
+    //     text: "test",
+    //   }),
+    //   method: "POST",
+    // });
+    // console.log("_________________________RES____________________________");
+    // console.log(response);
+    // return res;
+    // versje noda
+    // await response.json();
+    // console.log(res);
+    // return res;
+  };
+
+  useEffect(() => {
+    console.log("object");
+
+    // const url = "https://oauth.reddit.com/api/v1/me/karma";
+
+    // let response = fetch(url, {
+    //   headers: {
+    //     Authentication: `Bearer ${hello2.data?.access_token}`,
+    //     "Access-Control-Allow-Headers": "*",
+    //   },
+    // });
+    if (!sessionData || !sessionData.user.token) return;
+
+    // setTestState(r.getSubmission("2np694").author.name);
+  }, [sessionData]);
+
+  // const queryClient = useQueryClient();
 
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
     undefined, // no input
-    { enabled: sessionData?.user !== undefined }
+    {
+      enabled: sessionData?.user !== undefined,
+      refetchOnMount: false,
+      initialData: () => {
+        // if (props.cos) {
+        //   queryClient.cancelQueries(["getSecretMessage"])
+        //   return props.cos
+        // }
+      },
+    }
   );
+
+  // todo
+  // TODO dont delete
+  // cherry pick
+  // -- addapt to new api (pdf upload field)
+  // const { data: secretMessage } = api.example.getSecretMessage.useQuery(
+  //   undefined, // no input
+  // asd
+  // asd
+  // ads
+  //   { enabled: sessionData?.user !== undefined }
+  // );
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
@@ -80,12 +184,39 @@ const AuthShowcase: React.FC = () => {
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
       </p>
+      {/* -- add new file upload component */}
+      {process.env.NODE_ENV === "development" && <div></div>}
+      {/* git push -f */}
       <button
         className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
+        onClick={
+          sessionData
+            ? () => void signOut()
+            : () => void signIn("reddit", { callbackUrl: "/dashboard" })
+        }
       >
         {sessionData ? "Sign out" : "Sign in"}
+      </button>
+      <button
+        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+        onClick={
+          sessionData
+            ? () => {
+                const res = handlePost();
+                console.log(res);
+                console.log("HANDLE CLICK HANDLE CLICK");
+              }
+            : () => ""
+        }
+      >
+        {sessionData ? "TEST KEY" : "Log in to TEST KEY"}
       </button>
     </div>
   );
 };
+
+export function getServerSideProps(context) {
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+}
