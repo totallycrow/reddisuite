@@ -65,22 +65,21 @@ export const exampleRouter = createTRPCRouter({
       return response.json();
     }),
   getSubreddit: publicProcedure
-    .input(z.object({ input: z.string() }))
+    .input(z.object({ token: z.string(), sub: z.string() }))
     .query(async (req) => {
-      const input = req.input.input;
+      const token = req.input.token;
       console.log(
         "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
       );
-      console.log(input);
-      const url = "https://oauth.reddit.com//r/cosplay/api/link_flair";
+
+      const url = `https://oauth.reddit.com//r/${req.input.sub}/api/link_flair`;
 
       console.log("&^^^^^^^^^^^^^^^^^^^ REQ EXAMPLE");
       console.log(url);
-      console.log(input);
 
       const response = await fetch(url, {
         headers: {
-          Authorization: `bearer ${input}`,
+          Authorization: `bearer ${token}`,
         },
       });
 
@@ -138,7 +137,7 @@ export const exampleRouter = createTRPCRouter({
         url: link,
         kind: "link",
         resubmit: "true",
-        nsfw: "false",        
+        nsfw: "false",
         flair_id: flair,
       });
 

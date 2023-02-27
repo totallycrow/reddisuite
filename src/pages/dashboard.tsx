@@ -12,6 +12,7 @@ export default function Dashboard() {
   console.log(dataGet);
 
   const mutation = api.example.sendPost.useMutation();
+
   console.log(mutation.data);
 
   useEffect(() => {
@@ -112,6 +113,7 @@ export default function Dashboard() {
             </div>
 
             {/* TODO - FLAIRS */}
+            {/* https://oauth.reddit.com//r/crowcovers/api/link_flair_v2 */}
           </div>
           <button onClick={() => void sendData()}>Submit</button>
         </div>
