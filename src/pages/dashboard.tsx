@@ -2,7 +2,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../server/auth";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import { api } from "../utils/api";
+import { api, RouterOutputs } from "../utils/api";
 import { useEffect } from "react";
 
 export default function Dashboard() {
@@ -20,6 +20,9 @@ export default function Dashboard() {
   }, [mutation]);
 
   const { data: sessionData } = useSession();
+
+  // TYPE
+  // type Test = RouterOutputs["note"]["getAll"][0]
 
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
