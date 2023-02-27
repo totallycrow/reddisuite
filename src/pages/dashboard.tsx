@@ -3,6 +3,7 @@ import { authOptions } from "../server/auth";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { api } from "../utils/api";
+import { useEffect } from "react";
 
 export default function Dashboard() {
   const { data: session } = useSession();
@@ -11,27 +12,33 @@ export default function Dashboard() {
   console.log(dataGet);
 
   const mutation = api.example.sendPost.useMutation();
+  console.log(mutation.data);
+
+  useEffect(() => {
+    console.log("USE EFFECT");
+  }, [mutation]);
 
   const { data: sessionData } = useSession();
 
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
   const [sub, setSub] = useState("");
+  const [flair, setFlair] = useState("");
 
-  const { data, refetch } = api.example.getSubreddit.useQuery(
-    { input: sessionData?.user.token },
-    {
-      enabled: false,
-    }
-  );
+  // const { data, refetch } = api.example.getSubreddit.useQuery(
+  //   { input: sessionData?.user.token },
+  //   {
+  //     enabled: false,
+  //   }
+  // );
 
-  console.log(data);
-  const getData = () => {
-    console.log("ONCLICK");
-    void refetch();
-    console.log("ONCLICK END");
-    return;
-  };
+  // console.log(data);
+  // const getData = () => {
+  //   console.log("ONCLICK");
+  //   void refetch();
+  //   console.log("ONCLICK END");
+  //   return;
+  // };
 
   const sendData = async () => {
     console.log("ONCLICK");
@@ -40,6 +47,7 @@ export default function Dashboard() {
       title: title,
       sub: sub,
       link: link,
+      flair: flair,
     });
     console.log("ONCLICK END");
     return;
@@ -63,8 +71,8 @@ export default function Dashboard() {
           <button onClick={getData}>Verify</button>
         </div> */}
 
-        <div>
-          <h2>Submit Your Post</h2>
+        <div className="p-4">
+          <h2 className="p-4">Submit Your Post</h2>
           <div>
             <div>
               Title:{" "}
@@ -93,8 +101,32 @@ export default function Dashboard() {
                 onChange={(e) => setSub(e.target.value)}
               />
             </div>
+            <div>
+              Flair:{" "}
+              <input
+                type="text"
+                className="border-2 border-gray-800"
+                value={flair}
+                onChange={(e) => setFlair(e.target.value)}
+              />
+            </div>
+
+            {/* TODO - FLAIRS */}
           </div>
           <button onClick={() => void sendData()}>Submit</button>
+        </div>
+        <div>{mutation.isLoading && <p>Loading...</p>}</div>
+        <div>
+          {mutation.data &&
+            mutation.data.json &&
+            mutation.data.json.errors.length > 0 && (
+              <p>{mutation.data.json.errors[0][1]}</p>
+            )}
+        </div>
+        <div>
+          {mutation.data && mutation.data.error && (
+            <p>{mutation.data.message}</p>
+          )}
         </div>
       </div>
     );

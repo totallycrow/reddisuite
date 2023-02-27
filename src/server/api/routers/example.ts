@@ -98,10 +98,11 @@ export const exampleRouter = createTRPCRouter({
         link: z.string(),
         sub: z.string(),
         token: z.string(),
+        flair: z.string(),
       })
     )
     .mutation(async (req) => {
-      const { title, link, sub, token } = req.input;
+      const { title, link, sub, token, flair } = req.input;
 
       const url = `https://oauth.reddit.com/api/submit`;
 
@@ -137,7 +138,8 @@ export const exampleRouter = createTRPCRouter({
         url: link,
         kind: "link",
         resubmit: "true",
-        nsfw: "false",
+        nsfw: "false",        
+        flair_id: flair,
       });
 
       console.log(
