@@ -83,6 +83,7 @@ const AuthShowcase: React.FC = () => {
   console.log("TEST");
   const hello2 = api.example.getToken.useQuery();
   // console.log(hello2.data?.access_token);
+
   const test1231 = hello2.data?.access_token;
   console.log("___________ACCESS TOKEN_______________");
 
@@ -95,8 +96,16 @@ const AuthShowcase: React.FC = () => {
 
   const mutation = api.example.sendPost.useMutation();
 
-  const handlePost = () => {
-    const res = mutation.mutate(sessionData?.user.token);
+  const handlePost = async () => {
+    // /api/v1/subreddit/post_requirements
+    // const res = mutation.mutate(sessionData?.user.token);
+    // TEST KEY
+    // const data = api.example.getSubreddit.useQuery("askUK");
+    // const data = await fetch(
+    //   "https://oauth.reddit.com/api/v1/askUK/post_requirements"
+    // );
+    // console.log("++++++++++++++++ TEST GET REQUEST ++++++++++++++++++++");
+    // console.log(data);
     // console.log(res);
     // return res;
     // console.log("click");
@@ -200,8 +209,14 @@ const AuthShowcase: React.FC = () => {
             : () => ""
         }
       >
-        {sessionData ? "Send test post" : "Log in to send a test post"}
+        {sessionData ? "TEST KEY" : "Log in to TEST KEY"}
       </button>
     </div>
   );
 };
+
+export function getServerSideProps(context) {
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+}
