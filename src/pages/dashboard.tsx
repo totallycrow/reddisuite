@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { api, RouterOutputs } from "../utils/api";
 import { useEffect } from "react";
+import _ from "lodash";
 
 export default function Dashboard() {
   const { data: session } = useSession();
@@ -24,10 +25,59 @@ export default function Dashboard() {
   // TYPE
   // type Test = RouterOutputs["note"]["getAll"][0]
 
+  // const subConfig = {
+  //   isFlairRequired: false,
+  //   isTitleTagRequired: false,
+  // };
+
+  interface IFlair {
+    id: string;
+    name: string;
+  }
+  const flairList: IFlair[] = [];
+
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
   const [sub, setSub] = useState("");
+  const [debouncedSub, setDebouncedSub] = useState("");
   const [flair, setFlair] = useState("");
+  const [isFlairRequired, setIsFlairRequired] = useState(false);
+  const [subConfig, setSubConfig] = useState({
+    isFlairRequired: false,
+    isTitleTagRequired: false,
+  });
+
+  const subReddit = api.example.getSubreddit.useQuery({ sub: debouncedSub });
+
+  const handleSubChange = async () => {
+    await subReddit.refetch();
+    console.log(subReddit.data);
+  };
+
+  useEffect(() => {
+    void handleSubChange();
+  }, [debouncedSub]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSub(sub);
+    }, 1000);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [sub]);
+
+  // useEffect(() => {
+  //   const getData = setTimeout(() => {
+  //     void handleSubChange();
+
+  //     });
+  //   }, 2000)
+
+  //   return () => clearTimeout(getData)
+  //   void handleSubChange();
+  // }, [sub]);
 
   // const { data, refetch } = api.example.getSubreddit.useQuery(
   //   { input: sessionData?.user.token },
@@ -56,6 +106,11 @@ export default function Dashboard() {
     console.log("ONCLICK END");
     return;
   };
+
+  console.log("CLG_______________ MAIN");
+  console.log(subReddit.data);
+  console.log(subReddit);
+  // console.log(subReddit.data.message);
 
   if (session) {
     return (
@@ -131,6 +186,17 @@ export default function Dashboard() {
         <div>
           {mutation.data && mutation.data.error && (
             <p>{mutation.data.message}</p>
+          )}
+        </div>
+
+        <div>
+          {subReddit.data && subReddit.data.explanation && (
+            <p>{subReddit.data.explanation}</p>
+          )}
+        </div>
+        <div>
+          {subReddit.data && subReddit.data.is_flair_required && (
+            <p>Flair required</p>
           )}
         </div>
       </div>

@@ -1,5 +1,4 @@
 import { z } from "zod";
-import FormData from "form-data";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 
 // axios<{prefs:[]}>
@@ -44,7 +43,10 @@ export const exampleRouter = createTRPCRouter({
       throw new Error(`Invalid input: ${typeof val}`);
     })
     .query(async (req) => {
-      const { input } = req;
+      const { input, ctx } = req;
+
+      const token = ctx.session?.user.token;
+
       const url = "https://oauth.reddit.com/api/v1/me/prefs";
 
       console.log("&^^^^^^^^^^^^^^^^^^^ REQ EXAMPLE");
@@ -53,7 +55,7 @@ export const exampleRouter = createTRPCRouter({
 
       const response = await fetch(url, {
         headers: {
-          Authorization: `bearer ${input}`,
+          Authorization: `bearer ${token}`,
         },
       });
 
@@ -61,19 +63,27 @@ export const exampleRouter = createTRPCRouter({
       console.log(response);
 
       // versje noda
+      // below will be done in the same request when batching is enabled
+      // const somePosts = await Promise.all([
+      //   client.query('post.byId', 1),
+      //   client.query('post.byId', 2),
+      //   client.query('post.byId', 3),
+      // ]);
 
       return response.json();
     }),
   getSubreddit: publicProcedure
-    .input(z.object({ token: z.string(), sub: z.string() }))
+    .input(z.object({ sub: z.string() }))
     .query(async (req) => {
-      const token = req.input.token;
+      // const token = req.input.token;
       console.log(
         "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
       );
 
-      const url = `https://oauth.reddit.com//r/${req.input.sub}/api/link_flair`;
-
+      const { input, ctx } = req;
+      const token = ctx.session?.user.token;
+      // const url = `https://oauth.reddit.com//r/${req.input.sub}/api/link_flair`;
+      const url = `https://oauth.reddit.com/api/v1/${req.input.sub}/post_requirements`;
       console.log("&^^^^^^^^^^^^^^^^^^^ REQ EXAMPLE");
       console.log(url);
 
