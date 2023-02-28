@@ -46,6 +46,7 @@ export const exampleRouter = createTRPCRouter({
       const { input, ctx } = req;
 
       const token = ctx.session?.user.token;
+      if (!token) throw new Error("Invalid Token");
 
       const url = "https://oauth.reddit.com/api/v1/me/prefs";
 
@@ -72,6 +73,11 @@ export const exampleRouter = createTRPCRouter({
 
       return response.json();
     }),
+
+  // ************************************************************
+  // ************************************************************
+  // ************************************************************
+
   getSubreddit: publicProcedure
     .input(z.object({ sub: z.string() }))
     .query(async (req) => {
@@ -82,6 +88,8 @@ export const exampleRouter = createTRPCRouter({
 
       const { input, ctx } = req;
       const token = ctx.session?.user.token;
+      if (!token) throw new Error("Invalid Token");
+
       // const url = `https://oauth.reddit.com//r/${req.input.sub}/api/link_flair`;
       const url = `https://oauth.reddit.com/api/v1/${req.input.sub}/post_requirements`;
       console.log("&^^^^^^^^^^^^^^^^^^^ REQ EXAMPLE");
@@ -96,10 +104,19 @@ export const exampleRouter = createTRPCRouter({
       console.log("_________________________RES____________________________");
       console.log(response);
 
-      // versje noda
+      // *************************** TODO? *************************************
+      // ??????????????
+      // Check response
+      // See if title tags and flairs required?
+      // run subsequent fetches -> fetch flair ids+names and required title tags
+      // combine responses and return complete subreddit object?
 
       return response.json();
     }),
+
+  // ************************************************************
+  // ************************************************************
+  // ************************************************************
   sendPost: publicProcedure
     .input(
       z.object({
