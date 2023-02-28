@@ -12,16 +12,6 @@ export default function Dashboard() {
   const [dataGet, setDataGet] = useState("");
   console.log(dataGet);
 
-  const mutation = api.example.sendPost.useMutation();
-
-  console.log(mutation.data);
-
-  useEffect(() => {
-    console.log("USE EFFECT");
-  }, [mutation]);
-
-  const { data: sessionData } = useSession();
-
   // TYPE
   // type Test = RouterOutputs["note"]["getAll"][0]
 
@@ -41,13 +31,27 @@ export default function Dashboard() {
   const [sub, setSub] = useState("");
   const [debouncedSub, setDebouncedSub] = useState("");
   const [flair, setFlair] = useState("");
-  const [isFlairRequired, setIsFlairRequired] = useState(false);
+
   const [subConfig, setSubConfig] = useState({
     isFlairRequired: false,
     isTitleTagRequired: false,
   });
 
-  const subReddit = api.example.getSubreddit.useQuery({ sub: debouncedSub });
+  // *********************** DATA FETCH / POST *************************************
+
+  const { data: sessionData } = useSession();
+
+  const mutation = api.example.sendPost.useMutation();
+
+  const subReddit = api.example.getSubreddit.useQuery(
+    { sub: debouncedSub },
+    {
+      enabled: debouncedSub !== "",
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+    }
+  );
+  // ************************************************************
 
   const handleSubChange = async () => {
     await subReddit.refetch();
@@ -160,7 +164,9 @@ export default function Dashboard() {
                 onChange={(e) => setSub(e.target.value)}
               />
             </div>
-            <div>
+
+            {/* // ************************************************************ */}
+            {/* <div>
               Flair:{" "}
               <input
                 type="text"
@@ -168,7 +174,9 @@ export default function Dashboard() {
                 value={flair}
                 onChange={(e) => setFlair(e.target.value)}
               />
-            </div>
+            </div> */}
+
+            {/* // ************************************************************ */}
 
             {/* TODO - FLAIRS */}
             {/* https://oauth.reddit.com//r/crowcovers/api/link_flair_v2 */}
@@ -198,6 +206,16 @@ export default function Dashboard() {
           {subReddit.data && subReddit.data.is_flair_required && (
             <p>Flair required</p>
           )}
+        </div>
+        <div>
+          {subReddit.data &&
+            subReddit.data.title_required_strings &&
+            subReddit.data.title_required_strings.length > 0 && (
+              <p>
+                Title tag required: &quot;
+                {subReddit.data.title_required_strings[0]}&quot;
+              </p>
+            )}
         </div>
       </div>
     );
