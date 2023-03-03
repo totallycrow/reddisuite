@@ -45,6 +45,7 @@ export const exampleRouter = createTRPCRouter({
     .query(async (req) => {
       const { input, ctx } = req;
 
+      // D
       const token = ctx.session?.user.token;
       if (!token) throw new Error("Invalid Token");
 
@@ -110,6 +111,9 @@ export const exampleRouter = createTRPCRouter({
       // See if title tags and flairs required?
       // run subsequent fetches -> fetch flair ids+names and required title tags
       // combine responses and return complete subreddit object?
+
+      // fetch FinalizationRegistryf
+      // fetch title
 
       return response.json();
     }),

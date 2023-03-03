@@ -23,6 +23,12 @@ const Home: NextPage = () => {
 
   const secret = process.env.NEXTAUTH_SECRET;
 
+  const asdasd = useMemo(() => {
+    return {
+      additional: null || Component,
+    };
+  }, [asdasd]);
+
   return (
     <>
       <Head>
@@ -59,6 +65,8 @@ const Home: NextPage = () => {
               </div>
             </Link>
           </div>
+
+          {/* {isTrue &&asdasd.adational()} */}
           <div className="flex flex-col items-center gap-2">
             <p className="text-2xl text-white">
               {/* {hello.data ? hello.data.greeting : "Loading tRPC query..."}
