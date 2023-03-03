@@ -5,6 +5,7 @@ import { useState } from "react";
 import { api, RouterOutputs } from "../utils/api";
 import { useEffect } from "react";
 import _ from "lodash";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Dashboard() {
   const { data: session } = useSession();
@@ -42,6 +43,12 @@ export default function Dashboard() {
   const { data: sessionData } = useSession();
 
   const mutation = api.example.sendPost.useMutation();
+
+  const getSubReddots = useQuery(["aasd", "asdasd"], () => {
+    // fetcz
+    // if
+    // dofeczuj
+  });
 
   const subReddit = api.example.getSubreddit.useQuery(
     { sub: debouncedSub },
