@@ -21,13 +21,13 @@ const Home: NextPage = () => {
 
   //   console.log(hello2.data);
 
-  const secret = process.env.NEXTAUTH_SECRET;
+  // const secret = process.env.NEXTAUTH_SECRET;
 
-  const asdasd = useMemo(() => {
-    return {
-      additional: null || Component,
-    };
-  }, [asdasd]);
+  // const asdasd = useMemo(() => {
+  //   return {
+  //     additional: null || Component,
+  //   };
+  // }, [asdasd]);
 
   return (
     <>
