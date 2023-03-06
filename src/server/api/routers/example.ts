@@ -179,14 +179,16 @@ export const exampleRouter = createTRPCRouter({
         title: z.string(),
         link: z.string(),
         sub: z.string(),
-        token: z.string(),
         flair: z.string(),
       })
     )
     .mutation(async (req) => {
-      const { title, link, sub, token, flair } = req.input;
-
+      const { ctx } = req;
+      const { title, link, sub, flair } = req.input;
       const url = `https://oauth.reddit.com/api/submit`;
+
+      const token = ctx.session?.user.token;
+      if (!token) throw new Error("Invalid Token");
 
       // https://www.reddit.com/api/v1/
 

@@ -1,56 +1,39 @@
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../server/auth";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
-import { api, RouterOutputs } from "../utils/api";
-import { useEffect } from "react";
-import _ from "lodash";
-import { useQuery } from "@tanstack/react-query";
-import { SubmitItem } from "../components/submitForm/SubmitItem";
+import React, { useEffect, useState } from "react";
+import { api } from "../../utils/api";
 
-export default function Dashboard() {
+interface IFlair {
+  type: string;
+  text_editable: boolean;
+  allowable_content: string;
+  text: string;
+  max_emojis: number;
+  text_color: string;
+  mod_only: boolean;
+  css_class: string;
+  richtext: [];
+  background_color: string;
+  id: string;
+}
+
+// useFormController
+// useSubmitItemValidation
+
+export const SubmitItem = () => {
   const { data: session } = useSession();
-  const [inputData, setInputData] = useState("");
-  const [dataGet, setDataGet] = useState("");
-  console.log(dataGet);
 
-  // TYPE
-  // type Test = RouterOutputs["note"]["getAll"][0]
-
-  // const subConfig = {
-  //   isFlairRequired: false,
-  //   isTitleTagRequired: false,
-  // };
-
-  interface IFlair {
-    id: string;
-    name: string;
-  }
-  const flairList: IFlair[] = [];
+  // Form Controls
 
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
   const [sub, setSub] = useState("");
   const [debouncedSub, setDebouncedSub] = useState("");
-  const [flair, setFlair] = useState("");
-
-  const [subConfig, setSubConfig] = useState({
-    isFlairRequired: false,
-    isTitleTagRequired: false,
-  });
+  const [flairList, setFlairList] = useState(Array<IFlair>);
+  const [selectedFlair, setSelectedFlair] = useState("");
 
   // *********************** DATA FETCH / POST *************************************
 
-  const { data: sessionData } = useSession();
-
   const mutation = api.example.sendPost.useMutation();
-
-  // const getSubReddots = useQuery(["aasd", "asdasd"], () => {
-  //   // fetcz
-  //   // if
-  //   // dofeczuj
-  // });
-
   const subReddit = api.example.getSubreddit.useQuery(
     { sub: debouncedSub },
     {
@@ -60,6 +43,17 @@ export default function Dashboard() {
     }
   );
   // ************************************************************
+
+  useEffect(() => {
+    console.log("GETSUBREDDIT TRIGGER");
+
+    if (!subReddit.data) {
+      console.log("NO GETSUBREDDIT DATA");
+      return;
+    }
+
+    console.log(subReddit.data);
+  }, [subReddit]);
 
   const handleSubChange = async () => {
     await subReddit.refetch();
@@ -81,39 +75,13 @@ export default function Dashboard() {
     };
   }, [sub]);
 
-  // useEffect(() => {
-  //   const getData = setTimeout(() => {
-  //     void handleSubChange();
-
-  //     });
-  //   }, 2000)
-
-  //   return () => clearTimeout(getData)
-  //   void handleSubChange();
-  // }, [sub]);
-
-  // const { data, refetch } = api.example.getSubreddit.useQuery(
-  //   { input: sessionData?.user.token },
-  //   {
-  //     enabled: false,
-  //   }
-  // );
-
-  // console.log(data);
-  // const getData = () => {
-  //   console.log("ONCLICK");
-  //   void refetch();
-  //   console.log("ONCLICK END");
-  //   return;
-  // };
-
-  const sendData = async () => {
+  const sendData = () => {
     console.log("ONCLICK");
     mutation.mutate({
       title: title,
       sub: sub,
       link: link,
-      flair: flair,
+      flair: selectedFlair,
     });
     console.log("ONCLICK END");
     return;
@@ -123,29 +91,13 @@ export default function Dashboard() {
   console.log(subReddit.data);
   console.log(subReddit);
   // console.log(subReddit.data.message);
+  console.log(flairList);
+  console.log(selectedFlair);
 
   if (session) {
     return (
       <div>
-        <h1>Protected Page</h1>
-        <p>You can view this page because you are signed in.</p>
-        <div>
-          <SubmitItem />
-        </div>
-
-        {/* <p>Returned info: {""}</p>
-        <div>{data ? data[0].text : ""}</div>
-        <div>
-          <input
-            className="border-2 border-gray-800"
-            value={inputData}
-            onChange={(e) => setInputData(e.target.value)}
-          ></input>
-          <div></div>
-          <button onClick={getData}>Verify</button>
-        </div> */}
-
-        {/* <div className="p-4">
+        <div className="p-4">
           <h2 className="p-4">Submit Your Post</h2>
           <div>
             <div>
@@ -174,10 +126,10 @@ export default function Dashboard() {
                 value={sub}
                 onChange={(e) => setSub(e.target.value)}
               />
-            </div> */}
+            </div>
 
-        {/* // ************************************************************ */}
-        {/* <div>
+            {/* // ************************************************************ */}
+            {/* <div>
               Flair:{" "}
               <input
                 type="text"
@@ -187,11 +139,11 @@ export default function Dashboard() {
               />
             </div> */}
 
-        {/* // ************************************************************ */}
+            {/* // ************************************************************ */}
 
-        {/* TODO - FLAIRS */}
-        {/* https://oauth.reddit.com//r/crowcovers/api/link_flair_v2 */}
-        {/* </div>
+            {/* TODO - FLAIRS */}
+            {/* https://oauth.reddit.com//r/crowcovers/api/link_flair_v2 */}
+          </div>
           <button
             disabled={title === "" || link === "" || sub === "" ? true : false}
             onClick={() => void sendData()}
@@ -225,9 +177,14 @@ export default function Dashboard() {
               <div>
                 <p>Flair required:</p>
                 <div>
-                  {subReddit.data.flairs.map((item) => (
-                    <p>{item.text}</p>
-                  ))}
+                  <select
+                    value={selectedFlair}
+                    onChange={(e) => setSelectedFlair(e.target.value)}
+                  >
+                    {subReddit.data.flairs.map((item) => (
+                      <option value={item.id}>{item.text}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
             )}
@@ -241,7 +198,12 @@ export default function Dashboard() {
                 {subReddit.data.titleTags[0]}&quot;
               </p>
             )}
-        </div> */}
+        </div>
+
+        {/*  */}
+        {/*  */}
+        {/*  */}
+        <div></div>
       </div>
     );
   }
@@ -250,4 +212,4 @@ export default function Dashboard() {
       <p>Access Denied</p>
     </div>
   );
-}
+};
