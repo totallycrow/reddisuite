@@ -55,6 +55,28 @@ export const SubmitItem = () => {
     console.log(subReddit.data);
   }, [subReddit]);
 
+  useEffect(() => {
+    console.log("MUTATION TRIGGER");
+
+    if (!mutation.data) {
+      console.log("NO MUTATION DATA");
+      return;
+    }
+
+    console.log(mutation.data.json);
+    const mutationResponse = mutation.data.json;
+    // on fail:
+    // --> .errors -> []
+
+    // on success
+    // --> data.id / .name / .url
+    if (mutationResponse.errors && mutationResponse.errors.length === 0) {
+      console.log("SUCESS");
+    } else {
+      console.log("ERROR POSTING DATA!!");
+    }
+  }, [mutation]);
+
   const handleSubChange = async () => {
     await subReddit.refetch();
     console.log(subReddit.data);
@@ -93,6 +115,8 @@ export const SubmitItem = () => {
   // console.log(subReddit.data.message);
   console.log(flairList);
   console.log(selectedFlair);
+  console.log(mutation);
+  // console.log(mutation.data.errors);
 
   if (session) {
     return (
@@ -151,6 +175,7 @@ export const SubmitItem = () => {
             Submit
           </button>
         </div>
+
         <div>{mutation.isLoading && <p>Loading...</p>}</div>
         <div>
           {mutation.data &&
