@@ -222,9 +222,3 @@ const AuthShowcase: React.FC = () => {
     </div>
   );
 };
-
-export function getServerSideProps(context) {
-  return {
-    props: {}, // will be passed to the page component as props
-  };
-}
