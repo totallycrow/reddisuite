@@ -44,11 +44,11 @@ export default function Dashboard() {
 
   const mutation = api.example.sendPost.useMutation();
 
-  const getSubReddots = useQuery(["aasd", "asdasd"], () => {
-    // fetcz
-    // if
-    // dofeczuj
-  });
+  // const getSubReddots = useQuery(["aasd", "asdasd"], () => {
+  //   // fetcz
+  //   // if
+  //   // dofeczuj
+  // });
 
   const subReddit = api.example.getSubreddit.useQuery(
     { sub: debouncedSub },
@@ -66,6 +66,7 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
+    if (sub === "") return;
     void handleSubChange();
   }, [debouncedSub]);
 
@@ -188,7 +189,12 @@ export default function Dashboard() {
             {/* TODO - FLAIRS */}
             {/* https://oauth.reddit.com//r/crowcovers/api/link_flair_v2 */}
           </div>
-          <button onClick={() => void sendData()}>Submit</button>
+          <button
+            disabled={title === "" || link === "" || sub === "" ? true : false}
+            onClick={() => void sendData()}
+          >
+            Submit
+          </button>
         </div>
         <div>{mutation.isLoading && <p>Loading...</p>}</div>
         <div>
@@ -210,17 +216,26 @@ export default function Dashboard() {
           )}
         </div>
         <div>
-          {subReddit.data && subReddit.data.is_flair_required && (
-            <p>Flair required</p>
-          )}
+          {subReddit.data &&
+            subReddit.data.flairs &&
+            subReddit.data.flairs.length > 0 && (
+              <div>
+                <p>Flair required:</p>
+                <div>
+                  {subReddit.data.flairs.map((item) => (
+                    <p>{item.text}</p>
+                  ))}
+                </div>
+              </div>
+            )}
         </div>
         <div>
           {subReddit.data &&
-            subReddit.data.title_required_strings &&
-            subReddit.data.title_required_strings.length > 0 && (
+            subReddit.data.titleTags &&
+            subReddit.data.titleTags.length > 0 && (
               <p>
                 Title tag required: &quot;
-                {subReddit.data.title_required_strings[0]}&quot;
+                {subReddit.data.titleTags[0]}&quot;
               </p>
             )}
         </div>

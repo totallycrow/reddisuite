@@ -1,7 +1,36 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
+import {
+  getSubredditFlairs,
+  getSubredditRequirements,
+} from "../../../services/reddit";
 
 // axios<{prefs:[]}>
+
+interface ISubredditInfo {
+  title_regexes: string[];
+  body_blacklisted_strings: string[];
+  title_blacklisted_strings: string[];
+  body_text_max_length: string | null;
+  title_required_strings: string[];
+  guidelines_text: string | null;
+  gallery_min_items: string | null;
+  domain_blacklist: string[];
+  domain_whitelist: string[];
+  title_text_max_length: string | null;
+  body_restriction_policy: string;
+  link_restriction_policy: string;
+  guidelines_display_policy: string | null;
+  body_required_strings: string[];
+  title_text_min_length: string | null;
+  gallery_captions_requirement: string;
+  is_flair_required: true;
+  gallery_max_items: string | null;
+  gallery_urls_requirement: string;
+  body_regexes: string[];
+  link_repost_age: string | null;
+  body_text_min_length: string | null;
+}
 
 export const exampleRouter = createTRPCRouter({
   hello: publicProcedure
@@ -104,10 +133,31 @@ export const exampleRouter = createTRPCRouter({
 
       console.log("_________________________RES____________________________");
       console.log(response);
+      // console.log(response.status);
+      // console.log(response.status === 200);
+      // let subData: unknown;
+
+      // const subredditData = (await response.json()) as unknown;
+
+      const TEST_DATA = await getSubredditRequirements(token, req.input.sub);
+
+      console.log("TEST DATA _____________________ TEST SERVICES");
+      console.log(TEST_DATA);
+
+      console.log("*****");
+      // console.log(subredditData);
+
+      // if (response.status === 200) {
+      //   subData = response.json();
+      //   return subData as ISubredditInfo;
+      // }
+
+      // console.log(typeof subData);
 
       // *************************** TODO? *************************************
       // ??????????????
       // Check response
+
       // See if title tags and flairs required?
       // run subsequent fetches -> fetch flair ids+names and required title tags
       // combine responses and return complete subreddit object?
@@ -115,7 +165,9 @@ export const exampleRouter = createTRPCRouter({
       // fetch FinalizationRegistryf
       // fetch title
 
-      return response.json();
+      // return subData;
+
+      return TEST_DATA;
     }),
 
   // ************************************************************
