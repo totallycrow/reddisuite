@@ -6,7 +6,7 @@ import { api, RouterOutputs } from "../utils/api";
 import { useEffect } from "react";
 import _ from "lodash";
 import { useQuery } from "@tanstack/react-query";
-import { SubmitItem } from "../components/submitForm/SubmitItem";
+import { SubmitItem } from "../components/submitItem/SubmitItem";
 
 export default function Dashboard() {
   const { data: session } = useSession();

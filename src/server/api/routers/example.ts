@@ -7,7 +7,7 @@ import {
 
 // axios<{prefs:[]}>
 
-interface ISubredditInfo {
+export interface ISubredditInfo {
   title_regexes: string[];
   body_blacklisted_strings: string[];
   title_blacklisted_strings: string[];

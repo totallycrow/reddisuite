@@ -7,13 +7,13 @@ import axios from "axios";
 
 // }
 
-interface IFullSubredditData {
+export interface IFullSubredditData {
   flairs: IFlair[];
   titleTags: string[];
   subredditInfo: ISubredditInfo;
 }
 
-interface IFlair {
+export interface IFlair {
   type: string;
   text_editable: boolean;
   allowable_content: string;
@@ -27,14 +27,14 @@ interface IFlair {
   id: string;
 }
 
-interface ISubredditRequirementsConfig {
+export interface ISubredditRequirementsConfig {
   token: string;
   subReddit: string;
   isFlairNeeded: boolean;
   isTitleTagNeeded: boolean;
 }
 
-interface ISubredditInfo {
+export interface ISubredditInfo {
   title_regexes: string[];
   body_blacklisted_strings: string[];
   title_blacklisted_strings: string[];
@@ -59,7 +59,7 @@ interface ISubredditInfo {
   body_text_min_length: string | null;
 }
 
-interface ISubredditError {
+export interface ISubredditError {
   explanation: string;
   message: string;
   reason: string;
@@ -168,7 +168,7 @@ export const getSubredditRequirements = async (
 // }
 
 export const getSubredditFlairs = async (token: string, subReddit: string) => {
-  const url = "https://oauth.reddit.com//r/crowcovers/api/link_flair_v2";
+  const url = `https://oauth.reddit.com//r/${subReddit}/api/link_flair_v2`;
   const response = await axios.get(url, {
     method: "GET",
     headers: {
