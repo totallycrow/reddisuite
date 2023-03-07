@@ -4,16 +4,23 @@ import { DefinedUseTRPCQueryResult } from "@trpc/react-query/shared";
 import { IFullSubredditData, ISubredditError } from "../services/reddit";
 import { TRPCClientErrorLike } from "@trpc/client";
 
+interface IError {
+  error: string;
+}
+
 export const useFlairController = (
-  subReddit: IFullSubredditData | ISubredditError
+  subReddit: IFullSubredditData | ISubredditError | IError
 ) => {
   const [selectedFlair, setSelectedFlair] = useState("");
 
   //   TYPE GUARD
   function isISubredditError(
-    data: IFullSubredditData | ISubredditError
-  ): data is ISubredditError {
-    return (data as ISubredditError).message !== undefined;
+    data: IFullSubredditData | ISubredditError | IError
+  ): data is ISubredditError | IError {
+    const isSubredditError = (data as ISubredditError).message !== undefined;
+    const isIError = (data as IError).error !== undefined;
+
+    return isSubredditError || isIError;
   }
 
   useEffect(() => {
@@ -41,5 +48,5 @@ export const useFlairController = (
       setSelectedFlair(subReddit.flairs[0].id);
     }
   }, [subReddit]);
-  return {selectedFlair, setSelectedFlair}
+  return { selectedFlair, setSelectedFlair };
 };

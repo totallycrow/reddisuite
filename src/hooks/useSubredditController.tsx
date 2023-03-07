@@ -6,6 +6,7 @@ export const useSubredditController = (
   userInput: string,
   setLoadingState: React.Dispatch<React.SetStateAction<string>>
 ) => {
+
   const { debouncedInput, debouncedStatus } = useDebouncedSearch(
     userInput,
     handleSubChange,
@@ -28,5 +29,8 @@ export const useSubredditController = (
     return;
   }
 
+  const subData = subRedditController.data
+
+   
   return { subRedditController, debouncedStatus };
 };

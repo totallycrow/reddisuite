@@ -5,7 +5,6 @@ import { useSubredditController } from "../../hooks/useSubredditController";
 import { usePostingController } from "../../hooks/usePostingController";
 import { useFormController } from "../../hooks/useFormController";
 import { FormItem } from "../FormItem";
-import { useContext } from "react";
 
 const LoadingStatusContext = createContext("Idle");
 
@@ -19,14 +18,16 @@ export const SubmitItem = () => {
   // *********************** DATA FETCH / POST *************************************
 
   const { data: session } = useSession();
-  const { subRedditController, debouncedStatus } = useSubredditController(
+  const { subRedditController } = useSubredditController(
     userInput,
     setLoadingState
   );
 
-  const { selectedFlair, setSelectedFlair } = useFlairController(
-    subRedditController.data
-  );
+  const subData = subRedditController.data ?? {
+    error: "subReddit data not defined",
+  };
+
+  const { selectedFlair, setSelectedFlair } = useFlairController(subData);
   const { mutationController, sendData } = usePostingController(
     title,
     userInput,
