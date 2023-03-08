@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 export const FormItem = ({ config }) => {
-  const {
+  let {
     title,
     setTitle,
     link,
@@ -12,7 +12,11 @@ export const FormItem = ({ config }) => {
     subRedditController,
     sendData,
     setSelectedFlair,
+    renderTitle,
+    renderLink,
+    renderUserInput,
   } = config;
+  
 
   return (
     <div>

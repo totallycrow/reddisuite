@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 export const useDebouncedSearch = (
   userInput: string,
   callback: () => Promise<void>,
-  setLoadingStatus: React.Dispatch<React.SetStateAction<string>>
+  setLoadingStatus?: React.Dispatch<React.SetStateAction<string>>
 ) => {
   const [debouncedInput, setDebouncedInput] = useState("");
   const [debouncedStatus, setDebouncedStatus] = useState("Idle");
@@ -15,10 +15,15 @@ export const useDebouncedSearch = (
   useEffect(() => {
     if (userInput === "") return;
 
+    console.log(
+      "USE EFFECT USE DEBOUNCE _____________________________________________________"
+    );
+
+    console.log(userInput);
     const trigger = async () => {
       await callback();
       setDebouncedStatus("Idle");
-      setLoadingStatus("Idle");
+      if (setLoadingStatus) setLoadingStatus("Idle");
     };
 
     void trigger();
@@ -26,6 +31,10 @@ export const useDebouncedSearch = (
 
   useEffect(() => {
     if (userInput === "") return;
+
+    console.log(
+      "USE EFFECT USE DEBOUNCE USER INPUT_____________________________________________________"
+    );
     const handler = setTimeout(() => {
       setDebouncedInput(userInput);
       //   setDebouncedStatus("E");
@@ -34,7 +43,7 @@ export const useDebouncedSearch = (
     return () => {
       clearTimeout(handler);
       setDebouncedStatus("Loading...");
-      setLoadingStatus("Loading...");
+      if (setLoadingStatus) setLoadingStatus("Loading...");
     };
   }, [userInput]);
 
