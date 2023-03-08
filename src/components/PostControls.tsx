@@ -75,6 +75,7 @@ export const PostControls = () => {
       /> */}
       <div>
         <FormInputs inputsConfig={config} />
+        <button onClick={() => setTriggerSubmission(true)}>submit all</button>
         <div>Submission Details</div>
 
         <div>
@@ -89,6 +90,7 @@ export const PostControls = () => {
                     title={config.title}
                     link={config.link}
                     subreddit={sub}
+                    trigger={triggerSubmission}
                   />
                 );
               })

@@ -16,7 +16,6 @@ export const FormItem = ({ config }) => {
     renderLink,
     renderUserInput,
   } = config;
-  
 
   return (
     <div>

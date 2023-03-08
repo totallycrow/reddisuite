@@ -12,16 +12,35 @@ export interface IPostFormValues {
   title: string;
   link: string;
   subreddit: string;
+  trigger: any;
 }
 
 export const SubmitItem = (postConfig: IPostFormValues) => {
   const [loadingState, setLoadingState] = useState("Idle");
 
   // Form Controls
+  // keep controls separate from postConfig
+  // need own controls, but on first render check for postCOnfig default values
   let { title, setTitle, link, setLink, userInput, setUserInput } =
     useFormController();
 
-  const isConfigProvided = postConfig !== undefined && postConfig.title !== "";
+  // const isConfigProvided = postConfig !== undefined;
+
+  useEffect(() => {
+    setTitle(postConfig.title);
+    setLink(postConfig.link);
+    setUserInput(postConfig.subreddit);
+
+    console.log(postConfig.subreddit);
+  }, []);
+
+  // let renderTitle, renderLink, renderUserInput;
+
+  // if (isConfigProvided) {
+  //   renderTitle = postConfig.title;
+  //   renderLink = postConfig.link;
+  //   renderUserInput = postConfig.subreddit;
+  // }
 
   // *********************** DATA FETCH / POST *************************************
 
@@ -44,69 +63,69 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
     setLoadingState
   );
 
-  let renderTitle, renderLink, renderUserInput;
-
-  if (isConfigProvided) {
-    renderTitle = postConfig.title;
-    renderLink = postConfig.link;
-    renderUserInput = postConfig.subreddit;
-  }
-
-  useEffect(() => {
-    // USEFFECT SUBMIT ITEM
-    console.log(
-      ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    );
-    console.log("USEFFECT SUBMIT ITEM");
-    console.log(isConfigProvided);
-    console.log(renderTitle);
-    console.log(postConfig);
-
-    if (renderTitle) {
-      setTitle(renderTitle);
-      setUserInput(renderUserInput);
-      setLink(renderLink);
-    }
-  }, []);
-
   useEffect(() => {
     if (subRedditController.isLoading) {
       setLoadingState("Loading...");
     } else setLoadingState("Idle");
   }, [subRedditController.isLoading]);
 
-  const formConfig = useMemo(() => {
-    return {
-      title: title,
-      setTitle: setTitle,
-      link: link,
-      setLink: setLink,
-      userInput: userInput,
-      setUserInput: setUserInput,
-      subRedditController: subRedditController,
-      mutationController: mutationController,
-      setSelectedFlair,
-      sendData,
-      renderTitle,
-      renderLink,
-      renderUserInput,
-      onChangeCallback: postConfig.onChangeCallback,
-    };
-  }, [
-    title,
-    setTitle,
-    link,
-    setLink,
-    userInput,
-    setUserInput,
-    mutationController,
-    subRedditController,
-    sendData,
+  // const formConfig = useMemo(() => {
+  //   return {
+  //     title: title,
+  //     setTitle: setTitle,
+  //     link: link,
+  //     setLink: setLink,
+  //     userInput: userInput,
+  //     setUserInput: setUserInput,
+  //     subRedditController: subRedditController,
+  //     mutationController: mutationController,
+  //     setSelectedFlair,
+  //     sendData,
+  //     renderTitle,
+  //     renderLink,
+  //     renderUserInput,
+  //     onChangeCallback: postConfig.onChangeCallback,
+  //   };
+  // }, [
+  //   title,
+  //   setTitle,
+  //   link,
+  //   setLink,
+  //   userInput,
+  //   setUserInput,
+  //   mutationController,
+  //   subRedditController,
+  //   sendData,
+  //   setSelectedFlair,
+  //   renderTitle,
+  //   renderLink,
+  //   renderUserInput,
+  // ]);
+
+  const formConfig = {
+    title: title,
+    setTitle: setTitle,
+    link: link,
+    setLink: setLink,
+    userInput: userInput,
+    setUserInput: setUserInput,
+    subRedditController: subRedditController,
+    mutationController: mutationController,
     setSelectedFlair,
-    renderTitle,
-    renderLink,
-    renderUserInput,
-  ]);
+    sendData,
+  };
+
+  useEffect(() => {
+    if (!postConfig.trigger) return;
+    console.log(
+      "[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]"
+    );
+    console.log("button triggered from");
+    console.log(link);
+    console.log(postConfig.link);
+    console.log(userInput);
+    console.log(postConfig.subreddit);
+  }, [postConfig.trigger]);
 
   console.log(mutationController.isLoading);
   console.log(subRedditController.isLoading);
