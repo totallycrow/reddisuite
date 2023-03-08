@@ -7,12 +7,11 @@ import { useEffect } from "react";
 import _ from "lodash";
 import { useQuery } from "@tanstack/react-query";
 import { SubmitItem } from "../components/submitItem/SubmitItem";
+import { PostControls } from "../components/PostControls";
 
 export default function Dashboard() {
   const { data: session } = useSession();
-  const [inputData, setInputData] = useState("");
-  const [dataGet, setDataGet] = useState("");
-  console.log(dataGet);
+  // const [inputData, setInputData] = useState("");
 
   // TYPE
   // type Test = RouterOutputs["note"]["getAll"][0]
@@ -22,28 +21,26 @@ export default function Dashboard() {
   //   isTitleTagRequired: false,
   // };
 
-  interface IFlair {
-    id: string;
-    name: string;
-  }
-  const flairList: IFlair[] = [];
+  // interface IFlair {
+  //   id: string;
+  //   name: string;
+  // }
+  // const flairList: IFlair[] = [];
 
-  const [title, setTitle] = useState("");
-  const [link, setLink] = useState("");
-  const [sub, setSub] = useState("");
-  const [debouncedSub, setDebouncedSub] = useState("");
-  const [flair, setFlair] = useState("");
+  // const [title, setTitle] = useState("");
+  // const [link, setLink] = useState("");
+  // const [sub, setSub] = useState("");
+  // const [debouncedSub, setDebouncedSub] = useState("");
+  // const [flair, setFlair] = useState("");
 
-  const [subConfig, setSubConfig] = useState({
-    isFlairRequired: false,
-    isTitleTagRequired: false,
-  });
+  // const [subConfig, setSubConfig] = useState({
+  //   isFlairRequired: false,
+  //   isTitleTagRequired: false,
+  // });
 
   // *********************** DATA FETCH / POST *************************************
 
-  const { data: sessionData } = useSession();
-
-  const mutation = api.example.sendPost.useMutation();
+  // const mutation = api.example.sendPost.useMutation();
 
   // const getSubReddots = useQuery(["aasd", "asdasd"], () => {
   //   // fetcz
@@ -51,35 +48,35 @@ export default function Dashboard() {
   //   // dofeczuj
   // });
 
-  const subReddit = api.example.getSubreddit.useQuery(
-    { sub: debouncedSub },
-    {
-      enabled: debouncedSub !== "",
-      refetchOnMount: false,
-      refetchOnWindowFocus: false,
-    }
-  );
+  // const subReddit = api.example.getSubreddit.useQuery(
+  //   { sub: debouncedSub },
+  //   {
+  //     enabled: debouncedSub !== "",
+  //     refetchOnMount: false,
+  //     refetchOnWindowFocus: false,
+  //   }
+  // );
   // ************************************************************
 
-  const handleSubChange = async () => {
-    await subReddit.refetch();
-    console.log(subReddit.data);
-  };
+  // const handleSubChange = async () => {
+  //   await subReddit.refetch();
+  //   console.log(subReddit.data);
+  // };
 
-  useEffect(() => {
-    if (sub === "") return;
-    void handleSubChange();
-  }, [debouncedSub]);
+  // useEffect(() => {
+  //   if (sub === "") return;
+  //   void handleSubChange();
+  // }, [debouncedSub]);
 
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSub(sub);
-    }, 1000);
+  // useEffect(() => {
+  //   const handler = setTimeout(() => {
+  //     setDebouncedSub(sub);
+  //   }, 1000);
 
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [sub]);
+  //   return () => {
+  //     clearTimeout(handler);
+  //   };
+  // }, [sub]);
 
   // useEffect(() => {
   //   const getData = setTimeout(() => {
@@ -107,21 +104,21 @@ export default function Dashboard() {
   //   return;
   // };
 
-  const sendData = async () => {
-    console.log("ONCLICK");
-    mutation.mutate({
-      title: title,
-      sub: sub,
-      link: link,
-      flair: flair,
-    });
-    console.log("ONCLICK END");
-    return;
-  };
+  // const sendData = async () => {
+  //   console.log("ONCLICK");
+  //   mutation.mutate({
+  //     title: title,
+  //     sub: sub,
+  //     link: link,
+  //     flair: flair,
+  //   });
+  //   console.log("ONCLICK END");
+  //   return;
+  // };
 
-  console.log("CLG_______________ MAIN");
-  console.log(subReddit.data);
-  console.log(subReddit);
+  // console.log("CLG_______________ MAIN");
+  // console.log(subReddit.data);
+  // console.log(subReddit);
   // console.log(subReddit.data.message);
 
   if (session) {
@@ -130,7 +127,8 @@ export default function Dashboard() {
         <h1>Protected Page</h1>
         <p>You can view this page because you are signed in.</p>
         <div>
-          <SubmitItem />
+          {/* <SubmitItem /> */}
+          <PostControls></PostControls>
         </div>
 
         {/* <p>Returned info: {""}</p>

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { api } from "../utils/api";
 
 export interface IPostData {
@@ -33,6 +33,11 @@ export const usePostingController = (
     console.log(mutationController.data.json);
     const mutationResponse = mutationController.data.json;
 
+    console.log(
+      "MUTATION CONTROLLER STATUS &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
+    );
+    console.log(mutationController.status);
+
     if (mutationController.status !== "idle") {
       setLoadingState("Loading...");
     }
@@ -60,7 +65,7 @@ export const usePostingController = (
     }
   }, [mutationController.isLoading]);
 
-  const sendData = () => {
+  const sendData = useCallback(() => {
     console.log("ONCLICK");
     mutationController.mutate({
       title: title,
@@ -70,7 +75,7 @@ export const usePostingController = (
     });
     console.log("ONCLICK END");
     return;
-  };
+  }, [flairID, link, sub, title, mutationController]);
 
   return { mutationController, sendData };
 };
