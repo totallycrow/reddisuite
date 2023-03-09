@@ -26,7 +26,8 @@
     "react-dom": "18.2.0",
     "snoowrap": "^1.23.0",
     "superjson": "1.9.1",
-    "zod": "^3.20.2"
+    "zod": "^3.20.2",
+    "zustand": "^4.3.6"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.191",

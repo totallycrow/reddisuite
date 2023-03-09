@@ -3,6 +3,8 @@ import { SubmitItem } from "./submitItem/SubmitItem";
 import { useFormController } from "../hooks/useFormController";
 import { FormInputs } from "./FormInputs";
 import { useDebouncedSearch } from "../hooks/useDebouncedSearch";
+import { create } from "zustand";
+import useBearStore from "../store/useBearStore";
 
 export const PostControls = () => {
   const config = useFormController();
@@ -11,8 +13,11 @@ export const PostControls = () => {
   );
   const [subsList, setSubsList] = useState(Array<string>);
   const [clean, setClean] = useState(false);
-  const [submissionCalls, setSubmissionCalls] = useState(Array<any>);
+  const [submissionCalls, setSubmissionCalls] = useState(0);
   const [triggerSubmission, setTriggerSubmission] = useState(false);
+
+  const [userPosts, setUserPosts] = useState([]);
+  const bears = useBearStore((state) => state.bears);
 
   //   Listen for change in debouced inputs and split & generate list of subreddits
   useEffect(() => {
@@ -20,7 +25,7 @@ export const PostControls = () => {
 
     if (debouncedInput === "") return;
     if (!debouncedInput.includes(",")) {
-      //   setClean(true);
+      setClean(true);
       setSubsList([debouncedInput]);
       return;
     }
@@ -31,15 +36,14 @@ export const PostControls = () => {
       return splitSub.trim();
     });
 
-    // setClean(true);
+    setClean(true);
     setSubsList(sanitizedList);
   }, [debouncedInput]);
 
   //   Listen for change in sub lists
 
   useEffect(() => {
-    console.log("SUBS LIST CHANGED");
-    console.log(subsList);
+    ("");
   }, [subsList]);
 
   console.log(config.userInput);
@@ -66,7 +70,9 @@ export const PostControls = () => {
 
   return (
     <div>
+      {/* <div>{bears}</div> */}
       <h1>Setup Your Post</h1>
+      {/* <div>{submissionCalls}</div> */}
       {/* <SubmitItem
         key={Date.now() + Math.random()}
         title={"test"}
@@ -79,7 +85,7 @@ export const PostControls = () => {
         <div>Submission Details</div>
 
         <div>
-          {subsList.length > 0
+          {subsList.length > 0 && clean
             ? subsList.map((sub) => {
                 console.log("SUB MAP");
                 console.log(sub);
@@ -91,6 +97,8 @@ export const PostControls = () => {
                     link={config.link}
                     subreddit={sub}
                     trigger={triggerSubmission}
+                    setTrigger={setTriggerSubmission}
+                    callback={setSubmissionCalls}
                   />
                 );
               })
