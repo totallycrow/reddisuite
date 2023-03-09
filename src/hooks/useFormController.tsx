@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
 export const useFormController = () => {
-    const [title, setTitle] = useState("");
-    const [link, setLink] = useState("");
-    const [userInput, setUserInput] = useState("");
-  return {title, setTitle, link, setLink, userInput, setUserInput}
-}
+  const [title, setTitle] = useState("");
+  const [link, setLink] = useState("");
+  const [userInput, setUserInput] = useState("");
+
+  return { title, setTitle, link, setLink, userInput, setUserInput };
+};

@@ -1,5 +1,11 @@
 import { useSession } from "next-auth/react";
-import React, { createContext, useEffect, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useFlairController } from "../../hooks/useFlairController";
 import { useSubredditController } from "../../hooks/useSubredditController";
 import { usePostingController } from "../../hooks/usePostingController";
@@ -13,24 +19,29 @@ export interface IPostFormValues {
   link: string;
   subreddit: string;
   trigger: any;
+  callback: any;
+  setTrigger: any;
 }
 
 export const SubmitItem = (postConfig: IPostFormValues) => {
   const [loadingState, setLoadingState] = useState("Idle");
+  const [title, setTitle] = useState("");
 
   // Form Controls
   // keep controls separate from postConfig
   // need own controls, but on first render check for postCOnfig default values
-  let { title, setTitle, link, setLink, userInput, setUserInput } =
-    useFormController();
-
+  const { link, setLink, userInput, setUserInput } = useFormController();
   // const isConfigProvided = postConfig !== undefined;
 
   useEffect(() => {
+    console.log(
+      "oOOOOOOOOOOOOoOOOOOOOOOOOOoOOOOOOOOOOOOoOOOOOOOOOOOOoOOOOOOOOOOOOoOOOOOOOOOOOOoOOOOOOOOOOOOoOOOOOOOOOOOOoOOOOOOOOOOOOoOOOOOOOOOOOOoOOOOOOOOOOOOoOOOOOOOOOOOOoOOOOOOOOOOOOoOOOOOOOOOOOOoOOOOOOOOOOOOoOOOOOOOOOOOOoOOOOOOOOOOOO"
+    );
+    console.log(title);
+    console.log(userInput);
     setTitle(postConfig.title);
     setLink(postConfig.link);
     setUserInput(postConfig.subreddit);
-
     console.log(postConfig.subreddit);
   }, []);
 
@@ -125,6 +136,8 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
     console.log(postConfig.link);
     console.log(userInput);
     console.log(postConfig.subreddit);
+    postConfig.callback((prev) => prev + 1);
+    postConfig.setTrigger(false);
   }, [postConfig.trigger]);
 
   console.log(mutationController.isLoading);

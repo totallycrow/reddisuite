@@ -84,7 +84,6 @@ export const exampleRouter = createTRPCRouter({
       console.log(url);
       console.log(input);
 
-      
       const response = await fetch(url, {
         headers: {
           Authorization: `bearer ${token}`,

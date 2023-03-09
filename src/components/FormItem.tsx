@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import useBearStore from "../store/useBearStore";
 
 export const FormItem = ({ config }) => {
   let {
@@ -17,9 +18,14 @@ export const FormItem = ({ config }) => {
     renderUserInput,
   } = config;
 
+  // const bears = useBearStore((state) => state.bears);
+  const increasePopulation = useBearStore((state) => state.increasePopulation);
+
   return (
     <div>
       <div className="p-4">
+        {/* <div>{bears}</div> */}
+        <button onClick={increasePopulation}>add</button>
         <h2 className="p-4">Submit Your Post</h2>
         <div>
           <div>
