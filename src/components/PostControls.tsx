@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { SubmitItem } from "./submitItem/SubmitItem";
 import { useFormController } from "../hooks/useFormController";
 import { FormInputs } from "./FormInputs";
 import { useDebouncedSearch } from "../hooks/useDebouncedSearch";
 import { create } from "zustand";
 import useBearStore from "../store/useBearStore";
+import { FormObserver } from "../utils/formObserver";
 
 export const PostControls = () => {
   const config = useFormController();
@@ -17,7 +18,7 @@ export const PostControls = () => {
   const [triggerSubmission, setTriggerSubmission] = useState(false);
 
   const [userPosts, setUserPosts] = useState([]);
-  const bears = useBearStore((state) => state.bears);
+  const formObserver = useMemo(() => FormObserver.getInstance(), []);
 
   //   Listen for change in debouced inputs and split & generate list of subreddits
   useEffect(() => {
@@ -81,7 +82,14 @@ export const PostControls = () => {
       /> */}
       <div>
         <FormInputs inputsConfig={config} />
-        <button onClick={() => setTriggerSubmission(true)}>submit all</button>
+        <button onClick={() => formObserver.publish()}>submit all</button>
+        <button
+          onClick={() => {
+            console.log(formObserver.getFormItems());
+          }}
+        >
+          log form items
+        </button>
         <div>Submission Details</div>
 
         <div>
@@ -92,7 +100,7 @@ export const PostControls = () => {
 
                 return (
                   <SubmitItem
-                    key={Date.now() + Math.random()}
+                    key={sub}
                     title={config.title}
                     link={config.link}
                     subreddit={sub}

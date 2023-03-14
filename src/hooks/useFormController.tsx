@@ -1,9 +1,13 @@
 import React, { useState } from "react";
 
-export const useFormController = (initiallink = "", title = "") => {
-  const [title, setTitle] = useState(title);
+export const useFormController = (
+  initiallink = "",
+  initialTitle = "",
+  initialInput = ""
+) => {
+  const [title, setTitle] = useState(initialTitle);
   const [link, setLink] = useState(initiallink);
-  const [userInput, setUserInput] = useState("");
+  const [userInput, setUserInput] = useState(initialInput);
 
   return { title, setTitle, link, setLink, userInput, setUserInput };
 };

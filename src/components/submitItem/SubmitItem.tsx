@@ -11,6 +11,7 @@ import { useSubredditController } from "../../hooks/useSubredditController";
 import { usePostingController } from "../../hooks/usePostingController";
 import { useFormController } from "../../hooks/useFormController";
 import { FormItem } from "../FormItem";
+import { FormObserver } from "../../utils/formObserver";
 
 const LoadingStatusContext = createContext("Idle");
 
@@ -56,15 +57,14 @@ export interface IPostFormValues {
 
 export const SubmitItem = (postConfig: IPostFormValues) => {
   const [loadingState, setLoadingState] = useState("Idle");
-  const [title, setTitle] = useState(postConfig.title);
+
+  const formObserver = useMemo(() => FormObserver.getInstance(), []);
 
   // Form Controls
   // keep controls separate from postConfig
   // need own controls, but on first render check for postCOnfig default values
-  const { link, setLink, userInput, setUserInput } = useFormController(
-    postConfig.link,
-    postConfig.subreddit
-  );
+  const { title, setTitle, link, setLink, userInput, setUserInput } =
+    useFormController(postConfig.link, postConfig.title, postConfig.subreddit);
   // const isConfigProvided = postConfig !== undefined;
 
   // useFormObserver(title, link, userInput);
@@ -79,7 +79,14 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
     setLink(postConfig.link);
     setUserInput(postConfig.subreddit);
     console.log(postConfig.subreddit);
-  }, []);
+
+    const list = formObserver.getFormItems();
+
+    formObserver.subscribe({
+      sendData: sendData,
+      subreddit: userInput,
+    });
+  }, [postConfig.title, postConfig.link, postConfig.subreddit]);
 
   // let renderTitle, renderLink, renderUserInput;
 
