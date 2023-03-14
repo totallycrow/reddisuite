@@ -92,13 +92,14 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
   };
 
   const { selectedFlair, setSelectedFlair } = useFlairController(subData);
-  const { mutationController, sendData } = usePostingController(
-    title,
-    userInput,
-    link,
-    selectedFlair,
-    setLoadingState
-  );
+  const { mutationController, sendData, submissionStatus } =
+    usePostingController(
+      title,
+      userInput,
+      link,
+      selectedFlair,
+      setLoadingState
+    );
 
   useEffect(() => {
     if (subRedditController.isLoading) {
@@ -217,7 +218,8 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
   return (
     <LoadingStatusContext.Provider value={loadingState}>
       <div>
-        <h1>Status: {loadingState}</h1>
+        <h1>Loading Status: {loadingState}</h1>
+        <div>Submission Status: {submissionStatus}</div>
         <FormItem config={formConfig} />
       </div>
     </LoadingStatusContext.Provider>
