@@ -1,6 +1,8 @@
 export interface IFormItem {
   sendData: () => void;
   subreddit: string;
+  title: string;
+  link: string;
 }
 
 /**
@@ -68,11 +70,40 @@ export class FormObserver {
   public getFormItems() {
     return this.subscribers;
   }
+
+  public getFormItemBySubreddit(subreddit: string) {
+    return this.subscribers.find((item) => item.subreddit === subreddit);
+  }
+
+  public areFormItemsIdentical(formItem: IFormItem) {
+    if (!this.isSubredditInList(formItem.subreddit)) return false;
+
+    const listItem = this.getFormItemBySubreddit(formItem.subreddit);
+
+    if (!listItem) return false;
+
+    if (listItem.title === formItem.title && listItem.link === formItem.link)
+      return true;
+  }
+
   public updateFormItem(item: IFormItem) {
-    this.subscribers.forEach((formItem) => {
-      if (formItem.subreddit === item.subreddit) {
-        formItem = item;
-      }
-    });
+    console.log("UPDATE FROM CLASS");
+    const listItem = this.getFormItemBySubreddit(item.subreddit);
+
+    if (!listItem) return false;
+
+    console.log(listItem);
+    console.log(item);
+    listItem.title = item.title;
+    (listItem.link = item.link), (listItem.subreddit = item.subreddit);
+    return true;
+  }
+
+  public isSubredditInList(subreddit: string) {
+    return this.subscribers.some(
+      (listItem) =>
+        listItem.subreddit.trim().toUpperCase() ===
+        subreddit.trim().toUpperCase()
+    );
   }
 }
