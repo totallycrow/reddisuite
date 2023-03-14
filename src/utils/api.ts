@@ -5,7 +5,7 @@
  *
  * We also create a few inference helpers for input and output types
  */
-import { httpBatchLink, loggerLink } from "@trpc/client";
+import { httpBatchLink, loggerLink, createTRPCProxyClient } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
 import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
 import superjson from "superjson";
@@ -18,6 +18,16 @@ const getBaseUrl = () => {
   return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
 };
 
+// const client = createTRPCProxyClient<AppRouter>({
+//   links: [
+//     httpBatchLink({
+//       url: `${getBaseUrl()}/api/trpc`,
+//     }),
+//   ],
+// });
+
+// const bilbo = await client.getUser.query("id_bilbo");
+// const frodo = await client.createUser.mutate({ name: "Frodo" });
 /**
  * A set of typesafe react-query hooks for your tRPC API
  */

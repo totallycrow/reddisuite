@@ -23,15 +23,51 @@ export interface IPostFormValues {
   setTrigger: any;
 }
 
+// class Observer {
+//   subscribers = [];
+
+//   subscribe({ onSuccess, getData, onError, onLoading, mutate }) {
+//     this.subscribers.push({ onSuccess, getData, onError, onLoading });
+//   }
+
+//   publish() {
+//     const res = [];
+
+//     this.subscribers.forEach((cb) => res.push(cb.getData()));
+
+//     mutate(res);
+//   }
+// }
+
+// const abc = new Observer();
+
+// // framework specific BINDING
+// const useFormObserver = (onSuccess, getData, onError, onLoading) => {
+//   useEffect(() => {
+//     const unsub = abc.subscribe(() => {
+//       return { title, link, userInput, formId: "1321" };
+//     });
+
+//     return () => unsub();
+//   }, []);
+// };
+
+// export { abc };
+
 export const SubmitItem = (postConfig: IPostFormValues) => {
   const [loadingState, setLoadingState] = useState("Idle");
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(postConfig.title);
 
   // Form Controls
   // keep controls separate from postConfig
   // need own controls, but on first render check for postCOnfig default values
-  const { link, setLink, userInput, setUserInput } = useFormController();
+  const { link, setLink, userInput, setUserInput } = useFormController(
+    postConfig.link,
+    postConfig.subreddit
+  );
   // const isConfigProvided = postConfig !== undefined;
+
+  // useFormObserver(title, link, userInput);
 
   useEffect(() => {
     console.log(
