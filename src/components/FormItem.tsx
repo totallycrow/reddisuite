@@ -16,17 +16,24 @@ export const FormItem = ({ config }) => {
     renderTitle,
     renderLink,
     renderUserInput,
+    submissionStatus,
+    loadingState,
   } = config;
 
   // const bears = useBearStore((state) => state.bears);
   const increasePopulation = useBearStore((state) => state.increasePopulation);
 
+  const isSubmittedOK = submissionStatus === "SUCCESS";
+  const isLoading = loadingState !== "Idle";
+
   return (
     <div>
       <div className="p-4">
         {/* <div>{bears}</div> */}
-        <button onClick={increasePopulation}>add</button>
+        {/* <button onClick={increasePopulation}>add</button> */}
         <h2 className="p-4">Submit Your Post</h2>
+        <div>{isSubmittedOK ? <div>SUBMITTED SUCESSFULLY!</div> : ""}</div>
+
         <div>
           <div>
             Title:{" "}
@@ -35,6 +42,7 @@ export const FormItem = ({ config }) => {
               className="border-2 border-gray-800"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              disabled={isSubmittedOK || isLoading}
             />
           </div>
           <div>
@@ -44,6 +52,7 @@ export const FormItem = ({ config }) => {
               className="border-2 border-gray-800"
               value={link}
               onChange={(e) => setLink(e.target.value)}
+              disabled={isSubmittedOK || isLoading}
             />
           </div>
           <div>
@@ -53,12 +62,19 @@ export const FormItem = ({ config }) => {
               className="border-2 border-gray-800"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
+              disabled={isSubmittedOK || isLoading}
             />
           </div>
         </div>
         <button
           disabled={
-            title === "" || link === "" || userInput === "" ? true : false
+            title === "" ||
+            link === "" ||
+            userInput === "" ||
+            isSubmittedOK ||
+            isLoading
+              ? true
+              : false
           }
           onClick={() => void sendData()}
         >

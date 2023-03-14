@@ -135,6 +135,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
       link: link,
       subreddit: userInput,
       sendData: sendData,
+      successfullySubmitted: false,
     };
 
     // check if exists and is the same
@@ -154,6 +155,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         link: link,
         subreddit: userInput,
         sendData: sendData,
+        successfullySubmitted: false,
       });
     } else {
       console.log("ELSE!!");
@@ -162,6 +164,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         subreddit: userInput,
         title: title,
         link: link,
+        successfullySubmitted: false,
       });
     }
   }, [title, link, userInput, selectedFlair, sendData, subData]);
@@ -210,6 +213,8 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
     mutationController: mutationController,
     setSelectedFlair,
     sendData,
+    submissionStatus,
+    loadingState,
   };
 
   console.log(mutationController.isLoading);
