@@ -18,6 +18,7 @@ export const FormItem = ({ config }) => {
     renderUserInput,
     submissionStatus,
     loadingState,
+    isFormItemValidated,
   } = config;
 
   // const bears = useBearStore((state) => state.bears);
@@ -72,7 +73,8 @@ export const FormItem = ({ config }) => {
             link === "" ||
             userInput === "" ||
             isSubmittedOK ||
-            isLoading
+            isLoading ||
+            !isFormItemValidated
               ? true
               : false
           }

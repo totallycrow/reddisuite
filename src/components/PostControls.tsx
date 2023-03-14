@@ -9,6 +9,8 @@ import { FormObserver } from "../utils/formObserver";
 
 export const PostControls = () => {
   const config = useFormController();
+  const formObserver = FormObserver.getInstance();
+
   const { debouncedInput } = useDebouncedSearch(config.userInput, () =>
     Promise.resolve()
   );
@@ -16,11 +18,13 @@ export const PostControls = () => {
   const [clean, setClean] = useState(false);
   const [submissionCalls, setSubmissionCalls] = useState(0);
   const [triggerSubmission, setTriggerSubmission] = useState(false);
+  const [localChangeTriggered, setLocalChangeTriggered] = useState(false);
+  const [validated, setValidated] = useState(formObserver.isFullyValidated());
 
-  const [userPosts, setUserPosts] = useState([]);
-  const formObserver = FormObserver.getInstance();
+  // const formObserver = FormObserver.getInstance();
 
   //   Listen for change in debouced inputs and split & generate list of subreddits
+  // const validated = formObserver.isFullyValidated();
   useEffect(() => {
     console.log(debouncedInput);
 
@@ -41,6 +45,17 @@ export const PostControls = () => {
     setSubsList(sanitizedList);
   }, [debouncedInput]);
 
+  useEffect(() => {
+    console.log(
+      "&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%"
+    );
+    console.log("LOCAL CHANGE FIRED");
+    const status = formObserver.isFullyValidated();
+    console.log(status);
+    setValidated(status);
+    setLocalChangeTriggered(false);
+  }, [localChangeTriggered]);
+
   //   Listen for change in sub lists
 
   useEffect(() => {
@@ -60,6 +75,7 @@ export const PostControls = () => {
     );
     console.log(config.userInput);
     setClean(false);
+    setValidated(false);
   }, [config.userInput]);
 
   //   useEffect(() => {
@@ -73,6 +89,7 @@ export const PostControls = () => {
     <div>
       {/* <div>{bears}</div> */}
       <h1>Setup Your Post</h1>
+      <div>Are all validated? {validated ? "YES" : "NO"}</div>
       {/* <div>{submissionCalls}</div> */}
       {/* <SubmitItem
         key={Date.now() + Math.random()}
@@ -104,7 +121,7 @@ export const PostControls = () => {
                     title={config.title}
                     link={config.link}
                     subreddit={sub}
-                    trigger={triggerSubmission}
+                    trigger={setLocalChangeTriggered}
                     setTrigger={setTriggerSubmission}
                     callback={setSubmissionCalls}
                   />

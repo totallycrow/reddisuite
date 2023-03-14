@@ -4,7 +4,7 @@ import { DefinedUseTRPCQueryResult } from "@trpc/react-query/shared";
 import { IFullSubredditData, ISubredditError } from "../services/reddit";
 import { TRPCClientErrorLike } from "@trpc/client";
 
-interface IError {
+export interface IError {
   error: string;
 }
 
@@ -12,6 +12,8 @@ export const useFlairController = (
   subReddit: IFullSubredditData | ISubredditError | IError
 ) => {
   const [selectedFlair, setSelectedFlair] = useState("");
+  const [isFlairRequired, setIsFlairRequired] = useState(false);
+  const [flairList, setFlairList] = useState(Array<any>);
 
   //   TYPE GUARD
   function isISubredditError(
@@ -46,7 +48,9 @@ export const useFlairController = (
       subReddit.flairs[0].id
     ) {
       setSelectedFlair(subReddit.flairs[0].id);
+      setIsFlairRequired(true);
+      setFlairList(subReddit.flairs);
     }
   }, [subReddit]);
-  return { selectedFlair, setSelectedFlair };
+  return { selectedFlair, setSelectedFlair, isFlairRequired, flairList };
 };
