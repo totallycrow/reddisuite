@@ -18,7 +18,7 @@ export const PostControls = () => {
   const [triggerSubmission, setTriggerSubmission] = useState(false);
 
   const [userPosts, setUserPosts] = useState([]);
-  const formObserver = useMemo(() => FormObserver.getInstance(), []);
+  const formObserver = FormObserver.getInstance();
 
   //   Listen for change in debouced inputs and split & generate list of subreddits
   useEffect(() => {

@@ -96,6 +96,7 @@ export class FormObserver {
     console.log(item);
     listItem.title = item.title;
     (listItem.link = item.link), (listItem.subreddit = item.subreddit);
+    listItem.sendData = item.sendData;
     return true;
   }
 
