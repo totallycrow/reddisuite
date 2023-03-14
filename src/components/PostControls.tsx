@@ -86,7 +86,7 @@ export const PostControls = () => {
 
         <div>
           {subsList.length > 0 && clean
-            ? subsList.map((sub) => {
+            ? subsList.map((sub, index) => {
                 console.log("SUB MAP");
                 console.log(sub);
 
