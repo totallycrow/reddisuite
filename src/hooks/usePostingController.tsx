@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { api } from "../utils/api";
 
 export interface IPostData {
@@ -19,8 +19,9 @@ export const usePostingController = (
   console.log(sub);
   console.log(link);
   console.log(flairID);
-  
+
   const mutationController = api.example.sendPost.useMutation();
+  const [submissionStatus, setSubmissionStatus] = useState("IDLE");
 
   useEffect(() => {
     console.log("MUTATION TRIGGER");
@@ -41,6 +42,7 @@ export const usePostingController = (
 
     if (mutationController.status !== "idle") {
       setLoadingState("Loading...");
+      setSubmissionStatus("LOADING");
     }
 
     // on fail:
@@ -52,17 +54,20 @@ export const usePostingController = (
       console.log("SUCESS");
       console.log(mutationController.data);
       setLoadingState("Idle");
+      setSubmissionStatus("SUCCESS");
     } else {
       console.log("ERROR POSTING DATA!!");
       setLoadingState("Idle");
       console.log(mutationController.data);
       console.log(mutationController.error);
+      setSubmissionStatus("ERROR");
     }
   }, [mutationController]);
 
   useEffect(() => {
     if (mutationController.isLoading) {
       setLoadingState("Loading");
+      setSubmissionStatus("LOADING");
     }
   }, [mutationController.isLoading]);
 
@@ -78,5 +83,5 @@ export const usePostingController = (
     return;
   };
 
-  return { mutationController, sendData };
+  return { mutationController, sendData, submissionStatus };
 };

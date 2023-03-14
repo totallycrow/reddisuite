@@ -1,5 +1,6 @@
 export interface IFormItem {
   sendData: () => void;
+  successfullySubmitted: boolean;
   subreddit: string;
   title: string;
   link: string;
@@ -106,5 +107,13 @@ export class FormObserver {
         listItem.subreddit.trim().toUpperCase() ===
         subreddit.trim().toUpperCase()
     );
+  }
+
+  public updateSubmissionStatus(subreddit: string, status: boolean) {
+    const listItem = this.getFormItemBySubreddit(subreddit);
+
+    if (!listItem) return false;
+    listItem.successfullySubmitted = status;
+    return true;
   }
 }
