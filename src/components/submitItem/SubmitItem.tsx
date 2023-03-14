@@ -12,6 +12,7 @@ import { usePostingController } from "../../hooks/usePostingController";
 import { useFormController } from "../../hooks/useFormController";
 import { FormItem } from "../FormItem";
 import { FormObserver } from "../../utils/formObserver";
+import { useFormItemValidation } from "../../hooks/useFormItemValidation";
 
 const LoadingStatusContext = createContext("Idle");
 
@@ -21,7 +22,6 @@ export interface IPostFormValues {
   subreddit: string;
   trigger: any;
   callback: any;
-  setTrigger: any;
 }
 
 // class Observer {
@@ -57,6 +57,7 @@ export interface IPostFormValues {
 
 export const SubmitItem = (postConfig: IPostFormValues) => {
   const [loadingState, setLoadingState] = useState("Idle");
+  // const [isFormItemValidated, setIsFormItemValidated] = useState(false);
 
   const formObserver = useMemo(() => FormObserver.getInstance(), []);
 
@@ -82,16 +83,15 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
   // *********************** DATA FETCH / POST *************************************
 
   const { data: session } = useSession();
-  const { subRedditController } = useSubredditController(
-    userInput,
-    setLoadingState
-  );
+  const { subRedditController, isTitleTagRequired, titleTags } =
+    useSubredditController(userInput, setLoadingState);
 
   const subData = subRedditController.data ?? {
     error: "subReddit data not defined",
   };
 
-  const { selectedFlair, setSelectedFlair } = useFlairController(subData);
+  const { selectedFlair, setSelectedFlair, isFlairRequired, flairList } =
+    useFlairController(subData);
   const { mutationController, sendData, submissionStatus } =
     usePostingController(
       title,
@@ -101,8 +101,24 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
       setLoadingState
     );
 
+  const isFormItemValidated = useFormItemValidation(
+    title,
+    isTitleTagRequired,
+    titleTags,
+    link
+  );
+
+  // *****************************************************************
+  // *****************************************************************
+  // *****************************************************************
+
   useEffect(() => {
-    if (subRedditController.isLoading) {
+    if (
+      subRedditController.isLoading ||
+      subRedditController.isFetching ||
+      subRedditController.isRefetching ||
+      subRedditController.isInitialLoading
+    ) {
       setLoadingState("Loading...");
     } else setLoadingState("Idle");
   }, [subRedditController.isLoading]);
@@ -124,6 +140,8 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
 
     console.log(postConfig.subreddit);
 
+    postConfig.trigger(true);
+
     const list = formObserver.getFormItems();
 
     console.log("IS SUB IN THE LIST???????????????????????????????????????");
@@ -136,6 +154,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
       subreddit: userInput,
       sendData: sendData,
       successfullySubmitted: false,
+      validated: isFormItemValidated,
     };
 
     // check if exists and is the same
@@ -156,6 +175,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         subreddit: userInput,
         sendData: sendData,
         successfullySubmitted: false,
+        validated: isFormItemValidated,
       });
     } else {
       console.log("ELSE!!");
@@ -165,9 +185,18 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         title: title,
         link: link,
         successfullySubmitted: false,
+        validated: isFormItemValidated,
       });
     }
-  }, [title, link, userInput, selectedFlair, sendData, subData]);
+  }, [
+    title,
+    link,
+    userInput,
+    selectedFlair,
+    sendData,
+    subData,
+    isFormItemValidated,
+  ]);
 
   // const formConfig = useMemo(() => {
   //   return {
@@ -215,6 +244,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
     sendData,
     submissionStatus,
     loadingState,
+    isFormItemValidated,
   };
 
   console.log(mutationController.isLoading);
@@ -225,6 +255,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
       <div>
         <h1>Loading Status: {loadingState}</h1>
         <div>Submission Status: {submissionStatus}</div>
+        <div>Validation Status: {isFormItemValidated ? "YES" : "NO"}</div>
         <FormItem config={formConfig} />
       </div>
     </LoadingStatusContext.Provider>

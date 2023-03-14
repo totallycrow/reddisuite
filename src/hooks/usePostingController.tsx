@@ -22,6 +22,7 @@ export const usePostingController = (
 
   const mutationController = api.example.sendPost.useMutation();
   const [submissionStatus, setSubmissionStatus] = useState("IDLE");
+  
 
   useEffect(() => {
     console.log("MUTATION TRIGGER");

@@ -1,6 +1,7 @@
 export interface IFormItem {
   sendData: () => void;
   successfullySubmitted: boolean;
+  validated: boolean;
   subreddit: string;
   title: string;
   link: string;
@@ -98,6 +99,7 @@ export class FormObserver {
     listItem.title = item.title;
     (listItem.link = item.link), (listItem.subreddit = item.subreddit);
     listItem.sendData = item.sendData;
+    listItem.validated = item.validated;
     return true;
   }
 
@@ -115,5 +117,13 @@ export class FormObserver {
     if (!listItem) return false;
     listItem.successfullySubmitted = status;
     return true;
+  }
+
+  public isFullyValidated() {
+    console.log("IS FULLY VALIDATED FIRED!!!!");
+    if (this.subscribers.length === 0) return false;
+
+    console.log("TESTING");
+    return this.subscribers.every((listItem) => listItem.validated === true);
   }
 }
