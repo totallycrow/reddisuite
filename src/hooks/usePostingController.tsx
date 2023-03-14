@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { api } from "../utils/api";
+import { FormObserver } from "../utils/formObserver";
+
+const formObserver = FormObserver.getInstance();
 
 export interface IPostData {
   title: string;
@@ -22,7 +25,6 @@ export const usePostingController = (
 
   const mutationController = api.example.sendPost.useMutation();
   const [submissionStatus, setSubmissionStatus] = useState("IDLE");
-  
 
   useEffect(() => {
     console.log("MUTATION TRIGGER");
@@ -56,12 +58,14 @@ export const usePostingController = (
       console.log(mutationController.data);
       setLoadingState("Idle");
       setSubmissionStatus("SUCCESS");
+      formObserver.updateSubmissionStatus(sub, true);
     } else {
       console.log("ERROR POSTING DATA!!");
       setLoadingState("Idle");
       console.log(mutationController.data);
       console.log(mutationController.error);
       setSubmissionStatus("ERROR");
+      formObserver.updateSubmissionStatus(sub, false);
     }
   }, [mutationController]);
 
