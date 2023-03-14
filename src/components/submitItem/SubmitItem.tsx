@@ -70,6 +70,42 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
   // useFormObserver(title, link, userInput);
 
   // Listen for Main Form Changes
+
+  // let renderTitle, renderLink, renderUserInput;
+
+  // if (isConfigProvided) {
+  //   renderTitle = postConfig.title;
+  //   renderLink = postConfig.link;
+  //   renderUserInput = postConfig.subreddit;
+  // }
+
+  // *********************** DATA FETCH / POST *************************************
+
+  const { data: session } = useSession();
+  const { subRedditController } = useSubredditController(
+    userInput,
+    setLoadingState
+  );
+
+  const subData = subRedditController.data ?? {
+    error: "subReddit data not defined",
+  };
+
+  const { selectedFlair, setSelectedFlair } = useFlairController(subData);
+  const { mutationController, sendData } = usePostingController(
+    title,
+    userInput,
+    link,
+    selectedFlair,
+    setLoadingState
+  );
+
+  useEffect(() => {
+    if (subRedditController.isLoading) {
+      setLoadingState("Loading...");
+    } else setLoadingState("Idle");
+  }, [subRedditController.isLoading]);
+
   useEffect(() => {
     setTitle(postConfig.title);
     setLink(postConfig.link);
@@ -83,6 +119,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
     );
     console.log(title);
     console.log(userInput);
+    console.log(selectedFlair);
 
     console.log(postConfig.subreddit);
 
@@ -126,42 +163,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         link: link,
       });
     }
-  }, [title, link, userInput]);
-
-  // let renderTitle, renderLink, renderUserInput;
-
-  // if (isConfigProvided) {
-  //   renderTitle = postConfig.title;
-  //   renderLink = postConfig.link;
-  //   renderUserInput = postConfig.subreddit;
-  // }
-
-  // *********************** DATA FETCH / POST *************************************
-
-  const { data: session } = useSession();
-  const { subRedditController } = useSubredditController(
-    userInput,
-    setLoadingState
-  );
-
-  const subData = subRedditController.data ?? {
-    error: "subReddit data not defined",
-  };
-
-  const { selectedFlair, setSelectedFlair } = useFlairController(subData);
-  const { mutationController, sendData } = usePostingController(
-    title,
-    userInput,
-    link,
-    selectedFlair,
-    setLoadingState
-  );
-
-  useEffect(() => {
-    if (subRedditController.isLoading) {
-      setLoadingState("Loading...");
-    } else setLoadingState("Idle");
-  }, [subRedditController.isLoading]);
+  }, [title, link, userInput, selectedFlair, sendData, subData]);
 
   // const formConfig = useMemo(() => {
   //   return {
@@ -208,20 +210,6 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
     setSelectedFlair,
     sendData,
   };
-
-  useEffect(() => {
-    if (!postConfig.trigger) return;
-    console.log(
-      "[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]"
-    );
-    console.log("button triggered from");
-    console.log(link);
-    console.log(postConfig.link);
-    console.log(userInput);
-    console.log(postConfig.subreddit);
-    postConfig.callback((prev) => prev + 1);
-    postConfig.setTrigger(false);
-  }, [postConfig.trigger]);
 
   console.log(mutationController.isLoading);
   console.log(subRedditController.isLoading);

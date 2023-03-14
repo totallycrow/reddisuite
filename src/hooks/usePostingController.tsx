@@ -19,6 +19,7 @@ export const usePostingController = (
   console.log(sub);
   console.log(link);
   console.log(flairID);
+  
   const mutationController = api.example.sendPost.useMutation();
 
   useEffect(() => {
@@ -65,7 +66,7 @@ export const usePostingController = (
     }
   }, [mutationController.isLoading]);
 
-  const sendData = useCallback(() => {
+  const sendData = () => {
     console.log("ONCLICK");
     mutationController.mutate({
       title: title,
@@ -75,7 +76,7 @@ export const usePostingController = (
     });
     console.log("ONCLICK END");
     return;
-  }, [flairID, link, sub, title, mutationController]);
+  };
 
   return { mutationController, sendData };
 };
