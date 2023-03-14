@@ -126,4 +126,14 @@ export class FormObserver {
     console.log("TESTING");
     return this.subscribers.every((listItem) => listItem.validated === true);
   }
+
+  public isAnyInputSubmitted() {
+    console.log("IS FULLY SUBMITTED FIRED!!!!");
+    if (this.subscribers.length === 0) return false;
+
+    console.log("TESTING");
+    return this.subscribers.some(
+      (listItem) => listItem.successfullySubmitted === true
+    );
+  }
 }
