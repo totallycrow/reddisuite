@@ -69,16 +69,13 @@ export class FormObserver {
     this.subscribers = [];
   }
 
-  private waitforme(millisec: number) {
+  private delay(millisec: number) {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve("");
       }, millisec);
     });
   }
-
-  private delay: (ms: number) => void = (ms) =>
-    new Promise((resolve) => setTimeout(resolve, ms));
 
   public async publish() {
     console.log("******()()()()() PUBLISH FIRED ^^^^^^^^^^^^^^^^^^");
@@ -95,7 +92,7 @@ export class FormObserver {
 
     for (let i = 0; i < this.subscribers.length; i++) {
       console.log("******()()()()() LOOP FIRED ^^^^^^^^^^^^^^^^^^");
-      await this.waitforme(1000);
+      await this.delay(1000);
       this.subscribers[i]?.sendData();
     }
   }
