@@ -177,6 +177,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         link: link,
         subreddit: userInput,
         sendData: sendData,
+        isSubmitted: formObserver.getFormItemBySubreddit(userInput).isSubmitted,
         successfullySubmitted:
           formObserver.getFormItemBySubreddit(userInput).successfullySubmitted,
         validated: isFormItemValidated,
@@ -190,6 +191,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         subreddit: userInput,
         sendData: sendData,
         successfullySubmitted: false,
+        isSubmitted: false,
         validated: isFormItemValidated,
         flairID: selectedFlair,
       });
@@ -205,6 +207,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         subreddit: userInput,
         sendData: sendData,
         successfullySubmitted: false,
+        isSubmitted: false,
         validated: isFormItemValidated,
         flairID: selectedFlair,
       });
@@ -216,6 +219,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         title: title,
         link: link,
         successfullySubmitted: false,
+        isSubmitted: false,
         validated: isFormItemValidated,
         flairID: selectedFlair,
       });

@@ -1,5 +1,6 @@
 export interface IFormItem {
   sendData: () => void;
+  isSubmitted: boolean;
   successfullySubmitted: boolean;
   validated: boolean;
   subreddit: string;
@@ -64,6 +65,10 @@ export class FormObserver {
     this.subscribers.push(formItem);
   }
 
+  public cleanSubscribers() {
+    this.subscribers = [];
+  }
+
   private waitforme(millisec: number) {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -125,6 +130,7 @@ export class FormObserver {
     (listItem.link = item.link), (listItem.subreddit = item.subreddit);
     listItem.sendData = item.sendData;
     (listItem.validated = item.validated), (listItem.flairID = item.flairID);
+
     return true;
   }
 
@@ -137,10 +143,21 @@ export class FormObserver {
   }
 
   public updateSubmissionStatus(subreddit: string, status: boolean) {
+    console.log(
+      "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+    );
+    console.log("UPDATE SUBMISSION FIRED");
     const listItem = this.getFormItemBySubreddit(subreddit);
+
+    console.log(listItem);
 
     if (!listItem) return false;
     listItem.successfullySubmitted = status;
+    listItem.isSubmitted = true;
+
+    console.log(listItem);
+    console.log(listItem.isSubmitted);
+
     return true;
   }
 

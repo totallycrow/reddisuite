@@ -87,6 +87,7 @@ export const PostControls = () => {
     const status = formObserver.isFullyValidated();
     console.log(status);
     setValidated(status);
+    formObserver.cleanSubscribers();
   }, [config.userInput]);
 
   //   useEffect(() => {
