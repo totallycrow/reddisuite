@@ -106,7 +106,8 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
     isTitleTagRequired,
     titleTags,
     link,
-    loadingState
+    loadingState,
+    subData
   );
 
   // *****************************************************************
@@ -140,6 +141,16 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
   useEffect(() => {
     setUserInput(postConfig.subreddit);
   }, [postConfig.subreddit]);
+
+  // TODO: CHECK FOR SUBREDDIT NOT EXISTS
+  // USEFFECT -> SUBREDDITCONTROLLER.DATA?
+  useEffect(() => {
+    if (subData.error) return;
+    if (subData.error && subData.error === "subReddit data not defined") return;
+
+    if (subData.explanation) {
+    }
+  }, [subData]);
 
   // LIST FOR LOCAL INPUT CHANGES
   useEffect(() => {

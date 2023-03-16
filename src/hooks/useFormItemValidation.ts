@@ -1,4 +1,7 @@
 import React from "react";
+import { IFormItem } from "../utils/formObserver";
+import { IError } from "./useFlairController";
+import { IFullSubredditData, ISubredditError } from "../services/reddit";
 
 const urlPattern = new RegExp(
   "(?:https?)://(w+:?w*)?(S+)(:d+)?(/|/([w#!:.?+=&%!-/]))?"
@@ -22,7 +25,8 @@ export const useFormItemValidation = (
   isTitleTagRequired: boolean | undefined,
   titleTags: Array<any>,
   link: string,
-  loadingState: string
+  loadingState: string,
+  subdata: IFullSubredditData | ISubredditError
 ) => {
   let isValid = false;
 
@@ -33,7 +37,18 @@ export const useFormItemValidation = (
   console.log(isTitleTagRequired);
   console.log(titleTags);
   console.log(link);
-  console.log(loadingState)
+  console.log(loadingState);
+
+  function isISubredditError(
+    data: IFullSubredditData | ISubredditError | IError
+  ): data is ISubredditError | IError {
+    const isSubredditError = (data as ISubredditError).message !== undefined;
+    const isIError = (data as IError).error !== undefined;
+
+    return isSubredditError || isIError;
+  }
+
+  if (isISubredditError(subdata)) return false;
 
   if (!isValidUrl(link)) {
     return false;
