@@ -21,9 +21,10 @@ export const useFormItemValidation = (
   title: string,
   isTitleTagRequired: boolean | undefined,
   titleTags: Array<any>,
-  link: string
+  link: string,
+  loadingState: string
 ) => {
-  let isValid = true;
+  let isValid = false;
 
   console.log(
     "@@@@@@@@@@@@@@@@!!!&&&&&&*&*&*&*&*&*&*&(()()()()()()()()[][][][]@@@@@@@@@@@@@@@@!!!&&&&&&*&*&*&*&*&*&*&(()()()()()()()()[][][][]@@@@@@@@@@@@@@@@!!!&&&&&&*&*&*&*&*&*&*&(()()()()()()()()[][][][]"
@@ -32,13 +33,23 @@ export const useFormItemValidation = (
   console.log(isTitleTagRequired);
   console.log(titleTags);
   console.log(link);
+  console.log(loadingState)
 
-  if (!isValidUrl(link)) return false;
-
-  if (isTitleTagRequired) {
-    isValid = titleTags.some((tag: string) => title.includes(tag));
-    console.log(isValid);
+  if (!isValidUrl(link)) {
+    return false;
   }
 
-  return isValid;
+  if (loadingState !== "Idle") return false;
+
+  if (isTitleTagRequired) {
+    console.log("TITLE REQUIRED");
+    isValid = titleTags.some((tag: string) => title.includes(tag));
+    console.log(isValid);
+    return isValid;
+  }
+
+  console.log("VALIDATION ENDS RESULT");
+  console.log(isValid);
+
+  return true;
 };

@@ -76,9 +76,29 @@ export const usePostingController = (
     }
   }, [mutationController.isLoading]);
 
-  const sendData = () => {
-    console.log("ONCLICK");
-    mutationController.mutate({
+  const sendData = async () => {
+    console.log(
+      "££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££"
+    );
+    console.log("_______ SEND DATA _______");
+    console.log(title);
+    console.log(sub);
+    console.log(link);
+    console.log(flairID);
+
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    const waitforme = (millisec: number) => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve("");
+        }, millisec);
+      });
+    };
+
+    await waitforme(1000);
+
+    await mutationController.mutateAsync({
       title: title,
       sub: sub,
       link: link,

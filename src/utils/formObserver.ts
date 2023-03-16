@@ -5,6 +5,7 @@ export interface IFormItem {
   subreddit: string;
   title: string;
   link: string;
+  flairID: string;
 }
 
 /**
@@ -62,12 +63,36 @@ export class FormObserver {
   public subscribe(formItem: IFormItem) {
     this.subscribers.push(formItem);
   }
-  public publish() {
+
+  private waitforme(millisec: number) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve("");
+      }, millisec);
+    });
+  }
+
+  private delay: (ms: number) => void = (ms) =>
+    new Promise((resolve) => setTimeout(resolve, ms));
+
+  public async publish() {
+    console.log("******()()()()() PUBLISH FIRED ^^^^^^^^^^^^^^^^^^");
+
+    const calls = [];
+
     this.subscribers.forEach((formItem) => {
+      console.log("******()()()()() FOREACH FIRED ^^^^^^^^^^^^^^^^^^");
+
       console.log(formItem.sendData);
       console.log(formItem.subreddit);
-      formItem.sendData();
+      calls.push(formItem.sendData);
     });
+
+    for (let i = 0; i < this.subscribers.length; i++) {
+      console.log("******()()()()() LOOP FIRED ^^^^^^^^^^^^^^^^^^");
+      await this.waitforme(1000);
+      this.subscribers[i]?.sendData();
+    }
   }
   public getFormItems() {
     return this.subscribers;
@@ -99,7 +124,7 @@ export class FormObserver {
     listItem.title = item.title;
     (listItem.link = item.link), (listItem.subreddit = item.subreddit);
     listItem.sendData = item.sendData;
-    listItem.validated = item.validated;
+    (listItem.validated = item.validated), (listItem.flairID = item.flairID);
     return true;
   }
 
