@@ -105,12 +105,18 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
     title,
     isTitleTagRequired,
     titleTags,
-    link
+    link,
+    loadingState
   );
 
   // *****************************************************************
   // *****************************************************************
   // *****************************************************************
+  console.log(
+    " // ***************************************************************** // ***************************************************************** // *****************************************************************"
+  );
+  console.log(subData);
+  console.log(isFormItemValidated);
 
   useEffect(() => {
     if (
@@ -125,9 +131,15 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
 
   useEffect(() => {
     setTitle(postConfig.title);
+  }, [postConfig.title]);
+
+  useEffect(() => {
     setLink(postConfig.link);
+  }, [postConfig.link]);
+
+  useEffect(() => {
     setUserInput(postConfig.subreddit);
-  }, [postConfig.title, postConfig.link, postConfig.subreddit]);
+  }, [postConfig.subreddit]);
 
   // LIST FOR LOCAL INPUT CHANGES
   useEffect(() => {
@@ -148,21 +160,39 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
 
     console.log(formObserver.isSubredditInList(userInput));
 
-    const localFormItem = {
-      title: title,
-      link: link,
-      subreddit: userInput,
-      sendData: sendData,
-      successfullySubmitted: false,
-      validated: isFormItemValidated,
-    };
+    // const localFormItem = {
+    //   title: title,
+    //   link: link,
+    //   subreddit: userInput,
+    //   sendData: sendData,
+    //   successfullySubmitted: false,
+    //   validated: isFormItemValidated,
+    // };
 
     // check if exists and is the same
     if (
       formObserver.isSubredditInList(userInput) &&
-      formObserver.areFormItemsIdentical(localFormItem)
+      formObserver.areFormItemsIdentical({
+        title: title,
+        link: link,
+        subreddit: userInput,
+        sendData: sendData,
+        successfullySubmitted:
+          formObserver.getFormItemBySubreddit(userInput).successfullySubmitted,
+        validated: isFormItemValidated,
+        flairID: selectedFlair,
+      })
     ) {
       console.log("DUPLICATE FOUND");
+      formObserver.updateFormItem({
+        title: title,
+        link: link,
+        subreddit: userInput,
+        sendData: sendData,
+        successfullySubmitted: false,
+        validated: isFormItemValidated,
+        flairID: selectedFlair,
+      });
       return;
     }
 
@@ -176,6 +206,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         sendData: sendData,
         successfullySubmitted: false,
         validated: isFormItemValidated,
+        flairID: selectedFlair,
       });
     } else {
       console.log("ELSE!!");
@@ -186,6 +217,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         link: link,
         successfullySubmitted: false,
         validated: isFormItemValidated,
+        flairID: selectedFlair,
       });
     }
   }, [

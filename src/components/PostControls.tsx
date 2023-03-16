@@ -19,7 +19,10 @@ export const PostControls = () => {
   const [submissionCalls, setSubmissionCalls] = useState(0);
   const [triggerSubmission, setTriggerSubmission] = useState(false);
   const [localChangeTriggered, setLocalChangeTriggered] = useState(false);
-  const [validated, setValidated] = useState(formObserver.isFullyValidated());
+  const [validated, setValidated] = useState(false);
+  const [isAnySubmitted, setIsAnySubmitted] = useState(
+    formObserver.isAnyInputSubmitted()
+  );
 
   // const formObserver = FormObserver.getInstance();
 
@@ -43,6 +46,9 @@ export const PostControls = () => {
 
     setClean(true);
     setSubsList(sanitizedList);
+    const status = formObserver.isFullyValidated();
+    console.log(status);
+    setValidated(status);
   }, [debouncedInput]);
 
   useEffect(() => {
@@ -50,10 +56,12 @@ export const PostControls = () => {
       "&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&&&&&&&^%%%%%%%%%%%%%%%%%%%%%%%"
     );
     console.log("LOCAL CHANGE FIRED");
+
+    setLocalChangeTriggered(false);
+    setIsAnySubmitted(formObserver.isAnyInputSubmitted());
     const status = formObserver.isFullyValidated();
     console.log(status);
     setValidated(status);
-    setLocalChangeTriggered(false);
   }, [localChangeTriggered]);
 
   //   Listen for change in sub lists
@@ -76,6 +84,9 @@ export const PostControls = () => {
     console.log(config.userInput);
     setClean(false);
     setValidated(false);
+    const status = formObserver.isFullyValidated();
+    console.log(status);
+    setValidated(status);
   }, [config.userInput]);
 
   //   useEffect(() => {
@@ -99,7 +110,12 @@ export const PostControls = () => {
       /> */}
       <div>
         <FormInputs inputsConfig={config} />
-        <button onClick={() => formObserver.publish()}>submit all</button>
+        <button
+          disabled={isAnySubmitted || !validated}
+          onClick={() => formObserver.publish()}
+        >
+          submit all
+        </button>
         <button
           onClick={() => {
             console.log(formObserver.getFormItems());

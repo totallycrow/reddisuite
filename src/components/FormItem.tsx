@@ -22,7 +22,7 @@ export const FormItem = ({ config }) => {
   } = config;
 
   // const bears = useBearStore((state) => state.bears);
-  const increasePopulation = useBearStore((state) => state.increasePopulation);
+  // const increasePopulation = useBearStore((state) => state.increasePopulation);
 
   const isSubmittedOK = submissionStatus === "SUCCESS";
   const isLoading = loadingState !== "Idle";
@@ -63,7 +63,7 @@ export const FormItem = ({ config }) => {
               className="border-2 border-gray-800"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
-              disabled={isSubmittedOK || isLoading}
+              disabled={true}
             />
           </div>
         </div>
