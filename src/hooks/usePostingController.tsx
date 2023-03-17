@@ -47,12 +47,6 @@ export const usePostingController = (
       setLoadingState("Loading...");
       setSubmissionStatus("LOADING");
     }
-
-    // on fail:
-    // --> .errors -> []
-
-    // on success
-    // --> data.id / .name / .url
     if (mutationResponse.errors && mutationResponse.errors.length === 0) {
       console.log("SUCESS");
       console.log(mutationController.data);
