@@ -123,15 +123,16 @@ export default function Dashboard() {
 
   if (session) {
     return (
-      <div>
-        <h1>Protected Page</h1>
-        <p>You can view this page because you are signed in.</p>
+      
         <div>
-          {/* <SubmitItem /> */}
-          <PostControls></PostControls>
-        </div>
+          <h1>Protected Page</h1>
+          <p>You can view this page because you are signed in.</p>
+          <div>
+            {/* <SubmitItem /> */}
+            <PostControls></PostControls>
+          </div>
 
-        {/* <p>Returned info: {""}</p>
+          {/* <p>Returned info: {""}</p>
         <div>{data ? data[0].text : ""}</div>
         <div>
           <input
@@ -143,7 +144,7 @@ export default function Dashboard() {
           <button onClick={getData}>Verify</button>
         </div> */}
 
-        {/* <div className="p-4">
+          {/* <div className="p-4">
           <h2 className="p-4">Submit Your Post</h2>
           <div>
             <div>
@@ -174,8 +175,8 @@ export default function Dashboard() {
               />
             </div> */}
 
-        {/* // ************************************************************ */}
-        {/* <div>
+          {/* // ************************************************************ */}
+          {/* <div>
               Flair:{" "}
               <input
                 type="text"
@@ -185,11 +186,11 @@ export default function Dashboard() {
               />
             </div> */}
 
-        {/* // ************************************************************ */}
+          {/* // ************************************************************ */}
 
-        {/* TODO - FLAIRS */}
-        {/* https://oauth.reddit.com//r/crowcovers/api/link_flair_v2 */}
-        {/* </div>
+          {/* TODO - FLAIRS */}
+          {/* https://oauth.reddit.com//r/crowcovers/api/link_flair_v2 */}
+          {/* </div>
           <button
             disabled={title === "" || link === "" || sub === "" ? true : false}
             onClick={() => void sendData()}
@@ -240,7 +241,8 @@ export default function Dashboard() {
               </p>
             )}
         </div> */}
-      </div>
+        </div>
+      
     );
   }
   return (

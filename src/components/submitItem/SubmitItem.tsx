@@ -14,7 +14,7 @@ import { FormItem } from "../FormItem";
 import { FormObserver } from "../../utils/formObserver";
 import { useFormItemValidation } from "../../hooks/useFormItemValidation";
 
-const LoadingStatusContext = createContext("Idle");
+// const LoadingStatusContext = createContext("Idle");
 
 export interface IPostFormValues {
   title: string;
@@ -160,13 +160,11 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
   };
 
   return (
-    <LoadingStatusContext.Provider value={loadingState}>
-      <div>
-        <h1>Loading Status: {loadingState}</h1>
-        <div>Submission Status: {submissionStatus}</div>
-        <div>Validation Status: {isFormItemValidated ? "YES" : "NO"}</div>
-        <FormItem config={formConfig} />
-      </div>
-    </LoadingStatusContext.Provider>
+    <div>
+      <h1>Loading Status: {loadingState}</h1>
+      <div>Submission Status: {submissionStatus}</div>
+      <div>Validation Status: {isFormItemValidated ? "YES" : "NO"}</div>
+      <FormItem config={formConfig} />
+    </div>
   );
 };
