@@ -30,14 +30,6 @@ export const useFormItemValidation = (
 ) => {
   let isValid = false;
 
-  console.log(
-    "@@@@@@@@@@@@@@@@!!!&&&&&&*&*&*&*&*&*&*&(()()()()()()()()[][][][]@@@@@@@@@@@@@@@@!!!&&&&&&*&*&*&*&*&*&*&(()()()()()()()()[][][][]@@@@@@@@@@@@@@@@!!!&&&&&&*&*&*&*&*&*&*&(()()()()()()()()[][][][]"
-  );
-  console.log(title);
-  console.log(isTitleTagRequired);
-  console.log(titleTags);
-  console.log(link);
-  console.log(loadingState);
 
   function isISubredditError(
     data: IFullSubredditData | ISubredditError | IError

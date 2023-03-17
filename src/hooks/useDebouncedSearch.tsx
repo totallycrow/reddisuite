@@ -8,18 +8,9 @@ export const useDebouncedSearch = (
   const [debouncedInput, setDebouncedInput] = useState("");
   const [debouncedStatus, setDebouncedStatus] = useState("Idle");
 
-  console.log("DEBOUNCE COMPONENT FIRED");
-  console.log(userInput);
-  console.log(debouncedInput);
-
   useEffect(() => {
     if (userInput === "") return;
 
-    console.log(
-      "USE EFFECT USE DEBOUNCE _____________________________________________________"
-    );
-
-    console.log(userInput);
     const trigger = async () => {
       await callback();
       setDebouncedStatus("Idle");
@@ -32,12 +23,8 @@ export const useDebouncedSearch = (
   useEffect(() => {
     if (userInput === "") return;
 
-    console.log(
-      "USE EFFECT USE DEBOUNCE USER INPUT_____________________________________________________"
-    );
     const handler = setTimeout(() => {
       setDebouncedInput(userInput);
-      //   setDebouncedStatus("E");
     }, 1000);
 
     return () => {
