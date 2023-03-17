@@ -165,6 +165,9 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
       <div>Submission Status: {submissionStatus}</div>
       <div>Validation Status: {isFormItemValidated ? "YES" : "NO"}</div>
       <FormItem config={formConfig} />
+      <div className="flex w-full flex-col">
+        <div className="divider"></div>
+      </div>
     </div>
   );
 };
