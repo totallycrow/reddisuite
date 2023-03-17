@@ -8,7 +8,9 @@ export const FormInputs = ({ inputsConfig }) => {
   return (
     <div>
       <div className="form-control">
-        <h2 className="p-4">Bulk Subreddits Submission</h2>
+        <h2 className="p-8 text-lg font-bold">
+          Bulk Subreddits Submission Controller
+        </h2>
         <InputItem
           title={"Post Title"}
           label="Insert a title of your post. Warning: some subreddits might require tags such as [m] or [f]."

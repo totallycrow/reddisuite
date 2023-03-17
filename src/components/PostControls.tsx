@@ -66,19 +66,26 @@ export const PostControls = () => {
       <div>
         <FormInputs inputsConfig={config} />
         <button
+          className="btn m-2"
           disabled={isAnySubmitted || !validated}
           onClick={() => formObserver.publish()}
         >
           submit all
         </button>
         <button
+          className="btn m-2"
           onClick={() => {
             console.log(formObserver.getFormItems());
           }}
         >
           log form items
         </button>
-        <div>Submission Details</div>
+        <div>
+          <h3 className="px-4 pt-4 text-lg font-bold">Your Submissions</h3>
+        </div>
+        <div className="flex w-full flex-col">
+          <div className="divider"></div>
+        </div>
 
         <div>
           {subsList.length > 0 && clean
