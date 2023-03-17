@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useBearStore from "../store/useBearStore";
+import { InputItem } from "./InputItem";
 
 export const FormItem = ({ config }) => {
   let {
@@ -32,11 +33,11 @@ export const FormItem = ({ config }) => {
       <div className="p-4">
         {/* <div>{bears}</div> */}
         {/* <button onClick={increasePopulation}>add</button> */}
-        <h2 className="p-4">Submit Your Post</h2>
+        <h2 className="p-4">Submit Your Post to: r/{userInput}</h2>
         <div>{isSubmittedOK ? <div>SUBMITTED SUCESSFULLY!</div> : ""}</div>
 
         <div>
-          <div>
+          {/* <div>
             Title:{" "}
             <input
               type="text"
@@ -45,8 +46,16 @@ export const FormItem = ({ config }) => {
               onChange={(e) => setTitle(e.target.value)}
               disabled={isSubmittedOK || isLoading}
             />
-          </div>
-          <div>
+          </div> */}
+          <InputItem
+            title={"Post Title"}
+            value={title}
+            type="text"
+            placeholder="Enter your image title here..."
+            callback={setTitle}
+            disabled={isSubmittedOK || isLoading}
+          />
+          {/* <div>
             Link:{" "}
             <input
               type="text"
@@ -55,8 +64,17 @@ export const FormItem = ({ config }) => {
               onChange={(e) => setLink(e.target.value)}
               disabled={isSubmittedOK || isLoading}
             />
-          </div>
-          <div>
+          </div> */}
+
+          <InputItem
+            title={"Link URL"}
+            value={link}
+            type="text"
+            placeholder="Enter your image title here..."
+            callback={setLink}
+            disabled={isSubmittedOK || isLoading}
+          />
+          {/* <div>
             Subreddit:{" "}
             <input
               type="text"
@@ -65,9 +83,18 @@ export const FormItem = ({ config }) => {
               onChange={(e) => setUserInput(e.target.value)}
               disabled={true}
             />
-          </div>
+          </div> */}
+          <InputItem
+            title={"Subreddit"}
+            value={userInput}
+            type="text"
+            placeholder="Enter your subreddit name here..."
+            callback={setUserInput}
+            disabled={true}
+          />
         </div>
         <button
+          className="btn m-2"
           disabled={
             title === "" ||
             link === "" ||
