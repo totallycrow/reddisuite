@@ -93,7 +93,7 @@ export class FormObserver {
 
     for (let i = 0; i < this.subscribers.length; i++) {
       console.log("******()()()()() LOOP FIRED ^^^^^^^^^^^^^^^^^^");
-      await this.delay(1000);
+
       this.subscribers[i]?.sendData();
     }
   }
