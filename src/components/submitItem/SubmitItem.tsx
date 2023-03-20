@@ -71,7 +71,11 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
       subRedditController.isInitialLoading
     ) {
       setLoadingState("Loading...");
-    } else setLoadingState("Idle");
+      formObserver.updateIdleStatus(userInput, false);
+    } else {
+      setLoadingState("Idle");
+      formObserver.updateIdleStatus(userInput, true);
+    }
   }, [subRedditController.isLoading]);
 
   // LIST FOR LOCAL INPUT CHANGES
@@ -91,6 +95,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
           formObserver.getFormItemBySubreddit(userInput).successfullySubmitted,
         validated: isFormItemValidated,
         flairID: selectedFlair,
+        isIdle: formObserver.getFormItemBySubreddit(userInput).isIdle,
       })
     ) {
       console.log("DUPLICATE FOUND");
@@ -103,6 +108,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         isSubmitted: false,
         validated: isFormItemValidated,
         flairID: selectedFlair,
+        isIdle: formObserver.getFormItemBySubreddit(userInput).isIdle || false,
       });
       return;
     }
@@ -119,6 +125,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         isSubmitted: false,
         validated: isFormItemValidated,
         flairID: selectedFlair,
+        isIdle: formObserver.getFormItemBySubreddit(userInput).isIdle || false,
       });
     } else {
       console.log("ELSE!!");
@@ -131,6 +138,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         isSubmitted: false,
         validated: isFormItemValidated,
         flairID: selectedFlair,
+        isIdle: false,
       });
     }
   }, [
@@ -164,6 +172,14 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
       <h1>Loading Status: {loadingState}</h1>
       <div>Submission Status: {submissionStatus}</div>
       <div>Validation Status: {isFormItemValidated ? "YES" : "NO"}</div>
+      <div>
+        Is Idle:{" "}
+        {formObserver &&
+        formObserver.getFormItemBySubreddit(userInput) &&
+        formObserver.getFormItemBySubreddit(userInput).isIdle
+          ? "YES"
+          : "NO"}
+      </div>
       <FormItem config={formConfig} />
       <div className="flex w-full flex-col">
         <div className="divider"></div>
