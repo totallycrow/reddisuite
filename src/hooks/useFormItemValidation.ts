@@ -20,6 +20,21 @@ const isValidUrl = (urlString: string) => {
   return !!urlPattern.test(urlString);
 };
 
+function isISubredditError(
+  data: IFullSubredditData | ISubredditError | IError
+): data is ISubredditError | IError {
+  const isSubredditError = (data as ISubredditError).message !== undefined;
+  const isIError = (data as IError).error !== undefined;
+
+  return isSubredditError || isIError;
+}
+
+export interface IFormValidationResult {
+  isValid: boolean;
+  titleValid: boolean;
+  linkValid: boolean;
+}
+
 export const useFormItemValidation = (
   title: string,
   isTitleTagRequired: boolean | undefined,
@@ -28,35 +43,30 @@ export const useFormItemValidation = (
   loadingState: string,
   subdata: IFullSubredditData | ISubredditError
 ) => {
-  let isValid = false;
+  let formValidationResult = {
+    isValid: false,
+    titleValid: false,
+    linkValid: false,
+  };
 
-
-  function isISubredditError(
-    data: IFullSubredditData | ISubredditError | IError
-  ): data is ISubredditError | IError {
-    const isSubredditError = (data as ISubredditError).message !== undefined;
-    const isIError = (data as IError).error !== undefined;
-
-    return isSubredditError || isIError;
-  }
-
-  if (isISubredditError(subdata)) return false;
+  if (isISubredditError(subdata)) return formValidationResult;
+  if (loadingState !== "Idle") return formValidationResult;
 
   if (!isValidUrl(link)) {
-    return false;
+    formValidationResult.linkValid = false;
   }
-
-  if (loadingState !== "Idle") return false;
 
   if (isTitleTagRequired) {
     console.log("TITLE REQUIRED");
-    isValid = titleTags.some((tag: string) => title.includes(tag));
-    console.log(isValid);
-    return isValid;
+    const isTitleValid = titleTags.some((tag: string) => title.includes(tag));
+    // console.log(isValid);
+    // return isValid;
+    formValidationResult.titleValid = isTitleValid;
   }
 
-  console.log("VALIDATION ENDS RESULT");
-  console.log(isValid);
+  if (formValidationResult.linkValid && formValidationResult.titleValid) {
+    formValidationResult.isValid = true;
+  }
 
-  return true;
+  return formValidationResult;
 };
