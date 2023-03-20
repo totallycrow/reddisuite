@@ -18,6 +18,7 @@ export const PostControls = () => {
   const [clean, setClean] = useState(false);
   const [localChangeTriggered, setLocalChangeTriggered] = useState(false);
   const [validated, setValidated] = useState(false);
+
   const [isAnySubmitted, setIsAnySubmitted] = useState(
     formObserver.isAnyInputSubmitted()
   );
@@ -116,7 +117,10 @@ export const PostControls = () => {
         </div>
 
         <div>
-          {subsList.length > 0 && clean
+          {subsList.length > 0 &&
+          clean &&
+          validate.linkValid &&
+          validate.titleValid
             ? subsList.map((sub, index) => {
                 return (
                   <SubmitItem

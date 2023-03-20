@@ -16,7 +16,8 @@ export const usePostingController = (
   sub: string,
   link: string,
   flairID: string,
-  setLoadingState: React.Dispatch<React.SetStateAction<string>>
+  setLoadingState: React.Dispatch<React.SetStateAction<string>>,
+  setIsSubmitting?: React.Dispatch<React.SetStateAction<boolean>>
 ) => {
   console.log(title);
   console.log(sub);
@@ -71,6 +72,10 @@ export const usePostingController = (
   }, [mutationController.isLoading]);
 
   const sendData = async () => {
+    if (setIsSubmitting) {
+      setIsSubmitting(true);
+    }
+
     console.log(
       "££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££"
     );
@@ -99,6 +104,9 @@ export const usePostingController = (
       flair: flairID,
     });
     console.log("ONCLICK END");
+    if (setIsSubmitting) {
+      setIsSubmitting(false);
+    }
     return;
   };
 

@@ -26,6 +26,7 @@ export interface IPostFormValues {
 export const SubmitItem = (postConfig: IPostFormValues) => {
   const { data: session } = useSession();
   const [loadingState, setLoadingState] = useState("Idle");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const formObserver = useMemo(() => FormObserver.getInstance(), []);
 
@@ -54,7 +55,8 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
       userInput,
       link,
       selectedFlair,
-      setLoadingState
+      setLoadingState,
+      setIsSubmitting
     );
 
   const isFormItemValidated = useFormItemValidation(
@@ -74,7 +76,8 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
       subRedditController.isLoading ||
       subRedditController.isFetching ||
       subRedditController.isRefetching ||
-      subRedditController.isInitialLoading
+      subRedditController.isInitialLoading ||
+      submissionStatus === "LOADING"
     ) {
       setLoadingState("Loading...");
       formObserver.updateIdleStatus(userInput, false);
@@ -180,7 +183,9 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
     formObserver.getFormItemBySubreddit(userInput)?.successfullySubmitted;
 
   const shouldShowSpinner =
-    isLoading && !hasBeenSubmitted && debouncedStatus === "Loading...";
+    isLoading ||
+    isSubmitting ||
+    (debouncedStatus === "Loading..." && !hasBeenSubmitted);
 
   return (
     <div>
