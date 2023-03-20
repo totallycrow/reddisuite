@@ -54,6 +54,7 @@ export const FormItem = ({ config }) => {
             placeholder="Enter your image title here..."
             callback={setTitle}
             disabled={isSubmittedOK || isLoading}
+            isValid={isFormItemValidated.titleValid}
           />
           {/* <div>
             Link:{" "}
@@ -73,6 +74,7 @@ export const FormItem = ({ config }) => {
             placeholder="Enter your image title here..."
             callback={setLink}
             disabled={isSubmittedOK || isLoading}
+            isValid={isFormItemValidated.linkValid}
           />
           {/* <div>
             Subreddit:{" "}

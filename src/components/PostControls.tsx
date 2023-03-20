@@ -4,6 +4,7 @@ import { useFormController } from "../hooks/useFormController";
 import { FormInputs } from "./FormInputs";
 import { useDebouncedSearch } from "../hooks/useDebouncedSearch";
 import { FormObserver } from "../utils/formObserver";
+import { useFormItemValidation } from "../hooks/useFormItemValidation";
 
 export const PostControls = () => {
   const config = useFormController();
@@ -59,13 +60,23 @@ export const PostControls = () => {
     formObserver.cleanSubscribers();
   }, [config.userInput]);
 
+  const validate = useFormItemValidation(
+    config.title,
+    false,
+    [],
+    config.link,
+    "",
+    undefined,
+    true
+  );
+
   return (
     <div>
       <h1>Setup Your Post</h1>
       <div>Are all validated? {validated ? "YES" : "NO"}</div>
 
       <div>
-        <FormInputs inputsConfig={config} />
+        <FormInputs inputsConfig={config} validation={validate} />
         <button
           className="btn m-2"
           disabled={isAnySubmitted || !validated}

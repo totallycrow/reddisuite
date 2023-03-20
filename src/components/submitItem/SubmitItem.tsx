@@ -66,6 +66,8 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
     subData
   );
 
+  console.log(isFormItemValidated);
+
   // LOADING CHECKS
   useEffect(() => {
     if (

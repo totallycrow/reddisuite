@@ -10,7 +10,11 @@ export const InputItem = (props: any) => {
           disabled={props.disabled}
           type={props.type}
           placeholder={props.placeholder}
-          className="input-bordered input"
+          className={
+            props.isValid
+              ? "input-bordered input"
+              : "input-bordered input-error input w-full max-w-xs"
+          }
           value={props.value}
           onChange={(e) => props.callback(e.target.value)}
         />
