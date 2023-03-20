@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { IFormItem } from "../utils/formObserver";
 import { IError } from "./useFlairController";
 import { IFullSubredditData, ISubredditError } from "../services/reddit";
@@ -41,20 +41,30 @@ export const useFormItemValidation = (
   titleTags: Array<any>,
   link: string,
   loadingState: string,
-  subdata: IFullSubredditData | ISubredditError
+  subdata: IFullSubredditData | ISubredditError,
+  partial: boolean
 ) => {
-  let formValidationResult = {
-    isValid: false,
-    titleValid: false,
-    linkValid: false,
-  };
+  let formValidationResult = useMemo(() => {
+    return {
+      isValid: false,
+      titleValid: false,
+      linkValid: false,
+    };
+  }, [title, isTitleTagRequired, titleTags, link, subdata]);
 
-  if (isISubredditError(subdata)) return formValidationResult;
-  if (loadingState !== "Idle") return formValidationResult;
+  if (!partial && !subdata) return formValidationResult;
 
-  if (!isValidUrl(link)) {
-    formValidationResult.linkValid = false;
+  if (!partial && isISubredditError(subdata)) return formValidationResult;
+
+  if (isValidUrl(link)) {
+    formValidationResult.linkValid = true;
   }
+
+  console.log(title);
+  if (title.length > 0 && title !== "") formValidationResult.titleValid = true;
+
+  console.log("TT=UTLE");
+  console.log(title);
 
   if (isTitleTagRequired) {
     console.log("TITLE REQUIRED");
@@ -67,6 +77,12 @@ export const useFormItemValidation = (
   if (formValidationResult.linkValid && formValidationResult.titleValid) {
     formValidationResult.isValid = true;
   }
+
+  // if (loadingState !== "Idle") {
+  //   formValidationResult.isValid = false;
+  // }
+
+  console.log(formValidationResult);
 
   return formValidationResult;
 };

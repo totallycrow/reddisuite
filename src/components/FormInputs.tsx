@@ -1,9 +1,13 @@
 import React from "react";
 import { InputItem } from "./InputItem";
 
-export const FormInputs = ({ inputsConfig }) => {
+export const FormInputs = ({ inputsConfig, validation }) => {
   const { setTitle, setLink, setUserInput, title, link, userInput } =
     inputsConfig;
+
+  console.log("FHASKDHSAKJDASHKJSA");
+
+  console.log(validation);
 
   return (
     <div>
@@ -18,6 +22,7 @@ export const FormInputs = ({ inputsConfig }) => {
           type="text"
           placeholder="Enter your image title here..."
           callback={setTitle}
+          isValid={validation.titleValid}
         />
         {/*  */}
         {/* <label className="label"></label>
@@ -38,6 +43,7 @@ export const FormInputs = ({ inputsConfig }) => {
           type="text"
           placeholder="Enter your image link here..."
           callback={setLink}
+          isValid={validation.linkValid}
         />
         {/*  */}
 
@@ -63,6 +69,7 @@ export const FormInputs = ({ inputsConfig }) => {
           type="text"
           placeholder="Enter your image link here..."
           callback={setUserInput}
+          isValid={true}
         />
       </div>
 
