@@ -101,7 +101,7 @@ export const FormItem = ({ config }) => {
             userInput === "" ||
             isSubmittedOK ||
             isLoading ||
-            !isFormItemValidated
+            !isFormItemValidated.isValid
               ? true
               : false
           }
