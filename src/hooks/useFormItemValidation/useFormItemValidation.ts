@@ -22,10 +22,10 @@ export interface IFormValidationResult {
 export const useFormItemValidation = (
   title: string,
   isTitleTagRequired: boolean | undefined,
-  titleTags: Array<any>,
+  titleTags: Array<string> | undefined,
   link: string,
   loadingState: string,
-  subdata: IFullSubredditData | ISubredditError,
+  subdata: IFullSubredditData | ISubredditError | { error: string },
   partial: boolean
 ) => {
   const formValidationResult = useMemo(() => {
@@ -50,8 +50,17 @@ export const useFormItemValidation = (
   console.log("TT=UTLE");
   console.log(title);
 
-  if (isTitleTagRequired) {
+  if (isTitleTagRequired && !titleTags) {
+    formValidationResult.titleValid = false;
+  }
+
+  if (isTitleTagRequired && titleTags) {
     console.log("TITLE REQUIRED");
+
+    if (!titleTags) {
+      formValidationResult.titleValid = false;
+    }
+
     const isTitleValid = titleTags.some((tag: string) => title.includes(tag));
     // console.log(isValid);
     // return isValid;
@@ -62,9 +71,10 @@ export const useFormItemValidation = (
     formValidationResult.isValid = true;
   }
 
-  // if (loadingState !== "Idle") {
-  //   formValidationResult.isValid = false;
-  // }
+  // ????
+  if (loadingState !== "Idle") {
+    formValidationResult.isValid = false;
+  }
 
   console.log(formValidationResult);
 
