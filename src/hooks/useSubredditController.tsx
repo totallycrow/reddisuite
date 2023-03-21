@@ -27,8 +27,11 @@ export const useSubredditController = (
   );
 
   function isISubredditError(
-    data: IFullSubredditData | ISubredditError | IError
-  ): data is ISubredditError | IError {
+    data: IFullSubredditData | ISubredditError | IError | undefined
+  ): data is ISubredditError | IError | undefined {
+    if (data === undefined) {
+      return false;
+    }
     const isSubredditError = (data as ISubredditError).message !== undefined;
     const isIError = (data as IError).error !== undefined;
 
@@ -45,13 +48,14 @@ export const useSubredditController = (
   const subData = subRedditController.data;
 
   if (!subData) return { subRedditController, debouncedStatus };
+
   if (isISubredditError(subData)) {
     formObserver.setIsError(debouncedInput, true);
     return { subRedditController, debouncedStatus };
   }
 
   const isTitleTagRequired = subData.titleTags.length > 0;
-  const titleTags = subData.titleTags;
+  const titleTags = subData.titleTags || [];
 
   return {
     subRedditController,

@@ -5,6 +5,11 @@ import { MainPostControllerInputs } from "./MainPostControllerInputs";
 import { FormObserver } from "../../../utils/formObserver";
 import { usePostControls } from "../../../hooks/usePostControls";
 
+export type ITitleLinkValidation = {
+  isTitleValidated: boolean;
+  isLinkValidated: boolean;
+};
+
 export const MainPostController = () => {
   const config = useFormController();
   const formObserver = FormObserver.getInstance();
@@ -26,10 +31,6 @@ export const MainPostController = () => {
       isLinkValidated: isLinkValidated,
     };
   }, [isTitleValidated, isLinkValidated]);
-
-  console.log("DEBOUNCED STATUS!!!!!!!!!!!");
-
-  console.log(debouncedStatus);
 
   return (
     <div>

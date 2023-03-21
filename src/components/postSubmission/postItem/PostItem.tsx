@@ -14,11 +14,10 @@ export interface IPostFormValues {
   title: string;
   link: string;
   subreddit: string;
-  triggerLocalChange: any;
+  triggerLocalChange: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const PostItem = (postConfig: IPostFormValues) => {
-  const { data: session } = useSession();
   const [loadingState, setLoadingState] = useState("Idle");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -59,7 +58,8 @@ export const PostItem = (postConfig: IPostFormValues) => {
     titleTags,
     link,
     loadingState,
-    subData
+    subData,
+    false
   );
 
   const isError = formObserver.getFormItemBySubreddit(userInput)?.isError;
@@ -88,42 +88,48 @@ export const PostItem = (postConfig: IPostFormValues) => {
     postConfig.triggerLocalChange(true);
 
     // check if exists and is the same
-    if (
-      formObserver.isSubredditInList(userInput) &&
-      formObserver.areFormItemsIdentical({
-        title: title,
-        link: link,
-        subreddit: userInput,
-        sendData: sendData,
-        isSubmitted: formObserver.getFormItemBySubreddit(userInput).isSubmitted,
-        successfullySubmitted:
-          formObserver.getFormItemBySubreddit(userInput).successfullySubmitted,
-        validated: isFormItemValidated.isValid,
-        flairID: selectedFlair,
-        isIdle: formObserver.getFormItemBySubreddit(userInput).isIdle,
-        isError: formObserver.getFormItemBySubreddit(userInput).isError,
-      })
-    ) {
-      console.log("DUPLICATE FOUND");
-      formObserver.updateFormItem({
-        title: title,
-        link: link,
-        subreddit: userInput,
-        sendData: sendData,
-        successfullySubmitted: false,
-        isSubmitted: false,
-        validated: isFormItemValidated.isValid,
-        flairID: selectedFlair,
-        isIdle: formObserver.getFormItemBySubreddit(userInput).isIdle || false,
-        isError:
-          formObserver.getFormItemBySubreddit(userInput).isError || false,
-      });
-      return;
-    }
+    // if (
+    //   formObserver.isSubredditInList(userInput) &&
+    //   formObserver.areFormItemsIdentical({
+    //     title: title,
+    //     link: link,
+    //     subreddit: userInput,
+    //     sendData: sendData,
+    //     isSubmitted: formObserver.getFormItemBySubreddit(userInput).isSubmitted,
+    //     successfullySubmitted:
+    //       formObserver.getFormItemBySubreddit(userInput).successfullySubmitted,
+    //     validated: isFormItemValidated.isValid,
+    //     flairID: selectedFlair,
+    //     isIdle: formObserver.getFormItemBySubreddit(userInput).isIdle,
+    //     isError: formObserver.getFormItemBySubreddit(userInput).isError,
+    //   })
+    // ) {
+    //   console.log("DUPLICATE FOUND");
+    //   formObserver.updateFormItem({
+    //     title: title,
+    //     link: link,
+    //     subreddit: userInput,
+    //     sendData: sendData,
+    //     successfullySubmitted: false,
+    //     isSubmitted: false,
+    //     validated: isFormItemValidated.isValid,
+    //     flairID: selectedFlair,
+    //     isIdle: formObserver.getFormItemBySubreddit(userInput).isIdle || false,
+    //     isError:
+    //       formObserver.getFormItemBySubreddit(userInput).isError || false,
+    //   });
+    //   return;
+    // }
 
     if (formObserver.isSubredditInList(userInput)) {
       console.log("UPDATING");
 
+      const idle =
+        formObserver.getFormItemBySubreddit(userInput)?.isIdle || false;
+
+      const error =
+        formObserver.getFormItemBySubreddit(userInput)?.isError || false;
+
       formObserver.updateFormItem({
         title: title,
         link: link,
@@ -133,12 +139,11 @@ export const PostItem = (postConfig: IPostFormValues) => {
         isSubmitted: false,
         validated: isFormItemValidated.isValid,
         flairID: selectedFlair,
-        isIdle: formObserver.getFormItemBySubreddit(userInput).isIdle || false,
-        isError:
-          formObserver.getFormItemBySubreddit(userInput).isError || false,
+        isIdle: idle,
+        isError: error,
       });
     } else {
-      console.log("ELSE!!");
+      console.log("CREATE NEW SUBSCRIBER");
       formObserver.subscribe({
         sendData: sendData,
         subreddit: userInput,
@@ -199,19 +204,19 @@ export const PostItem = (postConfig: IPostFormValues) => {
         Is Idle:{" "}
         {formObserver &&
         formObserver.getFormItemBySubreddit(userInput) &&
-        formObserver.getFormItemBySubreddit(userInput).isIdle
+        formObserver.getFormItemBySubreddit(userInput)?.isIdle
           ? "YES"
           : "NO"}
       </div>
 
       <div>
         {shouldShowSpinner ? (
-          <div class="flex items-center justify-center">
+          <div className="flex items-center justify-center">
             <div
-              class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+              className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
               role="status"
             >
-              <span class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+              <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
                 Loading...
               </span>
             </div>

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { IConfig } from "./usePostControls";
 
 export const useFormController = (
   initialTitle = "",
   initiallink = "",
   initialInput = ""
-) => {
+): IConfig => {
   const [title, setTitle] = useState(initialTitle);
   const [link, setLink] = useState(initiallink);
   const [userInput, setUserInput] = useState(initialInput);

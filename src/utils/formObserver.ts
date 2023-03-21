@@ -1,5 +1,5 @@
 export interface IFormItem {
-  sendData: () => void;
+  sendData: () => Promise<void>;
   isSubmitted: boolean;
   successfullySubmitted: boolean;
   validated: boolean;
