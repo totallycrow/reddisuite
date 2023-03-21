@@ -75,7 +75,7 @@ export class FormObserver {
     });
   }
 
-  public async publish() {
+  public publish() {
     console.log("******()()()()() PUBLISH FIRED ^^^^^^^^^^^^^^^^^^");
 
     const calls = [];

@@ -1,16 +1,12 @@
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../server/auth";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
-import { api, RouterOutputs } from "../utils/api";
-import { useEffect } from "react";
-import _ from "lodash";
-import { useQuery } from "@tanstack/react-query";
-import { SubmitItem } from "../components/postSubmission/postItem/PostItem";
 import { MainPostController } from "../components/postSubmission/mainPostController/MainPostController";
+import { GetServerSideProps } from "next";
+import { Session, getServerSession } from "next-auth";
+import { authOptions } from "../server/auth";
 
 export default function Dashboard() {
   const { data: session } = useSession();
+
   // const [inputData, setInputData] = useState("");
 
   // TYPE
@@ -249,3 +245,17 @@ export default function Dashboard() {
     </div>
   );
 }
+
+type PageProps = {
+  session: Session | null;
+};
+
+export const getServerSideProps: GetServerSideProps<PageProps> = async (
+  context
+) => {
+  return {
+    props: {
+      session: await getServerSession(context.req, context.res, authOptions),
+    }, // will be passed to the page component as props
+  };
+};
