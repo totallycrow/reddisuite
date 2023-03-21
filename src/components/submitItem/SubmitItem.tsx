@@ -68,6 +68,8 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
     subData
   );
 
+  const isError = formObserver.getFormItemBySubreddit(userInput)?.isError;
+
   console.log(isFormItemValidated);
 
   // LOADING CHECKS
@@ -105,6 +107,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         validated: isFormItemValidated.isValid,
         flairID: selectedFlair,
         isIdle: formObserver.getFormItemBySubreddit(userInput).isIdle,
+        isError: formObserver.getFormItemBySubreddit(userInput).isError,
       })
     ) {
       console.log("DUPLICATE FOUND");
@@ -118,6 +121,8 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         validated: isFormItemValidated.isValid,
         flairID: selectedFlair,
         isIdle: formObserver.getFormItemBySubreddit(userInput).isIdle || false,
+        isError:
+          formObserver.getFormItemBySubreddit(userInput).isError || false,
       });
       return;
     }
@@ -135,6 +140,8 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         validated: isFormItemValidated.isValid,
         flairID: selectedFlair,
         isIdle: formObserver.getFormItemBySubreddit(userInput).isIdle || false,
+        isError:
+          formObserver.getFormItemBySubreddit(userInput).isError || false,
       });
     } else {
       console.log("ELSE!!");
@@ -148,6 +155,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         validated: isFormItemValidated.isValid,
         flairID: selectedFlair,
         isIdle: false,
+        isError: false,
       });
     }
   }, [
@@ -174,6 +182,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
     submissionStatus,
     loadingState,
     isFormItemValidated,
+    isError,
   };
 
   const isLoading =

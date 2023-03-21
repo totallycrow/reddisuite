@@ -43,11 +43,19 @@ export const usePostingController = (
       "MUTATION CONTROLLER STATUS &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
     );
     console.log(mutationController.status);
+    console.log(mutationResponse);
 
     if (mutationController.status !== "idle") {
       setLoadingState("Loading...");
       setSubmissionStatus("LOADING");
     }
+
+    if (mutationResponse && mutationResponse.explanation) {
+      setSubmissionStatus("ERROR");
+      formObserver.updateSubmissionStatus(sub, false);
+      formObserver.setIsError(sub, true);
+    }
+
     if (mutationResponse.errors && mutationResponse.errors.length === 0) {
       console.log("SUCESS");
       console.log(mutationController.data);
@@ -61,6 +69,7 @@ export const usePostingController = (
       console.log(mutationController.error);
       setSubmissionStatus("ERROR");
       formObserver.updateSubmissionStatus(sub, false);
+      formObserver.setIsError(sub, true);
     }
   }, [mutationController]);
 

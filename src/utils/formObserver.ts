@@ -4,6 +4,7 @@ export interface IFormItem {
   successfullySubmitted: boolean;
   validated: boolean;
   isIdle: boolean;
+  isError: boolean;
   subreddit: string;
   title: string;
   link: string;
@@ -170,6 +171,22 @@ export class FormObserver {
 
     if (!listItem) return false;
     listItem.isIdle = status;
+
+    console.log(listItem);
+
+    return true;
+  }
+  public setIsError(subreddit: string, status: boolean) {
+    console.log(
+      "TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT"
+    );
+    console.log("UPDATE SUBMISSION FIRED");
+    const listItem = this.getFormItemBySubreddit(subreddit);
+
+    console.log(listItem);
+
+    if (!listItem) return false;
+    listItem.isError = status;
 
     console.log(listItem);
 
