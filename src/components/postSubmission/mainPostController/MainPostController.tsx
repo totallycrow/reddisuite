@@ -101,6 +101,22 @@ export const MainPostController = () => {
             : ""}
         </div>
       </div>
+      {(isAnySubmitted || !isMainPostControllerFullyValidated) &&
+      config.title !== "" &&
+      config.link !== "" &&
+      subsList.length !== 0 &&
+      debouncedStatus !== "Loading..." ? (
+        <p>Cannot submit all post at once because of errors in validation.</p>
+      ) : (
+        ""
+      )}
+      <button
+        className="btn mb-10 w-full"
+        disabled={isAnySubmitted || !isMainPostControllerFullyValidated}
+        onClick={() => void formObserver.publish()}
+      >
+        submit all
+      </button>
     </div>
   );
 };
