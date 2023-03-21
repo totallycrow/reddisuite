@@ -20,6 +20,7 @@ export const FormItem = ({ config }) => {
     submissionStatus,
     loadingState,
     isFormItemValidated,
+    isError,
   } = config;
 
   // const bears = useBearStore((state) => state.bears);
@@ -30,7 +31,15 @@ export const FormItem = ({ config }) => {
 
   return (
     <div>
-      <div className="p-4">
+      <div
+        className={
+          isSubmittedOK
+            ? "rounded border border-emerald-400 p-4"
+            : submissionStatus === "ERROR" || isError
+            ? "rounded border border-rose-600 p-4"
+            : "rounded border border-slate-800 p-4"
+        }
+      >
         {/* <div>{bears}</div> */}
         {/* <button onClick={increasePopulation}>add</button> */}
         <h2 className="p-4">Submit Your Post to: r/{userInput}</h2>
@@ -139,7 +148,10 @@ export const FormItem = ({ config }) => {
             <div>
               <p>Flair required:</p>
               <div>
-                <select onChange={(e) => setSelectedFlair(e.target.value)}>
+                <select
+                  className="select-bordered select w-full max-w-xs"
+                  onChange={(e) => setSelectedFlair(e.target.value)}
+                >
                   {subRedditController.data.flairs.map((item) => (
                     <option value={item.id}>{item.text}</option>
                   ))}

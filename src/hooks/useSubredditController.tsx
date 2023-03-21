@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { api } from "../utils/api";
 import { useDebouncedSearch } from "./useDebouncedSearch";
 import { IFullSubredditData, ISubredditError } from "../services/reddit";
 import { IError } from "./useFlairController";
+import { FormObserver } from "../utils/formObserver";
 
 export const useSubredditController = (
   userInput: string,
@@ -13,6 +14,8 @@ export const useSubredditController = (
     handleSubChange,
     setLoadingState
   );
+
+  const formObserver = useMemo(() => FormObserver.getInstance(), []);
 
   const subRedditController = api.example.getSubreddit.useQuery(
     { sub: debouncedInput },
@@ -42,8 +45,10 @@ export const useSubredditController = (
   const subData = subRedditController.data;
 
   if (!subData) return { subRedditController, debouncedStatus };
-  if (isISubredditError(subData))
+  if (isISubredditError(subData)) {
+    formObserver.setIsError(debouncedInput, true);
     return { subRedditController, debouncedStatus };
+  }
 
   const isTitleTagRequired = subData.titleTags.length > 0;
   const titleTags = subData.titleTags;
