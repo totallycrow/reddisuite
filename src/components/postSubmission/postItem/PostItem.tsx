@@ -1,18 +1,12 @@
 import { useSession } from "next-auth/react";
-import React, {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { useFlairController } from "../../hooks/useFlairController";
-import { useSubredditController } from "../../hooks/useSubredditController";
-import { usePostingController } from "../../hooks/usePostingController";
-import { useFormController } from "../../hooks/useFormController";
-import { FormItem } from "../FormItem";
-import { FormObserver } from "../../utils/formObserver";
-import { useFormItemValidation } from "../../hooks/useFormItemValidation/useFormItemValidation";
+import React, { useEffect, useMemo, useState } from "react";
+import { useFlairController } from "../../../hooks/useFlairController";
+import { useSubredditController } from "../../../hooks/useSubredditController";
+import { usePostingController } from "../../../hooks/usePostingController";
+import { useFormController } from "../../../hooks/useFormController";
+import { PostItemInputs } from "./PostItemInputs";
+import { FormObserver } from "../../../utils/formObserver";
+import { useFormItemValidation } from "../../../hooks/useFormItemValidation/useFormItemValidation";
 
 // const LoadingStatusContext = createContext("Idle");
 
@@ -23,7 +17,7 @@ export interface IPostFormValues {
   triggerLocalChange: any;
 }
 
-export const SubmitItem = (postConfig: IPostFormValues) => {
+export const PostItem = (postConfig: IPostFormValues) => {
   const { data: session } = useSession();
   const [loadingState, setLoadingState] = useState("Idle");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -227,7 +221,7 @@ export const SubmitItem = (postConfig: IPostFormValues) => {
         )}
       </div>
 
-      <FormItem config={formConfig} />
+      <PostItemInputs config={formConfig} />
       <div className="flex w-full flex-col">
         <div className="divider"></div>
       </div>

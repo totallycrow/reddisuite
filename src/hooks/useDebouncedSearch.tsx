@@ -8,9 +8,25 @@ export const useDebouncedSearch = (
   const [debouncedInput, setDebouncedInput] = useState("");
   const [debouncedStatus, setDebouncedStatus] = useState("Idle");
 
-  useEffect(() => {
-    if (userInput === "") return;
+  console.log("USE DEBOUNCED FIRED!!!!");
+  console.log(userInput);
+  console.log(debouncedInput);
+  console.log(debouncedStatus);
 
+  useEffect(() => {
+    if (userInput === "") {
+      setDebouncedStatus("Idle");
+      if (setLoadingStatus) setLoadingStatus("Idle");
+      return;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (userInput === "") {
+      setDebouncedStatus("Idle");
+      if (setLoadingStatus) setLoadingStatus("Idle");
+      return;
+    }
     const trigger = async () => {
       await callback();
       setDebouncedStatus("Idle");
@@ -21,8 +37,6 @@ export const useDebouncedSearch = (
   }, [debouncedInput]);
 
   useEffect(() => {
-    if (userInput === "") return;
-
     const handler = setTimeout(() => {
       setDebouncedInput(userInput);
     }, 1000);
@@ -33,6 +47,11 @@ export const useDebouncedSearch = (
       if (setLoadingStatus) setLoadingStatus("Loading...");
     };
   }, [userInput]);
+
+  console.log("USE DEBOUNCED FIRED!!!!");
+  console.log(userInput);
+  console.log(debouncedInput);
+  console.log(debouncedStatus);
 
   return { debouncedInput, debouncedStatus };
 };

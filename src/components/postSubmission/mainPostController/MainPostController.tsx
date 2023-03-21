@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
-import { SubmitItem } from "./submitItem/SubmitItem";
-import { useFormController } from "../hooks/useFormController";
-import { FormInputs } from "./FormInputs";
-import { FormObserver } from "../utils/formObserver";
-import { usePostControls } from "../hooks/usePostControls";
+import { PostItem } from "../postItem/PostItem";
+import { useFormController } from "../../../hooks/useFormController";
+import { MainPostControllerInputs } from "./MainPostControllerInputs";
+import { FormObserver } from "../../../utils/formObserver";
+import { usePostControls } from "../../../hooks/usePostControls";
 
-export const PostControls = () => {
+export const MainPostController = () => {
   const config = useFormController();
   const formObserver = FormObserver.getInstance();
 
@@ -27,6 +27,10 @@ export const PostControls = () => {
     };
   }, [isTitleValidated, isLinkValidated]);
 
+  console.log("DEBOUNCED STATUS!!!!!!!!!!!");
+
+  console.log(debouncedStatus);
+
   return (
     <div>
       <h1>Setup Your Post</h1>
@@ -35,7 +39,10 @@ export const PostControls = () => {
       </div>
 
       <div>
-        <FormInputs inputsConfig={config} validation={validation} />
+        <MainPostControllerInputs
+          inputsConfig={config}
+          validation={validation}
+        />
         <button
           className="btn m-2"
           disabled={isAnySubmitted || !isMainPostControllerFullyValidated}
@@ -81,7 +88,7 @@ export const PostControls = () => {
           validation.isTitleValidated
             ? subsList.map((sub) => {
                 return (
-                  <SubmitItem
+                  <PostItem
                     key={sub}
                     title={config.title}
                     link={config.link}
