@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import useBearStore from "../store/useBearStore";
-import { InputItem } from "./InputItem";
+import { InputItem } from "../../utils/InputItem";
 
-export const FormItem = ({ config }) => {
+export const PostItemInputs = ({ config }) => {
   let {
     title,
     setTitle,
@@ -58,6 +57,7 @@ export const FormItem = ({ config }) => {
           </div> */}
           <InputItem
             title={"Post Title"}
+            key="title"
             value={title}
             type="text"
             placeholder="Enter your image title here..."
@@ -78,6 +78,7 @@ export const FormItem = ({ config }) => {
 
           <InputItem
             title={"Link URL"}
+            key="link"
             value={link}
             type="text"
             placeholder="Enter your image title here..."
@@ -97,6 +98,7 @@ export const FormItem = ({ config }) => {
           </div> */}
           <InputItem
             title={"Subreddit"}
+            key="subreddit"
             value={userInput}
             type="text"
             placeholder="Enter your subreddit name here..."
@@ -116,7 +118,9 @@ export const FormItem = ({ config }) => {
                     onChange={(e) => setSelectedFlair(e.target.value)}
                   >
                     {subRedditController.data.flairs.map((item) => (
-                      <option value={item.id}>{item.text}</option>
+                      <option key={item.id} value={item.id}>
+                        {item.text}
+                      </option>
                     ))}
                   </select>
                 </div>

@@ -6,8 +6,8 @@ import { api, RouterOutputs } from "../utils/api";
 import { useEffect } from "react";
 import _ from "lodash";
 import { useQuery } from "@tanstack/react-query";
-import { SubmitItem } from "../components/submitItem/SubmitItem";
-import { PostControls } from "../components/PostControls";
+import { SubmitItem } from "../components/postSubmission/postItem/PostItem";
+import { MainPostController } from "../components/postSubmission/mainPostController/MainPostController";
 
 export default function Dashboard() {
   const { data: session } = useSession();
@@ -128,7 +128,7 @@ export default function Dashboard() {
         <p>You can view this page because you are signed in.</p>
         <div className="flex justify-center">
           {/* <SubmitItem /> */}
-          <PostControls></PostControls>
+          <MainPostController></MainPostController>
         </div>
 
         {/* <p>Returned info: {""}</p>

@@ -1,7 +1,7 @@
 import React from "react";
-import { InputItem } from "./InputItem";
+import { InputItem } from "../../utils/InputItem";
 
-export const FormInputs = ({ inputsConfig, validation }) => {
+export const MainPostControllerInputs = ({ inputsConfig, validation }) => {
   const { setTitle, setLink, setUserInput, title, link, userInput } =
     inputsConfig;
 
