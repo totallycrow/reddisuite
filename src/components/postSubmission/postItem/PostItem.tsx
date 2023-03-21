@@ -62,7 +62,8 @@ export const PostItem = (postConfig: IPostFormValues) => {
     false
   );
 
-  const isError = formObserver.getFormItemBySubreddit(userInput)?.isError;
+  const isError =
+    formObserver.getFormItemBySubreddit(userInput)?.isError || false;
 
   console.log(isFormItemValidated);
 
@@ -182,6 +183,7 @@ export const PostItem = (postConfig: IPostFormValues) => {
     loadingState,
     isFormItemValidated,
     isError,
+    isSubmitting,
   };
 
   const isLoading =
@@ -208,6 +210,7 @@ export const PostItem = (postConfig: IPostFormValues) => {
           ? "YES"
           : "NO"}
       </div>
+      <h3 className="px-4 pt-4 text-lg font-bold">r/{userInput}</h3>
 
       <div>
         {shouldShowSpinner ? (
@@ -222,7 +225,7 @@ export const PostItem = (postConfig: IPostFormValues) => {
             </div>
           </div>
         ) : (
-          "test2"
+          ""
         )}
       </div>
 

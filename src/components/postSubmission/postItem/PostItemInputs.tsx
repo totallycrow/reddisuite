@@ -1,8 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { InputItem } from "../../utils/InputItem";
+import { IFormValidationResult } from "../../../hooks/useFormItemValidation/useFormItemValidation";
 
-export const PostItemInputs = ({ config }) => {
-  let {
+interface IPostItemInputsConfig {
+  title: string;
+  setTitle: React.Dispatch<React.SetStateAction<string>>;
+  link: string;
+  setLink: React.Dispatch<React.SetStateAction<string>>;
+  userInput: string;
+  setUserInput: React.Dispatch<React.SetStateAction<string>>;
+  subRedditController: any;
+  mutationController: any;
+  setSelectedFlair: React.Dispatch<React.SetStateAction<string>>;
+  sendData: () => Promise<void>;
+  submissionStatus: string;
+  loadingState: string;
+  isFormItemValidated: IFormValidationResult;
+  isError: boolean;
+  isSubmitting: boolean;
+}
+
+export const PostItemInputs = ({
+  config,
+}: {
+  config: IPostItemInputsConfig;
+}) => {
+  const {
     title,
     setTitle,
     link,
@@ -13,13 +36,11 @@ export const PostItemInputs = ({ config }) => {
     subRedditController,
     sendData,
     setSelectedFlair,
-    renderTitle,
-    renderLink,
-    renderUserInput,
     submissionStatus,
     loadingState,
     isFormItemValidated,
     isError,
+    isSubmitting,
   } = config;
 
   // const bears = useBearStore((state) => state.bears);
@@ -135,6 +156,7 @@ export const PostItemInputs = ({ config }) => {
             userInput === "" ||
             isSubmittedOK ||
             isLoading ||
+            isSubmitting ||
             !isFormItemValidated.isValid
               ? true
               : false
