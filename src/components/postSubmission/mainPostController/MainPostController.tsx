@@ -46,7 +46,11 @@ export const MainPostController = () => {
         />
         <button
           className="btn m-2"
-          disabled={isAnySubmitted || !isMainPostControllerFullyValidated}
+          disabled={
+            isAnySubmitted ||
+            !isMainPostControllerFullyValidated ||
+            debouncedStatus === "Loading..."
+          }
           onClick={() => void formObserver.publish()}
         >
           submit all
@@ -112,7 +116,11 @@ export const MainPostController = () => {
       )}
       <button
         className="btn mb-10 w-full"
-        disabled={isAnySubmitted || !isMainPostControllerFullyValidated}
+        disabled={
+          isAnySubmitted ||
+          !isMainPostControllerFullyValidated ||
+          debouncedStatus === "Loading..."
+        }
         onClick={() => void formObserver.publish()}
       >
         submit all
