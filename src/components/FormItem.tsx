@@ -104,6 +104,25 @@ export const FormItem = ({ config }) => {
             disabled={true}
           />
         </div>
+        <div>
+          {subRedditController.data &&
+            subRedditController.data.flairs &&
+            subRedditController.data.flairs.length > 0 && (
+              <div>
+                <p>Flair required:</p>
+                <div>
+                  <select
+                    className="select-bordered select w-full max-w-xs"
+                    onChange={(e) => setSelectedFlair(e.target.value)}
+                  >
+                    {subRedditController.data.flairs.map((item) => (
+                      <option value={item.id}>{item.text}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
+        </div>
         <button
           className="btn m-2"
           disabled={
@@ -141,25 +160,7 @@ export const FormItem = ({ config }) => {
           <p>{subRedditController.data.explanation}</p>
         )}
       </div>
-      <div>
-        {subRedditController.data &&
-          subRedditController.data.flairs &&
-          subRedditController.data.flairs.length > 0 && (
-            <div>
-              <p>Flair required:</p>
-              <div>
-                <select
-                  className="select-bordered select w-full max-w-xs"
-                  onChange={(e) => setSelectedFlair(e.target.value)}
-                >
-                  {subRedditController.data.flairs.map((item) => (
-                    <option value={item.id}>{item.text}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          )}
-      </div>
+
       <div>
         {subRedditController.data &&
           subRedditController.data.titleTags &&

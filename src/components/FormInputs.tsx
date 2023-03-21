@@ -22,7 +22,7 @@ export const FormInputs = ({ inputsConfig, validation }) => {
           type="text"
           placeholder="Enter your image title here..."
           callback={setTitle}
-          isValid={validation.titleValid}
+          isValid={validation.isTitleValidated}
         />
         {/*  */}
         {/* <label className="label"></label>
@@ -43,7 +43,7 @@ export const FormInputs = ({ inputsConfig, validation }) => {
           type="text"
           placeholder="Enter your image link here..."
           callback={setLink}
-          isValid={validation.linkValid}
+          isValid={validation.isLinkValidated}
         />
         {/*  */}
 
