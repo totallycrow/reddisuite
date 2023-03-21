@@ -1,24 +1,8 @@
 import React, { useMemo } from "react";
-import { IFormItem } from "../utils/formObserver";
-import { IError } from "./useFlairController";
-import { IFullSubredditData, ISubredditError } from "../services/reddit";
-
-const urlPattern = new RegExp(
-  "(?:https?)://(w+:?w*)?(S+)(:d+)?(/|/([w#!:.?+=&%!-/]))?"
-);
-
-const isValidUrl = (urlString: string) => {
-  const urlPattern = new RegExp(
-    "^(https?:\\/\\/)?" + // validate protocol
-      "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // validate domain name
-      "((\\d{1,3}\\.){3}\\d{1,3}))" + // validate OR ip (v4) address
-      "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // validate port and path
-      "(\\?[;&a-z\\d%_.~+=-]*)?" + // validate query string
-      "(\\#[-a-z\\d_]*)?$",
-    "i"
-  ); // validate fragment locator
-  return !!urlPattern.test(urlString);
-};
+import { IFormItem } from "../../utils/formObserver";
+import { IError } from "../useFlairController";
+import { IFullSubredditData, ISubredditError } from "../../services/reddit";
+import { isValidUrl } from "./utils";
 
 function isISubredditError(
   data: IFullSubredditData | ISubredditError | IError
@@ -44,7 +28,7 @@ export const useFormItemValidation = (
   subdata: IFullSubredditData | ISubredditError,
   partial: boolean
 ) => {
-  let formValidationResult = useMemo(() => {
+  const formValidationResult = useMemo(() => {
     return {
       isValid: false,
       titleValid: false,

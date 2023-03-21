@@ -1,87 +1,45 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { SubmitItem } from "./submitItem/SubmitItem";
 import { useFormController } from "../hooks/useFormController";
 import { FormInputs } from "./FormInputs";
-import { useDebouncedSearch } from "../hooks/useDebouncedSearch";
 import { FormObserver } from "../utils/formObserver";
-import { useFormItemValidation } from "../hooks/useFormItemValidation";
+import { usePostControls } from "../hooks/usePostControls";
 
 export const PostControls = () => {
   const config = useFormController();
   const formObserver = FormObserver.getInstance();
 
-  const { debouncedInput, debouncedStatus } = useDebouncedSearch(
-    config.userInput,
-    () => Promise.resolve()
-  );
-  const [subsList, setSubsList] = useState(Array<string>);
-  const [clean, setClean] = useState(false);
-  const [localChangeTriggered, setLocalChangeTriggered] = useState(false);
-  const [validated, setValidated] = useState(false);
+  const {
+    isMainPostControllerFullyValidated,
+    isAnySubmitted,
+    debouncedStatus,
+    subsList,
+    clean,
+    isLinkValidated,
+    isTitleValidated,
+    setLocalChangeTriggered,
+  } = usePostControls(config);
 
-  const [isAnySubmitted, setIsAnySubmitted] = useState(
-    formObserver.isAnyInputSubmitted()
-  );
-
-  //   Listen for change in debouced inputs and split & generate list of subreddits
-  useEffect(() => {
-    if (debouncedInput === "") return;
-    if (!debouncedInput.includes(",")) {
-      setClean(true);
-      setSubsList([debouncedInput]);
-      return;
-    }
-
-    const list = debouncedInput.split(",");
-
-    const sanitizedList = list.map((splitSub: string) => {
-      return splitSub.trim();
-    });
-
-    setClean(true);
-    setSubsList(sanitizedList);
-    const status = formObserver.isFullyValidated();
-
-    setValidated(status);
-  }, [debouncedInput]);
-
-  useEffect(() => {
-    setLocalChangeTriggered(false);
-    setIsAnySubmitted(formObserver.isAnyInputSubmitted());
-    const status = formObserver.isFullyValidated();
-
-    setValidated(status);
-  }, [localChangeTriggered]);
-
-  useEffect(() => {
-    setClean(false);
-    setValidated(false);
-    const status = formObserver.isFullyValidated();
-    setValidated(status);
-    formObserver.cleanSubscribers();
-  }, [config.userInput]);
-
-  const validate = useFormItemValidation(
-    config.title,
-    false,
-    [],
-    config.link,
-    "",
-    undefined,
-    true
-  );
+  const validation = useMemo(() => {
+    return {
+      isTitleValidated: isTitleValidated,
+      isLinkValidated: isLinkValidated,
+    };
+  }, [isTitleValidated, isLinkValidated]);
 
   return (
     <div>
       <h1>Setup Your Post</h1>
-      <div>Are all validated? {validated ? "YES" : "NO"}</div>
+      <div>
+        Are all validated? {isMainPostControllerFullyValidated ? "YES" : "NO"}
+      </div>
 
       <div>
-        <FormInputs inputsConfig={config} validation={validate} />
+        <FormInputs inputsConfig={config} validation={validation} />
         <button
           className="btn m-2"
-          disabled={isAnySubmitted || !validated}
-          onClick={() => formObserver.publish()}
+          disabled={isAnySubmitted || !isMainPostControllerFullyValidated}
+          onClick={() => void formObserver.publish()}
         >
           submit all
         </button>
@@ -101,12 +59,12 @@ export const PostControls = () => {
         </div>
         <div>
           {debouncedStatus === "Loading..." ? (
-            <div class="flex items-center justify-center">
+            <div className="flex items-center justify-center">
               <div
-                class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
                 role="status"
               >
-                <span class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
                   Loading...
                 </span>
               </div>
@@ -119,9 +77,9 @@ export const PostControls = () => {
         <div>
           {subsList.length > 0 &&
           clean &&
-          validate.linkValid &&
-          validate.titleValid
-            ? subsList.map((sub, index) => {
+          validation.isLinkValidated &&
+          validation.isTitleValidated
+            ? subsList.map((sub) => {
                 return (
                   <SubmitItem
                     key={sub}

@@ -12,7 +12,7 @@ import { usePostingController } from "../../hooks/usePostingController";
 import { useFormController } from "../../hooks/useFormController";
 import { FormItem } from "../FormItem";
 import { FormObserver } from "../../utils/formObserver";
-import { useFormItemValidation } from "../../hooks/useFormItemValidation";
+import { useFormItemValidation } from "../../hooks/useFormItemValidation/useFormItemValidation";
 
 // const LoadingStatusContext = createContext("Idle");
 

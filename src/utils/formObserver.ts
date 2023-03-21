@@ -57,12 +57,8 @@ export class FormObserver {
   }
 
   /**
-   * Finally, any singleton should define some business logic, which can be
-   * executed on its instance.
    */
-  public someBusinessLogic() {
-    // ...
-  }
+
   public subscribe(formItem: IFormItem) {
     this.subscribers.push(formItem);
   }
