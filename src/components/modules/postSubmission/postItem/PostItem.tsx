@@ -1,13 +1,6 @@
-import { useSession } from "next-auth/react";
-import React, { useEffect, useMemo, useState } from "react";
-import { useFlairController } from "../../../hooks/useFlairController";
-import { useSubredditController } from "../../../hooks/useSubredditController";
-import { usePostingController } from "../../../hooks/usePostingController";
-import { useFormController } from "../../../hooks/useFormController";
+import React from "react";
 import { PostItemInputs } from "./PostItemInputs";
-import { FormObserver } from "../../../utils/formObserver";
-import { useFormItemValidation } from "../../../hooks/useFormItemValidation/useFormItemValidation";
-import { usePostItemManager } from "../../../hooks/usePostItemManager";
+import { usePostItemManager } from "../../../../hooks/controllers/postSubmission/usePostItemManager";
 
 export const PostItem = (postConfig: IPostFormValues) => {
   const {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { api } from "../utils/api";
+import { api } from "../../../utils/api";
 import { DefinedUseTRPCQueryResult } from "@trpc/react-query/shared";
-import { IFullSubredditData, ISubredditError } from "../services/reddit";
+import { IFullSubredditData, ISubredditError } from "../../../services/reddit";
 import { TRPCClientErrorLike } from "@trpc/client";
 
 export interface IError {

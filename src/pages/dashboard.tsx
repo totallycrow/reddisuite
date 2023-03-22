@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import { MainPostController } from "../components/postSubmission/mainPostController/MainPostController";
+import { MainPostController } from "../components/modules/postSubmission/mainPostController/MainPostController";
 import { GetServerSideProps } from "next";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "../server/auth";
@@ -122,10 +122,12 @@ export default function Dashboard() {
       <div className="main-dashboard">
         <div className="border-sm flex justify-center">
           <div className="w-1/6 border-r border-r-slate-700 p-4 text-center">
-            <h3>Sidebar</h3>
-            <div>Menu 1</div>
-            <div>Menu 2</div>
-            <div>Menu 3</div>
+            <div className="sticky top-0 z-50">
+              <h3>Sidebar</h3>
+              <div>Menu 1</div>
+              <div>Menu 2</div>
+              <div>Menu 3</div>
+            </div>
           </div>
 
           <div className="w-5/6 p-8">

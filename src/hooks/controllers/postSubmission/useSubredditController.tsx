@@ -1,9 +1,10 @@
 import React, { useMemo } from "react";
-import { api } from "../utils/api";
-import { useDebouncedSearch } from "./useDebouncedSearch";
-import { IFullSubredditData, ISubredditError } from "../services/reddit";
+import { api } from "../../../utils/api";
+import { useDebouncedSearch } from "../../utils/useDebouncedSearch";
+
 import { IError } from "./useFlairController";
-import { FormObserver } from "../utils/formObserver";
+import { FormObserver } from "../../../utils/formObserver";
+import { IFullSubredditData, ISubredditError } from "../../../services/reddit";
 
 export const useSubredditController = (
   userInput: string,

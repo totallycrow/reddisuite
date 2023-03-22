@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useDebouncedSearch } from "./useDebouncedSearch";
-import { FormObserver } from "../utils/formObserver";
-import { useFormItemValidation } from "./useFormItemValidation/useFormItemValidation";
-import { isTitleValid, isValidUrl } from "./useFormItemValidation/utils";
+import { useDebouncedSearch } from "../utils/../../utils/useDebouncedSearch";
+import { FormObserver } from "../../../utils/formObserver";
+import { useFormItemValidation } from "../../validation/useFormItemValidation/useFormItemValidation";
+import {
+  isTitleValid,
+  isValidUrl,
+} from "../../validation/useFormItemValidation/utils";
 
 export const usePostControls = (config: IConfig) => {
   // ***************************************************************************
@@ -15,7 +18,7 @@ export const usePostControls = (config: IConfig) => {
 
   const formObserver = FormObserver.getInstance();
 
-  const [subsList, setSubsList] = useState(new Set());
+  const [subsList, setSubsList] = useState(new Set<string>());
   const [clean, setClean] = useState(false);
   const [localChangeTriggered, setLocalChangeTriggered] = useState(false);
   const [
@@ -41,7 +44,7 @@ export const usePostControls = (config: IConfig) => {
     if (!debouncedInput.includes(",")) {
       setClean(true);
 
-      const initialList = new Set();
+      const initialList = new Set<string>();
       initialList.add(debouncedInput);
 
       setSubsList(initialList);
@@ -49,7 +52,7 @@ export const usePostControls = (config: IConfig) => {
     }
 
     const userList = debouncedInput.split(",");
-    const sanitizedSet = new Set();
+    const sanitizedSet = new Set<string>();
 
     userList.forEach((item: string) => {
       sanitizedSet.add(item);
