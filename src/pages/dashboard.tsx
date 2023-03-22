@@ -119,123 +119,26 @@ export default function Dashboard() {
 
   if (session) {
     return (
-      <div>
-        <h1>Protected Page</h1>
-        <p>You can view this page because you are signed in.</p>
-        <div className="flex justify-center">
+      <div className="main-dashboard">
+        <div className="border-sm flex justify-center">
+          <div className="w-1/6 border-r border-r-slate-700 p-4 text-center">
+            <h3>Sidebar</h3>
+            <div>Menu 1</div>
+            <div>Menu 2</div>
+            <div>Menu 3</div>
+          </div>
+
+          <div className="w-5/6 p-8">
+            <h1>Protected Page</h1>
+            <p>You can view this page because you are signed in.</p>
+            Main Content
+            <div>
+              {" "}
+              <MainPostController></MainPostController>
+            </div>
+          </div>
           {/* <SubmitItem /> */}
-          <MainPostController></MainPostController>
         </div>
-
-        {/* <p>Returned info: {""}</p>
-        <div>{data ? data[0].text : ""}</div>
-        <div>
-          <input
-            className="border-2 border-gray-800"
-            value={inputData}
-            onChange={(e) => setInputData(e.target.value)}
-          ></input>
-          <div></div>
-          <button onClick={getData}>Verify</button>
-        </div> */}
-
-        {/* <div className="p-4">
-          <h2 className="p-4">Submit Your Post</h2>
-          <div>
-            <div>
-              Title:{" "}
-              <input
-                type="text"
-                className="border-2 border-gray-800"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </div>
-            <div>
-              Link:{" "}
-              <input
-                type="text"
-                className="border-2 border-gray-800"
-                value={link}
-                onChange={(e) => setLink(e.target.value)}
-              />
-            </div>
-            <div>
-              Subreddit:{" "}
-              <input
-                type="text"
-                className="border-2 border-gray-800"
-                value={sub}
-                onChange={(e) => setSub(e.target.value)}
-              />
-            </div> */}
-
-        {/* // ************************************************************ */}
-        {/* <div>
-              Flair:{" "}
-              <input
-                type="text"
-                className="border-2 border-gray-800"
-                value={flair}
-                onChange={(e) => setFlair(e.target.value)}
-              />
-            </div> */}
-
-        {/* // ************************************************************ */}
-
-        {/* TODO - FLAIRS */}
-        {/* https://oauth.reddit.com//r/crowcovers/api/link_flair_v2 */}
-        {/* </div>
-          <button
-            disabled={title === "" || link === "" || sub === "" ? true : false}
-            onClick={() => void sendData()}
-          >
-            Submit
-          </button>
-        </div>
-        <div>{mutation.isLoading && <p>Loading...</p>}</div>
-        <div>
-          {mutation.data &&
-            mutation.data.json &&
-            mutation.data.json.errors.length > 0 && (
-              <p>{mutation.data.json.errors[0][1]}</p>
-            )}
-        </div>
-        <div>
-          {mutation.data && mutation.data.error && (
-            <p>{mutation.data.message}</p>
-          )}
-        </div>
-
-        <div>
-          {subReddit.data && subReddit.data.explanation && (
-            <p>{subReddit.data.explanation}</p>
-          )}
-        </div>
-        <div>
-          {subReddit.data &&
-            subReddit.data.flairs &&
-            subReddit.data.flairs.length > 0 && (
-              <div>
-                <p>Flair required:</p>
-                <div>
-                  {subReddit.data.flairs.map((item) => (
-                    <p>{item.text}</p>
-                  ))}
-                </div>
-              </div>
-            )}
-        </div>
-        <div>
-          {subReddit.data &&
-            subReddit.data.titleTags &&
-            subReddit.data.titleTags.length > 0 && (
-              <p>
-                Title tag required: &quot;
-                {subReddit.data.titleTags[0]}&quot;
-              </p>
-            )}
-        </div> */}
       </div>
     );
   }
