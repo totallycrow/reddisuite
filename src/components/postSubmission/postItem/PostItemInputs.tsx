@@ -73,6 +73,7 @@ export const PostItemInputs = ({
             callback={setTitle}
             disabled={isSubmittedOK || isLoading}
             isValid={isFormItemValidated.titleValid}
+            label=""
           />
 
           <InputItem
@@ -84,6 +85,7 @@ export const PostItemInputs = ({
             callback={setLink}
             disabled={isSubmittedOK || isLoading}
             isValid={isFormItemValidated.linkValid}
+            label=""
           />
 
           <InputItem
@@ -94,6 +96,8 @@ export const PostItemInputs = ({
             placeholder="Enter your subreddit name here..."
             callback={setUserInput}
             disabled={true}
+            label=""
+            isValid={true}
           />
         </div>
         <div>
@@ -124,7 +128,7 @@ export const PostItemInputs = ({
             link === "" ||
             userInput === "" ||
             isSubmittedOK ||
-            isLoading ||
+            isLoading ||            
             isSubmitting ||
             !isFormItemValidated.isValid
               ? true

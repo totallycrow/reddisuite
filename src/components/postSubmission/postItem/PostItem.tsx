@@ -8,20 +8,12 @@ import { PostItemInputs } from "./PostItemInputs";
 import { FormObserver } from "../../../utils/formObserver";
 import { useFormItemValidation } from "../../../hooks/useFormItemValidation/useFormItemValidation";
 
-// const LoadingStatusContext = createContext("Idle");
-
-export interface IPostFormValues {
-  title: string;
-  link: string;
-  subreddit: string;
-  triggerLocalChange: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
 export const PostItem = (postConfig: IPostFormValues) => {
   const [loadingState, setLoadingState] = useState("Idle");
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const formObserver = useMemo(() => FormObserver.getInstance(), []);
+
+  const isSubmitting = formObserver.isAnyInputSubmitting();
 
   // Form Controls
   const { title, setTitle, link, setLink, userInput, setUserInput } =
@@ -48,8 +40,7 @@ export const PostItem = (postConfig: IPostFormValues) => {
       userInput,
       link,
       selectedFlair,
-      setLoadingState,
-      setIsSubmitting
+      setLoadingState
     );
 
   const isFormItemValidated = useFormItemValidation(
@@ -88,7 +79,6 @@ export const PostItem = (postConfig: IPostFormValues) => {
   useEffect(() => {
     postConfig.triggerLocalChange(true);
 
-
     if (formObserver.isSubredditInList(userInput)) {
       console.log("UPDATING");
 
@@ -105,6 +95,7 @@ export const PostItem = (postConfig: IPostFormValues) => {
         sendData: sendData,
         successfullySubmitted: false,
         isSubmitted: false,
+        isSubmitting: false,
         validated: isFormItemValidated.isValid,
         flairID: selectedFlair,
         isIdle: idle,
@@ -119,6 +110,7 @@ export const PostItem = (postConfig: IPostFormValues) => {
         link: link,
         successfullySubmitted: false,
         isSubmitted: false,
+        isSubmitting: false,
         validated: isFormItemValidated.isValid,
         flairID: selectedFlair,
         isIdle: false,
@@ -166,6 +158,12 @@ export const PostItem = (postConfig: IPostFormValues) => {
 
   return (
     <div>
+      <h1>
+        Is Submitting? :{" "}
+        {formObserver.getFormItemBySubreddit(userInput)?.isSubmitting
+          ? "YES"
+          : "NO"}
+      </h1>
       <h1>Loading Status: {loadingState}</h1>
       <div>Submission Status: {submissionStatus}</div>
       <div>Validation Status: {isFormItemValidated.isValid ? "YES" : "NO"}</div>
@@ -203,3 +201,10 @@ export const PostItem = (postConfig: IPostFormValues) => {
     </div>
   );
 };
+
+export interface IPostFormValues {
+  title: string;
+  link: string;
+  subreddit: string;
+  triggerLocalChange: React.Dispatch<React.SetStateAction<boolean>>;
+}

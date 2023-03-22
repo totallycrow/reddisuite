@@ -8,7 +8,7 @@ export const InputItem = ({
   callback,
   disabled,
   label = "",
-  isValid,
+  isValid = false,
 }: {
   title: string;
   key: string;

@@ -26,6 +26,9 @@ export const usePostControls = (config: IConfig) => {
   const [isAnySubmitted, setIsAnySubmitted] = useState(
     formObserver.isAnyInputSubmitted()
   );
+  const [isAnyInputSubmitting, setIsAnyInputSubmitting] = useState(
+    formObserver.isAnyInputSubmitting()
+  );
 
   //   Listen for change in debouced inputs and split & generate list of subreddits
   useEffect(() => {
@@ -52,6 +55,7 @@ export const usePostControls = (config: IConfig) => {
   useEffect(() => {
     setLocalChangeTriggered(false);
     setIsAnySubmitted(formObserver.isAnyInputSubmitted());
+    setIsAnyInputSubmitting(formObserver.isAnyInputSubmitting());
     const status = formObserver.isFullyValidated();
 
     setIsMainPostControllerFullyValidated(status);
@@ -77,6 +81,8 @@ export const usePostControls = (config: IConfig) => {
     isTitleValidated,
     isLinkValidated,
     setLocalChangeTriggered,
+    isAnyInputSubmitting,
+    setIsAnyInputSubmitting,
   };
 };
 
