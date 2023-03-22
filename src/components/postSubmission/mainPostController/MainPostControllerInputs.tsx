@@ -30,6 +30,8 @@ export const MainPostControllerInputs = ({
           placeholder="Enter your image title here..."
           callback={setTitle}
           isValid={validation.isTitleValidated}
+          key=""
+          disabled={false}
         />
 
         {/* **************************************************************************************** */}
@@ -41,6 +43,8 @@ export const MainPostControllerInputs = ({
           placeholder="Enter your image link here..."
           callback={setLink}
           isValid={validation.isLinkValidated}
+          key=""
+          disabled={false}
         />
 
         {/* **************************************************************************************** */}
@@ -53,6 +57,8 @@ export const MainPostControllerInputs = ({
           placeholder="Enter your image link here..."
           callback={setUserInput}
           isValid={validation.isSubListValidated}
+          key=""
+          disabled={false}
         />
       </div>
     </div>
