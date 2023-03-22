@@ -5,9 +5,10 @@ import { MainPostControllerInputs } from "./MainPostControllerInputs";
 import { FormObserver } from "../../../utils/formObserver";
 import { usePostControls } from "../../../hooks/usePostControls";
 
-export type ITitleLinkValidation = {
+export type ITitleLinkSublistValidation = {
   isTitleValidated: boolean;
   isLinkValidated: boolean;
+  isSubListValidated: boolean;
 };
 
 export const MainPostController = () => {
@@ -22,6 +23,7 @@ export const MainPostController = () => {
     clean,
     isLinkValidated,
     isTitleValidated,
+    isSubListValidated,
     setLocalChangeTriggered,
     isAnyInputSubmitting,
     setIsAnyInputSubmitting,
@@ -31,8 +33,9 @@ export const MainPostController = () => {
     return {
       isTitleValidated: isTitleValidated,
       isLinkValidated: isLinkValidated,
+      isSubListValidated: isSubListValidated,
     };
-  }, [isTitleValidated, isLinkValidated]);
+  }, [isTitleValidated, isLinkValidated, isSubListValidated]);
 
   return (
     <div>
@@ -105,6 +108,8 @@ export const MainPostController = () => {
                     link={config.link}
                     subreddit={sub}
                     triggerLocalChange={setLocalChangeTriggered}
+                    isAnyInputSubmitting={isAnyInputSubmitting}
+                    setIsAnyInputSubmitting={setIsAnyInputSubmitting}
                   />
                 );
               })
