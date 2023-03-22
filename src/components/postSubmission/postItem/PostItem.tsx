@@ -88,39 +88,6 @@ export const PostItem = (postConfig: IPostFormValues) => {
   useEffect(() => {
     postConfig.triggerLocalChange(true);
 
-    // check if exists and is the same
-    // if (
-    //   formObserver.isSubredditInList(userInput) &&
-    //   formObserver.areFormItemsIdentical({
-    //     title: title,
-    //     link: link,
-    //     subreddit: userInput,
-    //     sendData: sendData,
-    //     isSubmitted: formObserver.getFormItemBySubreddit(userInput).isSubmitted,
-    //     successfullySubmitted:
-    //       formObserver.getFormItemBySubreddit(userInput).successfullySubmitted,
-    //     validated: isFormItemValidated.isValid,
-    //     flairID: selectedFlair,
-    //     isIdle: formObserver.getFormItemBySubreddit(userInput).isIdle,
-    //     isError: formObserver.getFormItemBySubreddit(userInput).isError,
-    //   })
-    // ) {
-    //   console.log("DUPLICATE FOUND");
-    //   formObserver.updateFormItem({
-    //     title: title,
-    //     link: link,
-    //     subreddit: userInput,
-    //     sendData: sendData,
-    //     successfullySubmitted: false,
-    //     isSubmitted: false,
-    //     validated: isFormItemValidated.isValid,
-    //     flairID: selectedFlair,
-    //     isIdle: formObserver.getFormItemBySubreddit(userInput).isIdle || false,
-    //     isError:
-    //       formObserver.getFormItemBySubreddit(userInput).isError || false,
-    //   });
-    //   return;
-    // }
 
     if (formObserver.isSubredditInList(userInput)) {
       console.log("UPDATING");

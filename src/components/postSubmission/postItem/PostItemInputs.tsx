@@ -32,6 +32,9 @@ export const PostItemInputs = ({
     setLink,
     userInput,
     setUserInput,
+    // ?????????????????????????????????????????????????????????????????????????????????????????
+    // HOW TO GET THESE TYPES?
+    // ?????????????????????????????????????????????????????????????????????????????????????????
     mutationController,
     subRedditController,
     sendData,
@@ -42,9 +45,6 @@ export const PostItemInputs = ({
     isError,
     isSubmitting,
   } = config;
-
-  // const bears = useBearStore((state) => state.bears);
-  // const increasePopulation = useBearStore((state) => state.increasePopulation);
 
   const isSubmittedOK = submissionStatus === "SUCCESS";
   const isLoading = loadingState !== "Idle";
@@ -60,22 +60,10 @@ export const PostItemInputs = ({
             : "rounded border border-slate-800 p-4"
         }
       >
-        {/* <div>{bears}</div> */}
-        {/* <button onClick={increasePopulation}>add</button> */}
         <h2 className="p-4">Submit Your Post to: r/{userInput}</h2>
         <div>{isSubmittedOK ? <div>SUBMITTED SUCESSFULLY!</div> : ""}</div>
 
         <div>
-          {/* <div>
-            Title:{" "}
-            <input
-              type="text"
-              className="border-2 border-gray-800"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              disabled={isSubmittedOK || isLoading}
-            />
-          </div> */}
           <InputItem
             title={"Post Title"}
             key="title"
@@ -86,16 +74,6 @@ export const PostItemInputs = ({
             disabled={isSubmittedOK || isLoading}
             isValid={isFormItemValidated.titleValid}
           />
-          {/* <div>
-            Link:{" "}
-            <input
-              type="text"
-              className="border-2 border-gray-800"
-              value={link}
-              onChange={(e) => setLink(e.target.value)}
-              disabled={isSubmittedOK || isLoading}
-            />
-          </div> */}
 
           <InputItem
             title={"Link URL"}
@@ -107,16 +85,7 @@ export const PostItemInputs = ({
             disabled={isSubmittedOK || isLoading}
             isValid={isFormItemValidated.linkValid}
           />
-          {/* <div>
-            Subreddit:{" "}
-            <input
-              type="text"
-              className="border-2 border-gray-800"
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              disabled={true}
-            />
-          </div> */}
+
           <InputItem
             title={"Subreddit"}
             key="subreddit"
@@ -197,10 +166,6 @@ export const PostItemInputs = ({
             </p>
           )}
       </div>
-
-      {/*  */}
-      {/*  */}
-      {/*  */}
       <div></div>
     </div>
   );
