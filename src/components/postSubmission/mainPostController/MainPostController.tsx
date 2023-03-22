@@ -100,7 +100,7 @@ export const MainPostController = () => {
           clean &&
           validation.isLinkValidated &&
           validation.isTitleValidated
-            ? [...subsList].map((sub) => {
+            ? ([...subsList] as Array<string>).map((sub) => {
                 return (
                   <PostItem
                     key={sub}
@@ -119,7 +119,7 @@ export const MainPostController = () => {
       {(isAnySubmitted || !isMainPostControllerFullyValidated) &&
       config.title !== "" &&
       config.link !== "" &&
-      subsList.length !== 0 &&
+      subsList.size !== 0 &&
       debouncedStatus !== "Loading..." ? (
         <p>Cannot submit all post at once because of errors in validation.</p>
       ) : (
