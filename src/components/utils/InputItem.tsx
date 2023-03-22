@@ -1,22 +1,41 @@
 import React from "react";
 
-export const InputItem = (props: any) => {
+export const InputItem = ({
+  title,
+  value,
+  type,
+  placeholder,
+  callback,
+  disabled,
+  label = "",
+  isValid,
+}: {
+  title: string;
+  key: string;
+  value: string;
+  type: string;
+  placeholder: string;
+  callback: React.Dispatch<React.SetStateAction<string>>;
+  disabled: boolean;
+  label: string;
+  isValid: boolean;
+}) => {
   return (
     <div>
-      <label className="label">{props.label}</label>
+      <label className="label">{label}</label>
       <label className="input-group">
-        <span className="w-32">{props.title}</span>
+        <span className="w-32">{title}</span>
         <input
-          disabled={props.disabled}
-          type={props.type}
-          placeholder={props.placeholder}
+          disabled={disabled}
+          type={type}
+          placeholder={placeholder}
           className={
-            props.isValid
+            isValid
               ? "input-bordered input"
               : "input-bordered input-error input w-full max-w-xs"
           }
-          value={props.value}
-          onChange={(e) => props.callback(e.target.value)}
+          value={value}
+          onChange={(e) => callback(e.target.value)}
         />
       </label>
     </div>
