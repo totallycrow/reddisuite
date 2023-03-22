@@ -15,7 +15,7 @@ export const usePostControls = (config: IConfig) => {
 
   const formObserver = FormObserver.getInstance();
 
-  const [subsList, setSubsList] = useState(Array<string>);
+  const [subsList, setSubsList] = useState(new Set());
   const [clean, setClean] = useState(false);
   const [localChangeTriggered, setLocalChangeTriggered] = useState(false);
   const [
@@ -35,18 +35,29 @@ export const usePostControls = (config: IConfig) => {
     if (debouncedInput === "") return;
     if (!debouncedInput.includes(",")) {
       setClean(true);
-      setSubsList([debouncedInput]);
+
+      const initialList = new Set();
+      initialList.add(debouncedInput);
+
+      setSubsList(initialList);
       return;
     }
 
-    const list = debouncedInput.split(",");
+    const userList = debouncedInput.split(",");
+    const sanitizedSet = new Set();
 
-    const sanitizedList = list.map((splitSub: string) => {
-      return splitSub.trim();
+    userList.forEach((item: string) => {
+      sanitizedSet.add(item);
     });
 
+    // const sanitizedList = new Set(
+    //   list.map((splitSub: string) => {
+    //     return splitSub.trim();
+    //   })
+    // );
+
     setClean(true);
-    setSubsList(sanitizedList);
+    setSubsList(sanitizedSet);
     const status = formObserver.isFullyValidated();
 
     setIsMainPostControllerFullyValidated(status);
@@ -71,7 +82,7 @@ export const usePostControls = (config: IConfig) => {
 
   const isTitleValidated = isTitleValid(config.title);
   const isLinkValidated = isValidUrl(config.link);
-  const isSubListValidated = subsList.length > 0;
+  const isSubListValidated = subsList.size > 0;
 
   return {
     isMainPostControllerFullyValidated,
