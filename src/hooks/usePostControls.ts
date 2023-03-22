@@ -30,9 +30,14 @@ export const usePostControls = (config: IConfig) => {
     formObserver.isAnyInputSubmitting()
   );
 
+  // useEffect(() => {}, []);
+
   //   Listen for change in debouced inputs and split & generate list of subreddits
   useEffect(() => {
-    if (debouncedInput === "") return;
+    if (debouncedInput === "") {
+      setSubsList(new Set());
+      return;
+    }
     if (!debouncedInput.includes(",")) {
       setClean(true);
 

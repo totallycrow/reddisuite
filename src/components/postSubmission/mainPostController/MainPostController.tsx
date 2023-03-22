@@ -37,6 +37,8 @@ export const MainPostController = () => {
     };
   }, [isTitleValidated, isLinkValidated, isSubListValidated]);
 
+  console.log(subsList);
+
   return (
     <div>
       <h1>Setup Your Post</h1>
