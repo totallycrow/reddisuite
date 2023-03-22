@@ -96,11 +96,11 @@ export const MainPostController = () => {
         </div>
 
         <div>
-          {subsList.length > 0 &&
+          {subsList.size > 0 &&
           clean &&
           validation.isLinkValidated &&
           validation.isTitleValidated
-            ? subsList.map((sub) => {
+            ? [...subsList].map((sub) => {
                 return (
                   <PostItem
                     key={sub}
