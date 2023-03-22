@@ -48,12 +48,14 @@ export const usePostingController = (
     if (mutationController.status !== "idle") {
       setLoadingState("Loading...");
       setSubmissionStatus("LOADING");
+      formObserver.setIsSubmitting(sub, true);
     }
 
     if (mutationResponse && mutationResponse.explanation) {
       setSubmissionStatus("ERROR");
       formObserver.updateSubmissionStatus(sub, false);
       formObserver.setIsError(sub, true);
+      formObserver.setIsSubmitting(sub, false);
     }
 
     if (mutationResponse.errors && mutationResponse.errors.length === 0) {
@@ -62,6 +64,7 @@ export const usePostingController = (
       setLoadingState("Idle");
       setSubmissionStatus("SUCCESS");
       formObserver.updateSubmissionStatus(sub, true);
+      formObserver.setIsSubmitting(sub, false);
     } else {
       console.log("ERROR POSTING DATA!!");
       setLoadingState("Idle");
@@ -70,6 +73,7 @@ export const usePostingController = (
       setSubmissionStatus("ERROR");
       formObserver.updateSubmissionStatus(sub, false);
       formObserver.setIsError(sub, true);
+      formObserver.setIsSubmitting(sub, false);
     }
   }, [mutationController]);
 
@@ -77,10 +81,12 @@ export const usePostingController = (
     if (mutationController.isLoading) {
       setLoadingState("Loading");
       setSubmissionStatus("LOADING");
+      formObserver.setIsSubmitting(sub, true);
     }
   }, [mutationController.isLoading]);
 
   const sendData = async () => {
+    formObserver.setIsSubmitting(sub, true);
     if (setIsSubmitting) {
       setIsSubmitting(true);
     }
@@ -116,6 +122,7 @@ export const usePostingController = (
     if (setIsSubmitting) {
       setIsSubmitting(false);
     }
+    formObserver.setIsSubmitting(sub, false);
     return;
   };
 

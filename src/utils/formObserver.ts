@@ -1,6 +1,7 @@
 export interface IFormItem {
   sendData: () => Promise<void>;
   isSubmitted: boolean;
+  isSubmitting: boolean;
   successfullySubmitted: boolean;
   validated: boolean;
   isIdle: boolean;
@@ -83,6 +84,8 @@ export class FormObserver {
     this.subscribers.forEach((formItem) => {
       console.log("******()()()()() FOREACH FIRED ^^^^^^^^^^^^^^^^^^");
 
+      formItem.isSubmitting = true;
+
       console.log(formItem.sendData);
       console.log(formItem.subreddit);
       calls.push(formItem.sendData);
@@ -91,7 +94,7 @@ export class FormObserver {
     for (let i = 0; i < this.subscribers.length; i++) {
       console.log("******()()()()() LOOP FIRED ^^^^^^^^^^^^^^^^^^");
 
-      this.subscribers[i]?.sendData();
+      void this.subscribers[i]?.sendData();
     }
   }
   public getFormItems() {
@@ -166,6 +169,7 @@ export class FormObserver {
     console.log(listItem);
 
     if (!listItem) return false;
+
     listItem.isIdle = status;
 
     console.log(listItem);
@@ -205,5 +209,25 @@ export class FormObserver {
     return this.subscribers.some(
       (listItem) => listItem.successfullySubmitted === true
     );
+  }
+
+  public setIsSubmitting(subreddit: string, status: boolean) {
+    console.log("UPDATE SUBMISSION FIRED");
+    const listItem = this.getFormItemBySubreddit(subreddit);
+
+    console.log(listItem);
+
+    if (!listItem) return false;
+    listItem.isSubmitting = status;
+    console.log(listItem);
+    return true;
+  }
+
+  public isAnyInputSubmitting() {
+    console.log("__________ IS ANY SUBMITTING FIRED!");
+    if (this.subscribers.length === 0) return false;
+
+    console.log("TESTING");
+    return this.subscribers.some((listItem) => listItem.isSubmitting === true);
   }
 }

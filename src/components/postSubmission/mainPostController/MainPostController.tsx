@@ -23,6 +23,8 @@ export const MainPostController = () => {
     isLinkValidated,
     isTitleValidated,
     setLocalChangeTriggered,
+    isAnyInputSubmitting,
+    setIsAnyInputSubmitting,
   } = usePostControls(config);
 
   const validation = useMemo(() => {
@@ -49,9 +51,13 @@ export const MainPostController = () => {
           disabled={
             isAnySubmitted ||
             !isMainPostControllerFullyValidated ||
-            debouncedStatus === "Loading..."
+            debouncedStatus === "Loading..." ||
+            isAnyInputSubmitting
           }
-          onClick={() => void formObserver.publish()}
+          onClick={() => {
+            setIsAnyInputSubmitting(true);
+            void formObserver.publish();
+          }}
         >
           submit all
         </button>
@@ -119,9 +125,13 @@ export const MainPostController = () => {
         disabled={
           isAnySubmitted ||
           !isMainPostControllerFullyValidated ||
-          debouncedStatus === "Loading..."
+          debouncedStatus === "Loading..." ||
+          isAnyInputSubmitting
         }
-        onClick={() => void formObserver.publish()}
+        onClick={() => {
+          setIsAnyInputSubmitting(true);
+          void formObserver.publish();
+        }}
       >
         submit all
       </button>
