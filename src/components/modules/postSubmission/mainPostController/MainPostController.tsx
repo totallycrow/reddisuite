@@ -123,7 +123,10 @@ export const MainPostController = () => {
       config.link !== "" &&
       subsList.size !== 0 &&
       debouncedStatus !== "Loading..." ? (
-        <p>Cannot submit all post at once because of errors in validation.</p>
+        <p>
+          Cannot submit all post at once because of errors in validation or
+          posts have already been submitted.
+        </p>
       ) : (
         ""
       )}

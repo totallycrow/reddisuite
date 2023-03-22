@@ -66,6 +66,16 @@ export const usePostingController = (
       setSubmissionStatus("SUCCESS");
       formObserver.updateSubmissionStatus(sub, true);
       formObserver.setIsSubmitting(sub, false);
+
+      // ************************************************************************************
+      // GRAB POST ID IF SUCCESSFUL
+      // TODO: ADD TO DATABASE
+      // ************************************************************************************
+
+      console.log("SUCESS - POST ID:");
+      console.log(mutationController.data.json.data.id);
+
+      // alert(mutationController.data.json.data.id);
     } else {
       console.log("ERROR POSTING DATA!!");
       setLoadingState("Idle");
@@ -85,6 +95,10 @@ export const usePostingController = (
       formObserver.setIsSubmitting(sub, true);
     }
   }, [mutationController.isLoading]);
+
+  // ************************************************************************************
+  // ************************************************************************************// ************************************************************************************
+  // ************************************************************************************
 
   const sendData = async () => {
     formObserver.setIsSubmitting(sub, true);
@@ -126,6 +140,8 @@ export const usePostingController = (
     formObserver.setIsSubmitting(sub, false);
     return;
   };
+
+  // ************************************************************************************
 
   return { mutationController, sendData, submissionStatus };
 };
