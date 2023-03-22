@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
-import { IFormItem } from "../../utils/formObserver";
-import { IError } from "../useFlairController";
-import { IFullSubredditData, ISubredditError } from "../../services/reddit";
+import { IFormItem } from "../../../utils/formObserver";
+import { IError } from "../../controllers/postSubmission/useFlairController";
+import { IFullSubredditData, ISubredditError } from "../../../services/reddit";
 import { isValidUrl } from "./utils";
 
 function isISubredditError(

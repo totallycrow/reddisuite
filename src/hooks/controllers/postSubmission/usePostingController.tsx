@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
-import { api } from "../utils/api";
-import { FormObserver } from "../utils/formObserver";
+
+import { api } from "../../../utils/api";
+import { FormObserver } from "../../../utils/formObserver";
 
 const formObserver = FormObserver.getInstance();
 

@@ -1,9 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
-import {
-  getSubredditFlairs,
-  getSubredditRequirements,
-} from "../../../services/reddit";
+import { getSubredditRequirements } from "../../../services/reddit";
+
 
 // axios<{prefs:[]}>
 

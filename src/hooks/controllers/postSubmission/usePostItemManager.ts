@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { FormObserver } from "../utils/formObserver";
+import { FormObserver } from "../../../utils/formObserver";
 import { useFormController } from "./useFormController";
-import { IPostFormValues } from "../components/postSubmission/postItem/PostItem";
-import { useSubredditController } from "./useSubredditController";
+import { IPostFormValues } from "../../../components/modules/postSubmission/postItem/PostItem";
 import { useFlairController } from "./useFlairController";
+
+import { useFormItemValidation } from "../../validation/useFormItemValidation/useFormItemValidation";
+import { useSubredditController } from "./useSubredditController";
 import { usePostingController } from "./usePostingController";
-import { useFormItemValidation } from "./useFormItemValidation/useFormItemValidation";
 
 export const usePostItemManager = (postConfig: IPostFormValues) => {
   const [loadingState, setLoadingState] = useState("Idle");

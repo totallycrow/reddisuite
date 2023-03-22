@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
 import { PostItem } from "../postItem/PostItem";
-import { useFormController } from "../../../hooks/useFormController";
+import { useFormController } from "../../../../hooks/controllers/postSubmission/useFormController";
 import { MainPostControllerInputs } from "./MainPostControllerInputs";
-import { FormObserver } from "../../../utils/formObserver";
-import { usePostControls } from "../../../hooks/usePostControls";
+import { FormObserver } from "../../../../utils/formObserver";
+import { usePostControls } from "../../../../hooks/controllers/postSubmission/usePostControls";
 
 export type ITitleLinkSublistValidation = {
   isTitleValidated: boolean;
