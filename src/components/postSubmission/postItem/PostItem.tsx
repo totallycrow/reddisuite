@@ -143,6 +143,8 @@ export const PostItem = (postConfig: IPostFormValues) => {
     isFormItemValidated,
     isError,
     isSubmitting,
+    isAnyInputSubmitting: postConfig.isAnyInputSubmitting,
+    setIsAnyInputSubmitting: postConfig.setIsAnyInputSubmitting,
   };
 
   const isLoading =
@@ -154,13 +156,15 @@ export const PostItem = (postConfig: IPostFormValues) => {
   const shouldShowSpinner =
     isLoading ||
     isSubmitting ||
+    postConfig.isAnyInputSubmitting ||
     (debouncedStatus === "Loading..." && !hasBeenSubmitted);
 
   return (
     <div>
       <h1>
         Is Submitting? :{" "}
-        {formObserver.getFormItemBySubreddit(userInput)?.isSubmitting
+        {formObserver.getFormItemBySubreddit(userInput)?.isSubmitting ||
+        postConfig.isAnyInputSubmitting
           ? "YES"
           : "NO"}
       </h1>
@@ -207,4 +211,6 @@ export interface IPostFormValues {
   link: string;
   subreddit: string;
   triggerLocalChange: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsAnyInputSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
+  isAnyInputSubmitting: boolean;
 }

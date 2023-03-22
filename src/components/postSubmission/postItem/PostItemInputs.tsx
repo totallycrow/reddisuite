@@ -18,6 +18,8 @@ interface IPostItemInputsConfig {
   isFormItemValidated: IFormValidationResult;
   isError: boolean;
   isSubmitting: boolean;
+  isAnyInputSubmitting: boolean;
+  setIsAnyInputSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const PostItemInputs = ({
@@ -44,6 +46,7 @@ export const PostItemInputs = ({
     isFormItemValidated,
     isError,
     isSubmitting,
+    setIsAnyInputSubmitting,
   } = config;
 
   const isSubmittedOK = submissionStatus === "SUCCESS";
@@ -69,7 +72,7 @@ export const PostItemInputs = ({
             key="title"
             value={title}
             type="text"
-            placeholder="Enter your image title here..."
+            placeholder="Enter your post title here..."
             callback={setTitle}
             disabled={isSubmittedOK || isLoading}
             isValid={isFormItemValidated.titleValid}
@@ -81,7 +84,7 @@ export const PostItemInputs = ({
             key="link"
             value={link}
             type="text"
-            placeholder="Enter your image title here..."
+            placeholder="Enter your image URL here..."
             callback={setLink}
             disabled={isSubmittedOK || isLoading}
             isValid={isFormItemValidated.linkValid}
@@ -128,13 +131,16 @@ export const PostItemInputs = ({
             link === "" ||
             userInput === "" ||
             isSubmittedOK ||
-            isLoading ||            
+            isLoading ||
             isSubmitting ||
             !isFormItemValidated.isValid
               ? true
               : false
           }
-          onClick={() => void sendData()}
+          onClick={() => {
+            setIsAnyInputSubmitting(true);
+            void sendData();
+          }}
         >
           Submit
         </button>

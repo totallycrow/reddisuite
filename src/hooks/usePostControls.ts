@@ -71,6 +71,7 @@ export const usePostControls = (config: IConfig) => {
 
   const isTitleValidated = isTitleValid(config.title);
   const isLinkValidated = isValidUrl(config.link);
+  const isSubListValidated = subsList.length > 0;
 
   return {
     isMainPostControllerFullyValidated,
@@ -80,6 +81,7 @@ export const usePostControls = (config: IConfig) => {
     clean,
     isTitleValidated,
     isLinkValidated,
+    isSubListValidated,
     setLocalChangeTriggered,
     isAnyInputSubmitting,
     setIsAnyInputSubmitting,

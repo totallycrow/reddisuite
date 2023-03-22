@@ -1,14 +1,14 @@
 import React from "react";
 import { InputItem } from "../../utils/InputItem";
 import { IConfig } from "../../../hooks/usePostControls";
-import { ITitleLinkValidation } from "./MainPostController";
+import { ITitleLinkSublistValidation } from "./MainPostController";
 
 export const MainPostControllerInputs = ({
   inputsConfig,
   validation,
 }: {
   inputsConfig: IConfig;
-  validation: ITitleLinkValidation;
+  validation: ITitleLinkSublistValidation;
 }) => {
   const { setTitle, setLink, setUserInput, title, link, userInput } =
     inputsConfig;
@@ -52,7 +52,7 @@ export const MainPostControllerInputs = ({
           type="text"
           placeholder="Enter your image link here..."
           callback={setUserInput}
-          isValid={true}
+          isValid={validation.isSubListValidated}
         />
       </div>
     </div>
