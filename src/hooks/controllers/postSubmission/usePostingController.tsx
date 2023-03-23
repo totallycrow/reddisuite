@@ -6,7 +6,13 @@ import { PrismaClient } from "@prisma/client";
 
 const formObserver = FormObserver.getInstance();
 
-const prisma = new PrismaClient();
+// const delay = (millisec: number) => {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve("");
+//     }, millisec);
+//   });
+// };
 
 export interface IPostData {
   title: string;
@@ -70,32 +76,6 @@ export const usePostingController = (
       formObserver.updateSubmissionStatus(sub, true);
       formObserver.setIsSubmitting(sub, false);
 
-      // ************************************************************************************
-      // GRAB POST ID IF SUCCESSFUL
-      // TODO: ADD TO DATABASE
-      // ************************************************************************************
-
-      void prisma.redditPost.upsert({
-        where: {
-          redditId: "test",
-        },
-        update: {
-          authorId: "test",
-        },
-        create: {
-          redditId: "Test",
-          title: "string",
-          authorId: "test",
-          url: "test",
-          sub: "test",
-          isSubmitted: true,
-          isSuccess: false,
-        },
-      });
-
-      console.log("SUCESS - POST ID:");
-      console.log(mutationController.data.json.data.id);
-
       // alert(mutationController.data.json.data.id);
     } else {
       console.log("ERROR POSTING DATA!!");
@@ -136,17 +116,9 @@ export const usePostingController = (
     console.log(link);
     console.log(flairID);
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
-    const waitforme = (millisec: number) => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          resolve("");
-        }, millisec);
-      });
-    };
-
-    await waitforme(1000);
+    // await delay(1000);
 
     await mutationController.mutateAsync({
       title: title,
