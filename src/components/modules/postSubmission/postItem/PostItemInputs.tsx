@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { InputItem } from "../../../utils/InputItem";
+import { InputItem } from "../../../ui/InputItem";
 import { IFormValidationResult } from "../../../../hooks/validation/useFormItemValidation/useFormItemValidation";
 
 interface IPostItemInputsConfig {
