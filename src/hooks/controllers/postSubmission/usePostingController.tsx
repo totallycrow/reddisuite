@@ -2,8 +2,11 @@ import { useCallback, useEffect, useState } from "react";
 
 import { api } from "../../../utils/api";
 import { FormObserver } from "../../../utils/formObserver";
+import { PrismaClient } from "@prisma/client";
 
 const formObserver = FormObserver.getInstance();
+
+const prisma = new PrismaClient();
 
 export interface IPostData {
   title: string;
@@ -71,6 +74,24 @@ export const usePostingController = (
       // GRAB POST ID IF SUCCESSFUL
       // TODO: ADD TO DATABASE
       // ************************************************************************************
+
+      void prisma.redditPost.upsert({
+        where: {
+          redditId: "test",
+        },
+        update: {
+          authorId: "test",
+        },
+        create: {
+          redditId: "Test",
+          title: "string",
+          authorId: "test",
+          url: "test",
+          sub: "test",
+          isSubmitted: true,
+          isSuccess: false,
+        },
+      });
 
       console.log("SUCESS - POST ID:");
       console.log(mutationController.data.json.data.id);

@@ -14,26 +14,16 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
-model Test1 {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
-
 // Necessary for Next auth
+// ******************************************
+// ****************** NEXT AUTH ****************************
+// ******************************************
 model Account {
     id                String  @id @default(cuid())
     userId            String
     type              String
     provider          String
-    providerAccountId String
+    providerAccountId String @unique
     refresh_token     String? @db.Text
     access_token      String? @db.Text
     expires_at        Int?
@@ -42,8 +32,9 @@ model Account {
     id_token          String? @db.Text
     session_state     String?
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-
     @@unique([provider, providerAccountId])
+    posts             RedditPost[]
+    test              String @default("Test")
 }
 
 model Session {
@@ -71,3 +62,21 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+// ********************************************************
+// ********************************************************
+
+model RedditPost {
+    id          String  @id @default(cuid())
+    redditId    String? @unique  
+    author      Account @relation(fields: [authorId], references: [providerAccountId]) 
+    authorId    String       
+    url         String
+    title       String
+    sub         String
+    isSubmitted Boolean
+    isSuccess   Boolean      
+}
+
+
+
+

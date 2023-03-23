@@ -24,6 +24,7 @@ declare module "next-auth" {
       // ...other properties
       // role: UserRole;
       token: string | null;
+      redditId: string | null;
     } & DefaultSession["user"];
   }
 
@@ -62,6 +63,8 @@ export const authOptions: NextAuthOptions = {
         where: { userId: user.id, provider: "reddit" },
       });
       if (!reddit) throw new Error("error");
+
+      console.log(reddit.providerAccountId);
 
       console.log(
         "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
@@ -166,6 +169,7 @@ export const authOptions: NextAuthOptions = {
         console.log(accessToken);
         session.user.id = user.id;
         session.user.token = accessToken;
+        session.user.redditId = reddit.providerAccountId;
 
         // session.user.role = user.role; <-- put other properties on the session here
       }
