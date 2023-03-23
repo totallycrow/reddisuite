@@ -1,12 +1,5 @@
 import axios from "axios";
 
-// const getabcRequest = "https://oauth.reddit.com/api/v1/me/prefs"
-
-// const fetchSingleAbc = (data) => {
-//     return axios(getabcRequest, {data})
-
-// }
-
 export interface IFullSubredditData {
   flairs: IFlair[];
   titleTags: string[];
@@ -70,10 +63,6 @@ export const getSubredditRequirements = async (
   subReddit: string
 ): Promise<IFullSubredditData | ISubredditError> => {
   const url = `https://oauth.reddit.com/api/v1/${subReddit}/post_requirements`;
-  console.log(
-    "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ SERVICES @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-  );
-  console.log(url);
 
   const response = await axios.get<ISubredditInfo | ISubredditError>(url, {
     method: "GET",
@@ -81,20 +70,10 @@ export const getSubredditRequirements = async (
       Authorization: `bearer ${token}`,
     },
     url: url,
-    // ??????
     validateStatus: undefined,
   });
-  console.log(response.data);
-
-  //   if (typeof response !== "object" || response === null)
-  //     throw new Error("Error");
-
-  //   if (!Object.hasOwn(response, "status"))
-  //     throw new Error("Error fetching data");
 
   if (response.status === 400 || response.status === 404) {
-    console.log("RESPONSE STATUS CAUGHT 400 OR 404");
-
     return response.data as ISubredditError;
   }
 
@@ -103,8 +82,6 @@ export const getSubredditRequirements = async (
     Object.hasOwn(response.data, "explanation") &&
     Object.hasOwn(response.data, "reason")
   ) {
-    console.log("ERROR PATH");
-    console.log(response.data);
     return response.data as ISubredditError;
   }
 
@@ -117,27 +94,13 @@ export const getSubredditRequirements = async (
 
   //   NO DATA NEEDED
   if (!isMoreSubredditInfoNeeded) {
-    console.log("ALL GOOD, NO MORE INFO NEEDED");
-    // return response.data as ISubredditInfo;
-
     const data = {
       flairs: [],
       titleTags: [],
       subredditInfo: response.data as ISubredditInfo,
     };
-
     return data;
   }
-
-  //   TODO
-  //   need flair?
-  // const flair = getFlair()
-  //
-  //
-
-  console.log(
-    "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ SERVICES @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-  );
 
   //   MORE INFO NEEDED
 
@@ -151,38 +114,19 @@ export const getSubredditRequirements = async (
   return data;
 };
 
-//   if (response) return response as string;
-
-//   return response as number;
-
-// const fetchMultipleAbc = (data) => {
-//     const requests = data.map(el => {
-//         return () => axios(getabcRequest, {el.data})
-//     })
-
-//   return Promise.all(requests)
-// }
-
-// export {
-//     fetchSingleAbc
-// }
-
 export const getSubredditFlairs = async (token: string, subReddit: string) => {
   const url = `https://oauth.reddit.com//r/${subReddit}/api/link_flair_v2`;
+
   const response = await axios.get(url, {
     method: "GET",
     headers: {
       Authorization: `bearer ${token}`,
     },
     url: url,
-
     validateStatus: undefined,
   });
-  console.log(response.data);
 
   if (response.status === 400 || response.status === 404) {
-    console.log("RESPONSE STATUS CAUGHT 400 OR 404");
-
     throw new Error("Error fetching flairs");
   }
 
@@ -190,3 +134,6 @@ export const getSubredditFlairs = async (token: string, subReddit: string) => {
 
   return response.data as IFlair[];
 };
+
+export const delay = async (delayMs: number) =>
+  await new Promise((resolve) => setTimeout(resolve, delayMs));
