@@ -1,5 +1,5 @@
 import React from "react";
-import { InputItem } from "../../../utils/InputItem";
+import { InputItem } from "../../../ui/InputItem";
 import { IConfig } from "../../../../hooks/controllers/postSubmission/usePostControls";
 import { ITitleLinkSublistValidation } from "./MainPostController";
 
