@@ -7,6 +7,8 @@ import { authOptions } from "../server/auth";
 export default function Dashboard() {
   const { data: session } = useSession();
 
+  console.log(session);
+
   if (session) {
     return (
       <div className="main-dashboard">

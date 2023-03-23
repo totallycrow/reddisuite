@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import { getSubredditRequirements } from "../../../services/reddit";
-
+import { prisma } from "@prisma/client";
 
 // axios<{prefs:[]}>
 
@@ -186,6 +186,9 @@ export const exampleRouter = createTRPCRouter({
       const url = `https://oauth.reddit.com/api/submit`;
 
       const token = ctx.session?.user.token;
+      const userId = ctx.session?.user.id;
+      const redditId = ctx.session?.user.redditId;
+
       if (!token) throw new Error("Invalid Token");
 
       // https://www.reddit.com/api/v1/
@@ -241,7 +244,25 @@ export const exampleRouter = createTRPCRouter({
       console.log("_________________________RES____________________________");
       console.log(response);
 
-      // versje noda
+      // ADD POST TO DATABASE AS SUBMITTED BUT NOT YET OK/ERROR
+
+      await ctx.prisma.redditPost.upsert({
+        where: {
+          redditId: "test",
+        },
+        update: {
+          authorId: "test",
+        },
+        create: {
+          redditId: "Test",
+          title: "string",
+          authorId: "test",
+          url: "test",
+          sub: "test",
+          isSubmitted: true,
+          isSuccess: false,
+        },
+      });
 
       return response.json();
     }),
