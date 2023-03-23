@@ -39,9 +39,6 @@ export const exampleRouter = createTRPCRouter({
       };
     }),
 
-  getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.example.findMany();
-  }),
   getToken: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.account.findUnique({
       where: {
@@ -246,23 +243,23 @@ export const exampleRouter = createTRPCRouter({
 
       // ADD POST TO DATABASE AS SUBMITTED BUT NOT YET OK/ERROR
 
-      await ctx.prisma.redditPost.upsert({
-        where: {
-          redditId: "test",
-        },
-        update: {
-          authorId: "test",
-        },
-        create: {
-          redditId: "Test",
-          title: "string",
-          authorId: "test",
-          url: "test",
-          sub: "test",
-          isSubmitted: true,
-          isSuccess: false,
-        },
-      });
+      // await ctx.prisma.redditPost.upsert({
+      //   where: {
+      //     redditId: "test",
+      //   },
+      //   update: {
+      //     authorId: "test",
+      //   },
+      //   create: {
+      //     redditId: "Test",
+      //     title: "string",
+      //     authorId: "test",
+      //     url: "test",
+      //     sub: "test",
+      //     isSubmitted: true,
+      //     isSuccess: false,
+      //   },
+      // });
 
       return response.json();
     }),

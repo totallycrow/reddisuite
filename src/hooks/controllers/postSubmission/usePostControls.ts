@@ -92,6 +92,11 @@ export const usePostControls = (config: IConfig) => {
   const isLinkValidated = isValidUrl(config.link);
   const isSubListValidated = subsList.size > 0;
 
+  const publish = () => {
+    setIsAnyInputSubmitting(true);
+    void formObserver.publish();
+  };
+
   return {
     isMainPostControllerFullyValidated,
     isAnySubmitted,
@@ -104,6 +109,7 @@ export const usePostControls = (config: IConfig) => {
     setLocalChangeTriggered,
     isAnyInputSubmitting,
     setIsAnyInputSubmitting,
+    publish
   };
 };
 
