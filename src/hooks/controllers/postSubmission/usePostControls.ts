@@ -109,7 +109,7 @@ export const usePostControls = (config: IConfig) => {
     setLocalChangeTriggered,
     isAnyInputSubmitting,
     setIsAnyInputSubmitting,
-    publish
+    publish,
   };
 };
 

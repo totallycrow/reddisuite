@@ -65,6 +65,10 @@ export const MainPostController = () => {
           }}
         />
 
+        {/* *************** */}
+        {/* ****** POSTS LIST ******* */}
+        {/* *************** */}
+
         <PostsList
           {...{
             subsList,

@@ -1,18 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { api } from "../../../utils/api";
 import { FormObserver } from "../../../utils/formObserver";
-import { PrismaClient } from "@prisma/client";
 
 const formObserver = FormObserver.getInstance();
-
-// const delay = (millisec: number) => {
-//   return new Promise((resolve) => {
-//     setTimeout(() => {
-//       resolve("");
-//     }, millisec);
-//   });
-// };
 
 export interface IPostData {
   title: string;
@@ -34,7 +25,7 @@ export const usePostingController = (
   console.log(link);
   console.log(flairID);
 
-  const mutationController = api.example.sendPost.useMutation();
+  const mutationController = api.reddit.sendPost.useMutation();
   const [submissionStatus, setSubmissionStatus] = useState("IDLE");
 
   useEffect(() => {
@@ -107,18 +98,7 @@ export const usePostingController = (
       setIsSubmitting(true);
     }
 
-    console.log(
-      "££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££££"
-    );
-    console.log("_______ SEND DATA _______");
-    console.log(title);
-    console.log(sub);
-    console.log(link);
-    console.log(flairID);
-
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // await delay(1000);
 
     await mutationController.mutateAsync({
       title: title,

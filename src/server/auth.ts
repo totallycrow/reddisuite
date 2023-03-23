@@ -5,9 +5,8 @@ import {
   type DefaultSession,
   TokenSet,
 } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { env } from "../env/server.mjs";
 import { prisma } from "./db";
 import RedditProvider from "next-auth/providers/reddit";
 
@@ -41,7 +40,7 @@ declare module "next-auth" {
  **/
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
+    signIn({ user, account, profile, email, credentials }) {
       console.log(
         "++++++++++++++++++++++++++ SIGN IN ++++++++++++++++++++++++++++++++"
       );
@@ -64,35 +63,17 @@ export const authOptions: NextAuthOptions = {
       });
       if (!reddit) throw new Error("error");
 
-      console.log(reddit.providerAccountId);
-
-      console.log(
-        "::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
-      );
-
-      console.log("EXPIRES AT");
-      console.log(reddit.expires_at);
-      console.log("NOW");
-      console.log(Math.floor(new Date().getTime() / 1000.0));
-
-      // reddit.expires_at < Date.now()
       if (
         reddit.expires_at &&
         reddit.refresh_token &&
         reddit.expires_at <= Math.floor(new Date().getTime() / 1000.0)
       ) {
         try {
-          console.log(
-            "*************************** REFRESH ******************************************************"
-          );
-
           const user = process.env.REDDIT_CLIENT_ID;
           const pass = process.env.REDDIT_CLIENT_SECRET;
 
-          console.log(user);
-          console.log(pass);
-          console.log(reddit.refresh_token);
-          console.log(reddit.access_token);
+          if (!user || !pass)
+            throw new Error("INVALID USER/PASS ENV CREDENTIALS");
 
           const base64encodedData = Buffer.from(user + ":" + pass).toString(
             "base64"
@@ -114,23 +95,6 @@ export const authOptions: NextAuthOptions = {
 
           const tokens: TokenSet = (await response.json()) as TokenSet;
           if (!response.ok) throw tokens;
-
-          console.log(
-            "*************************** REFRESH ******************************************************"
-          );
-          console.log(response);
-          console.log("VVVVVVVVV");
-          console.log(tokens);
-          console.log(
-            "*************************** REFRESH ******************************************************"
-          );
-          console.log(tokens.expires_in);
-          console.log(Math.floor(new Date().getTime() / 1000.0));
-
-          console.log(
-            Math.floor(new Date().getTime() / 1000.0) +
-              parseInt(parseInt(tokens.expires_in))
-          );
 
           await prisma.account.update({
             data: {
