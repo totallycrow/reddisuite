@@ -1,5 +1,7 @@
 import React from "react";
 import { PostItem } from "../postItem/PostItem";
+import { ITitleLinkSublistValidation } from "../mainPostController/MainPostController";
+import { IConfig } from "../../../../hooks/controllers/postSubmission/usePostControls";
 
 export const PostsList = ({
   subsList,
@@ -13,6 +15,18 @@ export const PostsList = ({
   debouncedStatus,
   isAnySubmitted,
   publish,
+}: {
+  subsList: Set<string>;
+  clean: boolean;
+  validation: ITitleLinkSublistValidation;
+  config: IConfig;
+  setLocalChangeTriggered: React.Dispatch<React.SetStateAction<boolean>>;
+  isAnyInputSubmitting: boolean;
+  setIsAnyInputSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
+  isMainPostControllerFullyValidated: boolean;
+  debouncedStatus: string;
+  isAnySubmitted: boolean;
+  publish: () => void;
 }) => {
   return (
     <div>
@@ -36,11 +50,6 @@ export const PostsList = ({
             })
           : ""}
       </div>
-
-      {/* *************** */}
-      {/* *************** */}
-
-      {/* *************** */}
 
       {(isAnySubmitted || !isMainPostControllerFullyValidated) &&
       config.title !== "" &&
