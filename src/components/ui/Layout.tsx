@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ReactNode } from "react";
 
 // components/layout.js
@@ -13,8 +14,12 @@ export default function Layout({ children }: LayoutProps) {
           <div className="w-1/6 border-r border-r-slate-700 p-4 text-left">
             <div className="sticky top-0 z-50">
               <h3 className="p-2 text-lg font-bold">Menu</h3>
-              <div className="p-2">Bulk Submissions</div>
-              <div className="p-2">Schedule Posts</div>
+              <div className="p-2">
+                <Link href="bulk-submit">Bulk Submissions</Link>
+              </div>
+              <div className="p-2">
+                <Link href="schedule">Schedule Posts</Link>
+              </div>
             </div>
           </div>
 
