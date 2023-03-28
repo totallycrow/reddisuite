@@ -67,14 +67,14 @@ model VerificationToken {
 
 model RedditPost {
     id          String  @id @default(cuid())
-    redditId    String? @unique  
-    author      Account @relation(fields: [authorId], references: [providerAccountId]) 
-    authorId    String       
+    redditPostId    String? @unique  
+    author      Account @relation(fields: [redditAuthorId], references: [providerAccountId]) 
+    redditAuthorId    String       
     url         String
     title       String
-    sub         String
-    isSubmitted Boolean
-    isSuccess   Boolean      
+    sub         String    
+    isSuccess   Boolean  
+    SubmissionDate DateTime    
 }
 
 

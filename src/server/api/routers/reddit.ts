@@ -1,6 +1,11 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
-import { getSubredditRequirements, submitPost } from "../../../services/reddit";
+import {
+  addPostToDb,
+  getSubredditRequirements,
+  submitPost,
+} from "../../../services/reddit";
+import { PrismaClient } from "@prisma/client";
 
 export const redditRouter = createTRPCRouter({
   // ************************************************************
@@ -69,13 +74,20 @@ export const redditRouter = createTRPCRouter({
         //   body: parambody,
         // });
 
-        const result = await submitPost(token, sub, link, title, flair);
-        // console.log(result);
+        console.log("_________________________RES____________________________");
+        const result = await submitPost<ISubmissionResponse>(
+          token,
+          sub,
+          link,
+          title,
+          flair
+        );
 
-        return result.json();
+        // const res = await result;
+        // console.log(res);
 
         console.log("_________________________RES____________________________");
-        console.log(response);
+        // console.log(response);
 
         // ************************************************************
         // ADD POST TO DATABASE?
@@ -85,22 +97,35 @@ export const redditRouter = createTRPCRouter({
 
         // await ctx.prisma.redditPost.upsert({
         //   where: {
-        //     redditId: "test",
+        //     redditPostId: "test",
         //   },
         //   update: {
-        //     authorId: "test",
+        //     redditAuthorId: "test",
         //   },
         //   create: {
-        //     redditId: "Test",
+        //     redditPostId: "Test",
         //     title: "string",
-        //     authorId: "test",
+        //     redditAuthorId: "test",
         //     url: "test",
         //     sub: "test",
-        //     isSubmitted: true,
         //     isSuccess: false,
+        //     SubmissionDate: new Date(Date.now()),
         //   },
         // });
 
+        const dbresponse = await addPostToDb(
+          result.json.data.id || String(Date.now()),
+          redditId,
+          title,
+          link,
+          sub,
+          true
+        );
+
+        console.log("################ DB ################");
+        console.log(dbresponse);
+
+        return result;
         // return response.json();
       } catch (error) {
         throw error;
@@ -199,4 +224,20 @@ export interface ISubredditInfo {
   body_regexes: string[];
   link_repost_age: string | null;
   body_text_min_length: string | null;
+}
+
+export interface ISubmissionResponse {
+  json: ISubmissionResponseJson;
+}
+
+export interface ISubmissionResponseJson {
+  errors: string[];
+  data: ISubmissionResponseData;
+}
+
+export interface ISubmissionResponseData {
+  url: string;
+  drafts_count: number;
+  id: string;
+  name: string;
 }
