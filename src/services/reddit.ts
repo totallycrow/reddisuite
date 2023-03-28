@@ -124,7 +124,8 @@ export const addPostToDb = async (
   title: string,
   url: string,
   sub: string,
-  status: boolean
+  status: boolean,
+  date: any
 ) => {
   const result = await prisma.redditPost.upsert({
     where: {
@@ -137,7 +138,7 @@ export const addPostToDb = async (
       url: url,
       sub: sub,
       isSuccess: status,
-      SubmissionDate: new Date(Date.now()),
+      SubmissionDate: parseInt(date),
     },
     create: {
       redditPostId: postId,
@@ -146,7 +147,7 @@ export const addPostToDb = async (
       url: url,
       sub: sub,
       isSuccess: status,
-      SubmissionDate: new Date(Date.now()),
+      SubmissionDate: parseInt(date),
     },
   });
 

@@ -10,6 +10,7 @@ import { usePostingController } from "./usePostingController";
 
 export const usePostItemManager = (postConfig: IPostFormValues) => {
   const [loadingState, setLoadingState] = useState("Idle");
+  const [postDate, setPostDate] = useState(Date.now());
 
   const formObserver = useMemo(() => FormObserver.getInstance(), []);
   const isSubmitting = formObserver.isAnyInputSubmitting();
@@ -39,7 +40,10 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
       userInput,
       link,
       selectedFlair,
-      setLoadingState
+      setLoadingState,
+      () => "",
+      postDate,
+      setPostDate
     );
 
   const isFormItemValidated = useFormItemValidation(
@@ -144,6 +148,8 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
     isSubmitting,
     isAnyInputSubmitting: postConfig.isAnyInputSubmitting,
     setIsAnyInputSubmitting: postConfig.setIsAnyInputSubmitting,
+    postDate,
+    setPostDate,
   };
 
   const isLoading =

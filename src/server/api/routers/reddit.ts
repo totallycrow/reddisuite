@@ -32,11 +32,12 @@ export const redditRouter = createTRPCRouter({
         link: z.string(),
         sub: z.string(),
         flair: z.string(),
+        date: z.number(),
       })
     )
     .mutation(async (req) => {
       const { ctx } = req;
-      const { title, link, sub, flair } = req.input;
+      const { title, link, sub, flair, date } = req.input;
       const url = `https://oauth.reddit.com/api/submit`;
 
       const token = ctx.session?.user.token;
@@ -119,7 +120,8 @@ export const redditRouter = createTRPCRouter({
           title,
           link,
           sub,
-          true
+          true,
+          date
         );
 
         console.log("################ DB ################");
