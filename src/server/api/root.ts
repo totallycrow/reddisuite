@@ -1,5 +1,6 @@
 import { createTRPCRouter } from "./trpc";
 import { redditRouter } from "./routers/reddit";
+import { dbRouter } from "./routers/db";
 
 /**
  * This is the primary router for your server.
@@ -8,6 +9,7 @@ import { redditRouter } from "./routers/reddit";
  */
 export const appRouter = createTRPCRouter({
   reddit: redditRouter,
+  db: dbRouter,
 });
 
 // export type definition of API

@@ -59,7 +59,7 @@ export const usePostingController = (
       formObserver.setIsSubmitting(sub, false);
     }
 
-    if (mutationResponse.errors && mutationResponse.errors.length === 0) {
+    if (mutationResponse && mutationResponse.errors && mutationResponse.errors.length === 0) {
       console.log("SUCESS");
       console.log(mutationController.data);
       setLoadingState("Idle");
