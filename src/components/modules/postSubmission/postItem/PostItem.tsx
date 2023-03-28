@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { PostItemInputs } from "./PostItemInputs";
 import { usePostItemManager } from "../../../../hooks/controllers/postSubmission/usePostItemManager";
+import Datetime from "react-datetime";
+import "react-datetime/css/react-datetime.css";
+import moment, { Moment } from "moment";
 
 export const PostItem = (postConfig: IPostFormValues) => {
   const {
@@ -12,9 +15,17 @@ export const PostItem = (postConfig: IPostFormValues) => {
     isFormItemValidated,
     shouldShowSpinner,
   } = usePostItemManager(postConfig);
+  const [postDate, setPostDate] = useState(Date.now());
+  const yesterday = moment().subtract(1, "day");
+
+  let inputProps = {
+    placeholder: "N/A",
+    backgroundColor: "blue",
+  };
 
   return (
     <div>
+      Date: {postDate}
       <h1>
         Is Submitting? :{" "}
         {formObserver.getFormItemBySubreddit(userInput)?.isSubmitting ||
@@ -34,7 +45,6 @@ export const PostItem = (postConfig: IPostFormValues) => {
           : "NO"}
       </div>
       <h3 className="px-4 pt-4 text-lg font-bold">r/{userInput}</h3>
-
       <div>
         {shouldShowSpinner ? (
           <div className="flex items-center justify-center">
@@ -51,7 +61,22 @@ export const PostItem = (postConfig: IPostFormValues) => {
           ""
         )}
       </div>
-
+      <div data-theme="" className="m-auto flex w-full">
+        <div className="m-auto content-center justify-center text-center">
+          <Datetime
+            input={false}
+            inputProps={inputProps}
+            initialValue={new Date()}
+            onChange={(moment: Moment) => {
+              console.log(moment);
+              setPostDate(moment.valueOf());
+            }}
+            isValidDate={(currentDate, selectedDate) =>
+              currentDate.isAfter(yesterday)
+            }
+          />
+        </div>
+      </div>
       <PostItemInputs config={formConfig} />
       <div className="flex w-full flex-col">
         <div className="divider"></div>
