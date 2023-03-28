@@ -1,4 +1,6 @@
+import { PrismaClient } from "@prisma/client";
 import axios from "axios";
+import { ISubmissionResponse } from "../server/api/routers/reddit";
 
 export interface IFullSubredditData {
   flairs: IFlair[];
@@ -114,6 +116,43 @@ export const getSubredditRequirements = async (
   return data;
 };
 
+const prisma = new PrismaClient();
+
+export const addPostToDb = async (
+  postId: string,
+  authorId: string,
+  title: string,
+  url: string,
+  sub: string,
+  status: boolean
+) => {
+  const result = await prisma.redditPost.upsert({
+    where: {
+      redditPostId: postId,
+    },
+    update: {
+      redditPostId: postId,
+      title: title,
+      redditAuthorId: authorId,
+      url: url,
+      sub: sub,
+      isSuccess: status,
+      SubmissionDate: new Date(Date.now()),
+    },
+    create: {
+      redditPostId: postId,
+      title: title,
+      redditAuthorId: authorId,
+      url: url,
+      sub: sub,
+      isSuccess: status,
+      SubmissionDate: new Date(Date.now()),
+    },
+  });
+
+  return result;
+};
+
 export const getSubredditFlairs = async (token: string, subReddit: string) => {
   const url = `https://oauth.reddit.com//r/${subReddit}/api/link_flair_v2`;
 
@@ -138,7 +177,7 @@ export const getSubredditFlairs = async (token: string, subReddit: string) => {
 export const delay = async (delayMs: number) =>
   await new Promise((resolve) => setTimeout(resolve, delayMs));
 
-export const submitPost = async (
+export const submitPost = async <ResponseType>(
   token: string,
   sub: string,
   link: string,
@@ -162,26 +201,28 @@ export const submitPost = async (
   });
   console.log(parambody);
 
-  try {
-    // const response = await axios.get(url, {
-    //   method: "POST",
-    //   headers: {
-    //     Authorization: `bearer ${token}`,
-    //     "Content-Type": "application/x-www-form-urlencoded",
-    //   },
-    //   data: parambody,
+  // const response = await axios.get(url, {
+  //   method: "POST",
+  //   headers: {
+  //     Authorization: `bearer ${token}`,
+  //     "Content-Type": "application/x-www-form-urlencoded",
+  //   },
+  //   data: parambody,
 
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `bearer ${token}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: parambody,
-    });
-    console.log(response);
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  const response: ISubmissionResponse = await axios<ISubmissionResponse>({
+    method: "POST",
+    url: url,
+    headers: {
+      Authorization: `bearer ${token}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    data: parambody,
+  }).then((response) => response.data);
+  console.log("**************************))00000000000%%%%%%%%%%%%%%%%%%%%%%");
+  console.log(response);
+  console.log(response.json.data.id);
+  console.log(response.json.errors);
+  console.log("**************************))00000000000%%%%%%%%%%%%%%%%%%%%%%");
+
+  return response;
 };
