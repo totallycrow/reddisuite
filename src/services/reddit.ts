@@ -137,3 +137,51 @@ export const getSubredditFlairs = async (token: string, subReddit: string) => {
 
 export const delay = async (delayMs: number) =>
   await new Promise((resolve) => setTimeout(resolve, delayMs));
+
+export const submitPost = async (
+  token: string,
+  sub: string,
+  link: string,
+  title: string,
+  flair: string
+) => {
+  console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ SUBMIT FIRED");
+  const url = `https://oauth.reddit.com/api/submit`;
+  const parambody = new URLSearchParams({
+    ad: "false",
+    api_type: "json",
+    app: "test",
+    extension: "json",
+    sr: sub,
+    title: title,
+    url: link,
+    kind: "link",
+    resubmit: "true",
+    nsfw: "false",
+    flair_id: flair,
+  });
+  console.log(parambody);
+
+  try {
+    // const response = await axios.get(url, {
+    //   method: "POST",
+    //   headers: {
+    //     Authorization: `bearer ${token}`,
+    //     "Content-Type": "application/x-www-form-urlencoded",
+    //   },
+    //   data: parambody,
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `bearer ${token}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: parambody,
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+};

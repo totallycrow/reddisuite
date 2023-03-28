@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
-import { getSubredditRequirements } from "../../../services/reddit";
+import { getSubredditRequirements, submitPost } from "../../../services/reddit";
 
 export const redditRouter = createTRPCRouter({
   // ************************************************************
@@ -59,41 +59,52 @@ export const redditRouter = createTRPCRouter({
       );
       console.log(JSON.stringify(parambody));
 
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          Authorization: `bearer ${token}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: parambody,
-      });
+      try {
+        // const response = await fetch(url, {
+        //   method: "POST",
+        //   headers: {
+        //     Authorization: `bearer ${token}`,
+        //     "Content-Type": "application/x-www-form-urlencoded",
+        //   },
+        //   body: parambody,
+        // });
 
-      console.log("_________________________RES____________________________");
-      console.log(response);
+        const result = await submitPost(token, sub, link, title, flair);
+        // console.log(result);
 
-      // ************************************************************
-      // ADD POST TO DATABASE?
-      // ************************************************************
+        return result.json();
 
-      // await ctx.prisma.redditPost.upsert({
-      //   where: {
-      //     redditId: "test",
-      //   },
-      //   update: {
-      //     authorId: "test",
-      //   },
-      //   create: {
-      //     redditId: "Test",
-      //     title: "string",
-      //     authorId: "test",
-      //     url: "test",
-      //     sub: "test",
-      //     isSubmitted: true,
-      //     isSuccess: false,
-      //   },
-      // });
+        console.log("_________________________RES____________________________");
+        console.log(response);
 
-      return response.json();
+        // ************************************************************
+        // ADD POST TO DATABASE?
+        // ************************************************************
+
+        // CHECK RESPONSE HERE OR FRONT? SUCCESS / ERROR
+
+        // await ctx.prisma.redditPost.upsert({
+        //   where: {
+        //     redditId: "test",
+        //   },
+        //   update: {
+        //     authorId: "test",
+        //   },
+        //   create: {
+        //     redditId: "Test",
+        //     title: "string",
+        //     authorId: "test",
+        //     url: "test",
+        //     sub: "test",
+        //     isSubmitted: true,
+        //     isSuccess: false,
+        //   },
+        // });
+
+        // return response.json();
+      } catch (error) {
+        throw error;
+      }
     }),
 
   // ************************************************************************************************************************
