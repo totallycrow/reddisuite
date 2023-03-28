@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { InputItem } from "../../../ui/InputItem";
 import { IFormValidationResult } from "../../../../hooks/validation/useFormItemValidation/useFormItemValidation";
+import Datetime from "react-datetime";
+import moment, { Moment } from "moment";
 
 interface IPostItemInputsConfig {
   title: string;
@@ -20,6 +22,8 @@ interface IPostItemInputsConfig {
   isSubmitting: boolean;
   isAnyInputSubmitting: boolean;
   setIsAnyInputSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
+  postDate;
+  setPostDate;
 }
 
 export const PostItemInputs = ({
@@ -27,6 +31,7 @@ export const PostItemInputs = ({
 }: {
   config: IPostItemInputsConfig;
 }) => {
+  const yesterday = moment().subtract(1, "day");
   const {
     title,
     setTitle,
@@ -47,6 +52,8 @@ export const PostItemInputs = ({
     isError,
     isSubmitting,
     setIsAnyInputSubmitting,
+    postDate,
+    setPostDate,
   } = config;
 
   const isSubmittedOK = submissionStatus === "SUCCESS";
@@ -54,6 +61,7 @@ export const PostItemInputs = ({
 
   return (
     <div>
+      Date: {postDate}
       <div
         className={
           isSubmittedOK
@@ -124,6 +132,22 @@ export const PostItemInputs = ({
               </div>
             )}
         </div>
+
+        <h4 className="px-4 pt-4 text-lg font-bold">Schedule post time</h4>
+        <div className="ml-4 mt-2 mb-4">
+          <Datetime
+            input={true}
+            initialValue={new Date()}
+            onChange={(moment: Moment) => {
+              console.log(moment);
+              setPostDate(moment.valueOf());
+            }}
+            isValidDate={(currentDate, selectedDate) =>
+              currentDate.isAfter(yesterday)
+            }
+          />
+        </div>
+
         <button
           className="btn m-2"
           disabled={
@@ -145,7 +169,6 @@ export const PostItemInputs = ({
           Submit
         </button>
       </div>
-
       <div>{mutationController.isLoading && <p>Loading...</p>}</div>
       <div>
         {mutationController.data &&
@@ -159,13 +182,11 @@ export const PostItemInputs = ({
           <p>{mutationController.data.message}</p>
         )}
       </div>
-
       <div>
         {subRedditController.data && subRedditController.data.explanation && (
           <p>{subRedditController.data.explanation}</p>
         )}
       </div>
-
       <div>
         {subRedditController.data &&
           subRedditController.data.titleTags &&

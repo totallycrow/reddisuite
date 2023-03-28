@@ -14,9 +14,9 @@ export const PostItem = (postConfig: IPostFormValues) => {
     formConfig,
     isFormItemValidated,
     shouldShowSpinner,
+    postDate,
+    setPostDate,
   } = usePostItemManager(postConfig);
-  const [postDate, setPostDate] = useState(Date.now());
-  const yesterday = moment().subtract(1, "day");
 
   let inputProps = {
     placeholder: "N/A",
@@ -25,7 +25,6 @@ export const PostItem = (postConfig: IPostFormValues) => {
 
   return (
     <div>
-      Date: {postDate}
       <h1>
         Is Submitting? :{" "}
         {formObserver.getFormItemBySubreddit(userInput)?.isSubmitting ||
@@ -33,6 +32,7 @@ export const PostItem = (postConfig: IPostFormValues) => {
           ? "YES"
           : "NO"}
       </h1>
+      <div>Post Date: {postDate}</div>
       <h1>Loading Status: {loadingState}</h1>
       <div>Submission Status: {submissionStatus}</div>
       <div>Validation Status: {isFormItemValidated.isValid ? "YES" : "NO"}</div>
@@ -62,20 +62,7 @@ export const PostItem = (postConfig: IPostFormValues) => {
         )}
       </div>
       <div data-theme="" className="m-auto flex w-full">
-        <div className="m-auto content-center justify-center text-center">
-          <Datetime
-            input={false}
-            inputProps={inputProps}
-            initialValue={new Date()}
-            onChange={(moment: Moment) => {
-              console.log(moment);
-              setPostDate(moment.valueOf());
-            }}
-            isValidDate={(currentDate, selectedDate) =>
-              currentDate.isAfter(yesterday)
-            }
-          />
-        </div>
+        <div className=""></div>
       </div>
       <PostItemInputs config={formConfig} />
       <div className="flex w-full flex-col">

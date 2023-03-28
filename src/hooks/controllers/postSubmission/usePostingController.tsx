@@ -18,7 +18,9 @@ export const usePostingController = (
   link: string,
   flairID: string,
   setLoadingState: React.Dispatch<React.SetStateAction<string>>,
-  setIsSubmitting?: React.Dispatch<React.SetStateAction<boolean>>
+  setIsSubmitting?: React.Dispatch<React.SetStateAction<boolean>>,
+  postDate,
+  setPostDate
 ) => {
   console.log(title);
   console.log(sub);
@@ -109,6 +111,7 @@ export const usePostingController = (
       sub: sub,
       link: link,
       flair: flairID,
+      date: postDate,
     });
     console.log("ONCLICK END");
     if (setIsSubmitting) {
