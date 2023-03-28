@@ -14,6 +14,7 @@ export default function Layout({ children }: LayoutProps) {
             <div className="sticky top-0 z-50">
               <h3 className="p-2 text-lg font-bold">Menu</h3>
               <div className="p-2">Bulk Submissions</div>
+              <div className="p-2">Schedule Posts</div>
             </div>
           </div>
 
