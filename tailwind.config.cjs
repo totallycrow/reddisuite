@@ -46,7 +46,7 @@ module.exports = {
     logs: true,
     rtl: false,
     prefix: "",
-    darkTheme: "night",
-    lightTheme: "night",
+    darkTheme: "emerald",
+    lightTheme: "corporate",
   },
 };

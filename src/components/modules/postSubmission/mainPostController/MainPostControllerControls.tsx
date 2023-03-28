@@ -17,7 +17,7 @@ export const MainPostControllerControls = ({
   return (
     <div>
       <button
-        className="btn m-2"
+        className="btn mt-4"
         disabled={
           isAnySubmitted ||
           !isMainPostControllerFullyValidated ||
