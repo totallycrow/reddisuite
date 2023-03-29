@@ -4,8 +4,10 @@ import { usePostItemManager } from "../../../../hooks/controllers/postSubmission
 import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
 import moment, { Moment } from "moment";
+import { IMainControllerConfig } from "../mainPostController/MainPostController";
 
 export const PostItem = (postConfig: IPostFormValues) => {
+  const isScheduler = postConfig.controllerConfig.schedulerModule;
   const {
     formObserver,
     userInput,
@@ -17,11 +19,6 @@ export const PostItem = (postConfig: IPostFormValues) => {
     postDate,
     setPostDate,
   } = usePostItemManager(postConfig);
-
-  let inputProps = {
-    placeholder: "N/A",
-    backgroundColor: "blue",
-  };
 
   return (
     <div>
@@ -79,4 +76,6 @@ export interface IPostFormValues {
   triggerLocalChange: React.Dispatch<React.SetStateAction<boolean>>;
   setIsAnyInputSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
   isAnyInputSubmitting: boolean;
+  controllerConfig: IMainControllerConfig;
+  isScheduler: boolean;
 }

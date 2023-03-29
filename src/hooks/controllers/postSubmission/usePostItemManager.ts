@@ -19,6 +19,12 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
   const { title, setTitle, link, setLink, userInput, setUserInput } =
     useFormController(postConfig.title, postConfig.link, postConfig.subreddit);
 
+  console.log(
+    "************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************"
+  );
+  console.log("POST CONFIG");
+  console.log(postConfig);
+
   // *********************** DATA FETCH / POST *************************************
 
   const {
@@ -43,7 +49,8 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
       setLoadingState,
       () => "",
       postDate,
-      setPostDate
+      setPostDate,
+      postConfig.controllerConfig.schedulerModule
     );
 
   const isFormItemValidated = useFormItemValidation(
@@ -81,6 +88,7 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
   // LIST FOR LOCAL INPUT CHANGES
   useEffect(() => {
     postConfig.triggerLocalChange(true);
+    // setPostDate(Date.now());
 
     if (formObserver.isSubredditInList(userInput)) {
       console.log("UPDATING");
@@ -150,6 +158,7 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
     setIsAnyInputSubmitting: postConfig.setIsAnyInputSubmitting,
     postDate,
     setPostDate,
+    controllerConfig: postConfig.controllerConfig,
   };
 
   const isLoading =
@@ -172,5 +181,7 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
     userInput,
     shouldShowSpinner,
     formConfig,
+    postDate,
+    setPostDate,
   };
 };

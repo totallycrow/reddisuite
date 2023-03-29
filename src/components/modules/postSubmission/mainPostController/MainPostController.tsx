@@ -11,7 +11,15 @@ export type ITitleLinkSublistValidation = {
   isSubListValidated: boolean;
 };
 
-export const MainPostController = () => {
+export interface IMainControllerConfig {
+  schedulerModule: boolean;
+}
+
+export const MainPostController = ({
+  controllerConfig,
+}: {
+  controllerConfig: IMainControllerConfig;
+}) => {
   const config = useFormController();
 
   const {
@@ -36,6 +44,11 @@ export const MainPostController = () => {
       isSubListValidated: isSubListValidated,
     };
   }, [isTitleValidated, isLinkValidated, isSubListValidated]);
+
+  console.log(
+    "**************************************************************************************************"
+  );
+  console.log(controllerConfig);
 
   return (
     <div>
@@ -82,6 +95,7 @@ export const MainPostController = () => {
             debouncedStatus,
             isAnySubmitted,
             publish,
+            controllerConfig,
           }}
         />
       </div>

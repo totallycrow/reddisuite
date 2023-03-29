@@ -18,9 +18,10 @@ export const usePostingController = (
   link: string,
   flairID: string,
   setLoadingState: React.Dispatch<React.SetStateAction<string>>,
-  setIsSubmitting?: React.Dispatch<React.SetStateAction<boolean>>,
-  postDate,
-  setPostDate
+  setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>,
+  postDate: number,
+  setPostDate,
+  isScheduler: boolean
 ) => {
   console.log(title);
   console.log(sub);
@@ -98,6 +99,11 @@ export const usePostingController = (
   // ************************************************************************************// ************************************************************************************
   // ************************************************************************************
 
+  console.log(
+    "************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************"
+  );
+  console.log("IS SHEDULER");
+  console.log(isScheduler);
   const sendData = async () => {
     formObserver.setIsSubmitting(sub, true);
     if (setIsSubmitting) {
@@ -106,12 +112,14 @@ export const usePostingController = (
 
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
+    const submissionDate = isScheduler ? postDate : Date.now();
+
     await mutationController.mutateAsync({
       title: title,
       sub: sub,
       link: link,
       flair: flairID,
-      date: postDate,
+      date: submissionDate,
     });
     console.log("ONCLICK END");
     if (setIsSubmitting) {

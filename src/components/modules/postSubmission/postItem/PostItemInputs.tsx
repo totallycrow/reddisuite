@@ -3,6 +3,7 @@ import { InputItem } from "../../../ui/InputItem";
 import { IFormValidationResult } from "../../../../hooks/validation/useFormItemValidation/useFormItemValidation";
 import Datetime from "react-datetime";
 import moment, { Moment } from "moment";
+import { IMainControllerConfig } from "../mainPostController/MainPostController";
 
 interface IPostItemInputsConfig {
   title: string;
@@ -24,6 +25,7 @@ interface IPostItemInputsConfig {
   setIsAnyInputSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
   postDate;
   setPostDate;
+  configController: IMainControllerConfig;
 }
 
 export const PostItemInputs = ({
@@ -54,6 +56,7 @@ export const PostItemInputs = ({
     setIsAnyInputSubmitting,
     postDate,
     setPostDate,
+    controllerConfig,
   } = config;
 
   const isSubmittedOK = submissionStatus === "SUCCESS";
@@ -133,20 +136,26 @@ export const PostItemInputs = ({
             )}
         </div>
 
-        <h4 className="px-4 pt-4 text-lg font-bold">Schedule post time</h4>
-        <div className="ml-4 mt-2 mb-4 rounded border-x-4 border-emerald-400 p-4">
-          <Datetime
-            input={true}
-            initialValue={new Date()}
-            onChange={(moment: Moment) => {
-              console.log(moment);
-              setPostDate(moment.valueOf());
-            }}
-            isValidDate={(currentDate, selectedDate) =>
-              currentDate.isAfter(yesterday)
-            }
-          />
-        </div>
+        {/* SCHEDULER */}
+        {controllerConfig.schedulerModule && (
+          <div>
+            <h4 className="px-4 pt-4 text-lg font-bold">Schedule post time</h4>
+            <div className="ml-4 mt-2 mb-4 rounded border-x-4 border-emerald-400 p-4">
+              <Datetime
+                input={true}
+                initialValue={new Date()}
+                onChange={(moment: Moment) => {
+                  console.log(moment);
+                  setPostDate(moment.valueOf());
+                }}
+                isValidDate={(currentDate, selectedDate) =>
+                  currentDate.isAfter(yesterday)
+                }
+              />
+            </div>
+          </div>
+        )}
+        {/* ******************* */}
 
         <button
           className="btn m-2"
