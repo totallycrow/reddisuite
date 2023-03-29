@@ -6,6 +6,7 @@ import {
   submitPost,
 } from "../../../services/reddit";
 import { PrismaClient } from "@prisma/client";
+import { v4 as uuidv4 } from "uuid";
 
 export const redditRouter = createTRPCRouter({
   // ************************************************************
@@ -137,8 +138,11 @@ export const redditRouter = createTRPCRouter({
           // return response.json();
         }
 
+        // set dummy id until submission time and getting actual reddit id
+        const id = uuidv4() as string;
+
         const dbresponse = await addPostToDb(
-          "",
+          id,
           redditId,
           title,
           link,

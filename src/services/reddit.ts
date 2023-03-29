@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import axios from "axios";
 import { ISubmissionResponse } from "../server/api/routers/reddit";
+import { v4 as uuidv4 } from 'uuid';
+
 
 export interface IFullSubredditData {
   flairs: IFlair[];
@@ -128,6 +130,8 @@ export const addPostToDb = async (
   date: any,
   isScheduled: boolean
 ) => {
+
+  
   const result = await prisma.redditPost.upsert({
     where: {
       redditPostId: postId,
