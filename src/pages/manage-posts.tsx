@@ -6,11 +6,13 @@ import { authOptions } from "../server/auth";
 import Layout from "../components/ui/Layout";
 import { api } from "../utils/api";
 import moment from "moment";
+import { useState } from "react";
 
 export default function Dashboard() {
   const { data: session } = useSession();
 
-  const data = api.reddit.getUserPosts.useQuery().data;
+  const data = api.reddit.getUserPosts.useQuery();
+  const removal = api.reddit.removePostFromSchedule.useMutation();
 
   console.log(session);
   console.log(data);
@@ -20,9 +22,9 @@ export default function Dashboard() {
       <Layout>
         <div>Manage Posts</div>
         <div>
-          {data && data.length !== 0 && (
+          {data && data.data && data.data.length !== 0 && (
             <div>
-              {data.map((post) => {
+              {data.data.map((post) => {
                 return (
                   <div key={post.id} className="m-4">
                     <h3>Title: {post.title}</h3>
@@ -33,6 +35,14 @@ export default function Dashboard() {
                         .unix(Number(post.SubmissionDate))
                         .format("dddd, MMMM Do, YYYY h:mm:ss A")}
                     </h3>
+                    <button
+                      className="btn"
+                      onClick={() => {
+                        removal.mutate({ internalId: post.id });
+                      }}
+                    >
+                      REMOVE
+                    </button>
                   </div>
                 );
               })}
