@@ -39,6 +39,24 @@ export const redditRouter = createTRPCRouter({
     if (!token) throw new Error("Invalid Token");
     return list;
   }),
+  removePostFromSchedule: publicProcedure
+    .input(z.object({ internalId: z.string() }))
+    .mutation(async (req) => {
+      // const token = req.input.token;
+
+      const { ctx } = req;
+      const token = ctx.session?.user.token;
+      const redditUser = ctx.session?.user.redditId;
+
+      const post = await ctx.prisma.redditPost.delete({
+        where: {
+          id: req.input.internalId,
+        },
+      });
+
+      if (!token) throw new Error("Invalid Token");
+      return post;
+    }),
 
   // ************************************************************
   // ************************************************************
