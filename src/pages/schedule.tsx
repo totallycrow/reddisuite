@@ -5,6 +5,10 @@ import { Session, getServerSession } from "next-auth";
 import { authOptions } from "../server/auth";
 import Layout from "../components/ui/Layout";
 
+const config = {
+  schedulerModule: true,
+};
+
 export default function Dashboard() {
   const { data: session } = useSession();
 
@@ -13,7 +17,7 @@ export default function Dashboard() {
   if (session) {
     return (
       <Layout>
-        <MainPostController />
+        <MainPostController controllerConfig={config} />
       </Layout>
     );
   }
