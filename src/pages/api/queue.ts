@@ -40,7 +40,7 @@ export default async function handler(req: NextRequest, res: NextResponse) {
     //  if not valid refresh token and get new token
     // ADD TO REDDIT
     // WAIT FOR RESULT
-    // GRAB INTERNAL POST ID AND UPSERT IN DB
+    // GRAB INTERNAL POST ID AND UPDATE IN DB
 
     if (!result[i] || result[i] === undefined) return;
 

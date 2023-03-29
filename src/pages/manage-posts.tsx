@@ -11,10 +11,15 @@ import { useState } from "react";
 export default function Dashboard() {
   const { data: session } = useSession();
 
-  const data = api.reddit.getUserPosts.useQuery();
-  const removal = api.reddit.removePostFromSchedule.useMutation();
+  const utils = api.useContext();
 
-  console.log(session);
+  const data = api.reddit.getUserPosts.useQuery();
+  const removal = api.reddit.removePostFromSchedule.useMutation({
+    async onSettled(newPost) {
+      await utils.reddit.getUserPosts.invalidate();
+    },
+  });
+
   console.log(data);
 
   if (session) {
