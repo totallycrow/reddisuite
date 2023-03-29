@@ -25,7 +25,7 @@ interface IPostItemInputsConfig {
   setIsAnyInputSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
   postDate;
   setPostDate;
-  controllerConfig: IMainControllerConfig;
+  configController: IMainControllerConfig;
 }
 
 export const PostItemInputs = ({
@@ -56,7 +56,7 @@ export const PostItemInputs = ({
     setIsAnyInputSubmitting,
     postDate,
     setPostDate,
-    controllerConfig,
+    configController,
   } = config;
 
   const isSubmittedOK = submissionStatus === "SUCCESS";
@@ -137,7 +137,7 @@ export const PostItemInputs = ({
         </div>
 
         {/* SCHEDULER */}
-        {controllerConfig.schedulerModule && (
+        {configController.schedulerModule && (
           <div>
             <h4 className="px-4 pt-4 text-lg font-bold">Schedule post time</h4>
             <div className="ml-4 mt-2 mb-4 rounded border-x-4 border-emerald-400 p-4">
@@ -155,7 +155,6 @@ export const PostItemInputs = ({
             </div>
           </div>
         )}
-        {/* ******************* */}
 
         <button
           className="btn m-2"
