@@ -25,7 +25,7 @@ interface IPostItemInputsConfig {
   setIsAnyInputSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
   postDate;
   setPostDate;
-  configController: IMainControllerConfig;
+  controllerConfig: IMainControllerConfig;
 }
 
 export const PostItemInputs = ({
