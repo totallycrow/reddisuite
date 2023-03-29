@@ -33,11 +33,12 @@ export const redditRouter = createTRPCRouter({
         sub: z.string(),
         flair: z.string(),
         date: z.number(),
+        isScheduler: z.boolean(),
       })
     )
     .mutation(async (req) => {
       const { ctx } = req;
-      const { title, link, sub, flair, date } = req.input;
+      const { title, link, sub, flair, date, isScheduler } = req.input;
       const url = `https://oauth.reddit.com/api/submit`;
 
       const token = ctx.session?.user.token;
@@ -59,75 +60,108 @@ export const redditRouter = createTRPCRouter({
         nsfw: "false",
         flair_id: flair,
       });
-
-      console.log(
-        "============================================================="
-      );
-      console.log(JSON.stringify(parambody));
-
       try {
-        // const response = await fetch(url, {
-        //   method: "POST",
-        //   headers: {
-        //     Authorization: `bearer ${token}`,
-        //     "Content-Type": "application/x-www-form-urlencoded",
-        //   },
-        //   body: parambody,
-        // });
-
         console.log("_________________________RES____________________________");
-        const result = await submitPost<ISubmissionResponse>(
-          token,
-          sub,
-          link,
-          title,
-          flair
-        );
 
-        // const res = await result;
-        // console.log(res);
+        // export interface ISubmissionResponse {
+        //   json: ISubmissionResponseJson;
+        // }
 
-        console.log("_________________________RES____________________________");
-        // console.log(response);
+        // export interface ISubmissionResponseJson {
+        //   errors: string[];
+        //   data: ISubmissionResponseData;
+        // }
 
-        // ************************************************************
-        // ADD POST TO DATABASE?
-        // ************************************************************
+        if (!isScheduler) {
+          const result = await submitPost<ISubmissionResponse>(
+            token,
+            sub,
+            link,
+            title,
+            flair
+          );
 
-        // CHECK RESPONSE HERE OR FRONT? SUCCESS / ERROR
+          const isOK = result.json.errors.length === 0;
 
-        // await ctx.prisma.redditPost.upsert({
-        //   where: {
-        //     redditPostId: "test",
-        //   },
-        //   update: {
-        //     redditAuthorId: "test",
-        //   },
-        //   create: {
-        //     redditPostId: "Test",
-        //     title: "string",
-        //     redditAuthorId: "test",
-        //     url: "test",
-        //     sub: "test",
-        //     isSuccess: false,
-        //     SubmissionDate: new Date(Date.now()),
-        //   },
-        // });
+          const dbresponse = await addPostToDb(
+            result.json.data.id || String(Date.now()),
+            redditId,
+            title,
+            link,
+            sub,
+            isOK,
+            date,
+            isScheduler
+          );
+
+          console.log("################ DB ################");
+          console.log(dbresponse);
+
+          return result;
+          // return response.json();
+        }
 
         const dbresponse = await addPostToDb(
-          result.json.data.id || String(Date.now()),
+          "",
           redditId,
           title,
           link,
           sub,
-          true,
+          false,
+          date,
+          isScheduler
+        );
+
+        return {
+          json: {
+            errors: [],
+            data: dbresponse,
+          },
+        };
+      } catch (error) {
+        throw error;
+      }
+    }),
+
+  // ************
+
+  schedulePost: publicProcedure
+    .input(
+      z.object({
+        title: z.string(),
+        link: z.string(),
+        sub: z.string(),
+        flair: z.string(),
+        date: z.number(),
+      })
+    )
+    .mutation(async (req) => {
+      const { ctx } = req;
+      const { title, link, sub, flair, date } = req.input;
+
+      const token = ctx.session?.user.token;
+      const userId = ctx.session?.user.id;
+      const redditId = ctx.session?.user.redditId;
+
+      if (!token) throw new Error("Invalid Token");
+
+      try {
+        console.log("_________________________RES____________________________");
+
+        const dbresponse = await addPostToDb(
+          String(Date.now()),
+          redditId,
+          title,
+          link,
+          sub,
+          false,
           date
         );
 
         console.log("################ DB ################");
         console.log(dbresponse);
 
-        return result;
+        return dbresponse;
         // return response.json();
       } catch (error) {
         throw error;

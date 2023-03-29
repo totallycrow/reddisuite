@@ -74,7 +74,8 @@ model RedditPost {
     title       String
     sub         String    
     isSuccess   Boolean  
-    SubmissionDate BigInt    
+    SubmissionDate BigInt
+    isScheduled Boolean    
 }
 
 

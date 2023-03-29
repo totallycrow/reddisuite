@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { api } from "../../../utils/api";
 import { FormObserver } from "../../../utils/formObserver";
+import { addPostToDb } from "../../../services/reddit";
 
 const formObserver = FormObserver.getInstance();
 
@@ -29,6 +30,7 @@ export const usePostingController = (
   console.log(flairID);
 
   const mutationController = api.reddit.sendPost.useMutation();
+  const scheduleController = api.reddit.schedulePost.useMutation();
   const [submissionStatus, setSubmissionStatus] = useState("IDLE");
 
   useEffect(() => {
@@ -104,6 +106,8 @@ export const usePostingController = (
   );
   console.log("IS SHEDULER");
   console.log(isScheduler);
+
+  // ************************************************************************************
   const sendData = async () => {
     formObserver.setIsSubmitting(sub, true);
     if (setIsSubmitting) {
@@ -120,8 +124,26 @@ export const usePostingController = (
       link: link,
       flair: flairID,
       date: submissionDate,
+      isScheduler,
     });
     console.log("ONCLICK END");
+
+    if (setIsSubmitting) {
+      setIsSubmitting(false);
+    }
+
+    formObserver.setIsSubmitting(sub, false);
+    return;
+
+    // await scheduleController.mutateAsync({
+    //   title: title,
+    //   sub: sub,
+    //   link: link,
+    //   flair: flairID,
+    //   date: submissionDate,
+    // });
+    // console.log("ONCLICK END");
+
     if (setIsSubmitting) {
       setIsSubmitting(false);
     }
