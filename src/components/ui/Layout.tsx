@@ -20,14 +20,14 @@ export default function Layout({ children }: LayoutProps) {
               <div className="p-2">
                 <Link href="schedule">Schedule Posts</Link>
               </div>
+              <div className="p-2">
+                <Link href="manage-posts">Manage Posts</Link>
+              </div>
             </div>
           </div>
 
           {/* MAIN PANEL */}
           <div className="w-5/6 p-8">
-            <h1>Protected Page</h1>
-            <p>You can view this page because you are signed in.</p>
-
             <div>{children}</div>
           </div>
         </div>

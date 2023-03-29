@@ -22,6 +22,24 @@ export const redditRouter = createTRPCRouter({
     }),
 
   // ************************************************************
+
+  getUserPosts: publicProcedure.query(async (req) => {
+    // const token = req.input.token;
+
+    const { ctx } = req;
+    const token = ctx.session?.user.token;
+    const redditUser = ctx.session?.user.redditId;
+
+    const list = await ctx.prisma.redditPost.findMany({
+      where: {
+        redditAuthorId: redditUser,
+      },
+    });
+
+    if (!token) throw new Error("Invalid Token");
+    return list;
+  }),
+
   // ************************************************************
   // ************************************************************
 
