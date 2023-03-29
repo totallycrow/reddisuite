@@ -11,11 +11,7 @@ export default function Dashboard() {
   console.log(session);
 
   if (session) {
-    return (
-      <Layout>
-        <MainPostController />
-      </Layout>
-    );
+    return <Layout></Layout>;
   }
   return (
     <div>

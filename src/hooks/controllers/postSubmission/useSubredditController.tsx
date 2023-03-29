@@ -16,8 +16,7 @@ export const useSubredditController = (
     setLoadingState
   );
 
-  const formObserver = useMemo(() => FormObserver.getInstance(), []);  
-  
+  const formObserver = useMemo(() => FormObserver.getInstance(), []);
 
   const subRedditController = api.reddit.getSubreddit.useQuery(
     { sub: debouncedInput },
