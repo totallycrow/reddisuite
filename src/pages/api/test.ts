@@ -17,7 +17,7 @@ export default async function handler(req: NextRequest, res: NextResponse) {
   const result = await prisma.redditPost.findMany({
     where: {
       SubmissionDate: {
-        gt: currentTimeStamp,
+        lt: currentTimeStamp,
       },
       isScheduled: {
         equals: true,
@@ -26,7 +26,11 @@ export default async function handler(req: NextRequest, res: NextResponse) {
   });
   console.log(result);
 
-  if (result.length === 0 || result === undefined) return "not found";
+  if (result.length === 0 || result === undefined) {
+    console.log("LIST EMPTY!!!!!");
+
+    res.status(200).json({ message: "QUEUE EMPTY" });
+  }
 
   for (let i = 0; i < result.length; i++) {
     console.log("LOOP START!!!!");
@@ -68,6 +72,7 @@ export default async function handler(req: NextRequest, res: NextResponse) {
     });
 
     return submissionResult;
+    res.status(200).json({ message: "ok" || "not found" });
   }
 
   res.status(200).json({ message: "ok" || "not found" });
