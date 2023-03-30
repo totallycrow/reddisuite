@@ -165,49 +165,6 @@ export const redditRouter = createTRPCRouter({
 
   // ************
 
-  schedulePost: publicProcedure
-    .input(
-      z.object({
-        title: z.string(),
-        link: z.string(),
-        sub: z.string(),
-        flair: z.string(),
-        date: z.number(),
-      })
-    )
-    .mutation(async (req) => {
-      const { ctx } = req;
-      const { title, link, sub, flair, date } = req.input;
-
-      const token = ctx.session?.user.token;
-      const userId = ctx.session?.user.id;
-      const redditId = ctx.session?.user.redditId;
-
-      if (!token) throw new Error("Invalid Token");
-
-      try {
-        console.log("_________________________RES____________________________");
-
-        const dbresponse = await addPostToDb(
-          String(Date.now()),
-          redditId,
-          title,
-          link,
-          sub,
-          false,
-          date
-        );
-
-        console.log("################ DB ################");
-        console.log(dbresponse);
-
-        return dbresponse;
-        // return response.json();
-      } catch (error) {
-        throw error;
-      }
-    }),
-
   // ************************************************************************************************************************
   // ************************************************************************************************************************
   // ************************************************************************************************************************

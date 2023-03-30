@@ -20,12 +20,29 @@ export default function Dashboard() {
     },
   });
 
+  const shouldShowSpinner =
+    data.isLoading || data.isFetching || data.isRefetching || removal.isLoading;
+
   console.log(data);
 
   if (session) {
     return (
       <Layout>
         <div>Manage Posts</div>
+        {shouldShowSpinner ? (
+          <div className="flex items-center justify-center">
+            <div
+              className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+              role="status"
+            >
+              <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+                Loading...
+              </span>
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
         <div>
           {data && data.data && data.data.length !== 0 && (
             <div>
@@ -36,9 +53,9 @@ export default function Dashboard() {
                     <h3>URL: {post.url}</h3>
                     <h3>Subreddit: {post.sub}</h3>
                     <h3>
-                      {moment
-                        .unix(Number(post.SubmissionDate))
-                        .format("dddd, MMMM Do, YYYY h:mm:ss A")}
+                      {moment(Number(post.SubmissionDate)).format(
+                        "DD/MM/YYYY kk:mm A"
+                      )}
                     </h3>
                     <button
                       className="btn"
