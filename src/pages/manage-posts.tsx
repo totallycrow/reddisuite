@@ -52,6 +52,10 @@ export default function Dashboard() {
                     <h3>Title: {post.title}</h3>
                     <h3>URL: {post.url}</h3>
                     <h3>Subreddit: {post.sub}</h3>
+                    <h3>Is Scheduled? {post.isScheduled ? "YES" : "NO"}</h3>
+                    <h3>
+                      Is Submitted Sucessfully? {post.isSuccess ? "YES" : "NO"}
+                    </h3>
                     <h3>
                       {moment(Number(post.SubmissionDate)).format(
                         "DD/MM/YYYY kk:mm A"
