@@ -96,7 +96,6 @@ export default async function handler(req: NextRequest, res: NextResponse) {
 
     console.log("Update Result:");
     console.log(submissionResult);
-    return;
 
     // return submissionResult;
     // res.status(200).json({ message: "ok" || "not found" });
