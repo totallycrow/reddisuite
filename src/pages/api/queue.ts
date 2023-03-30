@@ -9,7 +9,10 @@ export default async function handler(req: NextRequest, res: NextResponse) {
   console.log(
     "********************************************************************************"
   );
+  console.log("STARTING QUEUE");
+
   const currentTimeStamp = Date.now();
+
   console.log(currentTimeStamp);
   console.log(typeof currentTimeStamp);
   console.log(1686310029822 < currentTimeStamp);
@@ -17,19 +20,21 @@ export default async function handler(req: NextRequest, res: NextResponse) {
   const result = await prisma.redditPost.findMany({
     where: {
       SubmissionDate: {
-        lt: currentTimeStamp,
+        lte: currentTimeStamp,
       },
       isScheduled: {
         equals: true,
       },
     },
   });
+  console.log("LIST OF POSTS:");
   console.log(result);
 
   if (result.length === 0 || result === undefined) {
     console.log("LIST EMPTY!!!!!");
+    return {};
 
-    res.status(200).json({ message: "QUEUE EMPTY" });
+    // res.status(200).json({ message: "QUEUE EMPTY" });
   }
 
   for (let i = 0; i < result.length; i++) {
@@ -59,6 +64,8 @@ export default async function handler(req: NextRequest, res: NextResponse) {
     const res = await submitPost(accessToken, sub, url, title, "");
     console.log(res);
     const isOK = res.json.errors.length === 0;
+    console.log("IS RES OK?");
+    console.log(isOK);
 
     const submissionResult = await prisma.redditPost.update({
       where: {
@@ -71,27 +78,10 @@ export default async function handler(req: NextRequest, res: NextResponse) {
       },
     });
 
+    console.log("Update Result:");
+    console.log(submissionResult);
+
     return submissionResult;
-    res.status(200).json({ message: "ok" || "not found" });
+    // res.status(200).json({ message: "ok" || "not found" });
   }
-
-  res.status(200).json({ message: "ok" || "not found" });
-
-  // return new Response(
-  //   // get current timestamp
-
-  //   // get posts from db with date from 0 to current timestamp
-
-  //   // await submitPost()
-
-  //   JSON.stringify({
-  //     success: true,
-  //   }),
-  //   {
-  //     status: 200,
-  //     headers: {
-  //       "content-type": "application/json",
-  //     },
-  //   }
-  // );
 }
