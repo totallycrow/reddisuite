@@ -6,17 +6,29 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export default async function handler(req: NextRequest, res: NextResponse) {
+  //
   if (req.method !== "POST") {
     res.status(400).send({ message: "" });
     return;
   }
 
-  console.log(
-    "********************************************************************************"
-  );
+  const secret = process.env.API_SECRET;
+
   console.log(req.headers);
+  console.log(req.body);
 
   console.log("STARTING QUEUE");
+  console.log(secret);
+
+  if (!req.body || !req.body.secret) {
+    res.status(200).json({ message: "INVALID" });
+    return;
+  }
+
+  if (req.body.secret !== secret) {
+    res.status(200).json({ message: "INVALID" });
+    return;
+  }
 
   res.status(200).json({ message: "EMPTY_QUEUE" });
   return;
