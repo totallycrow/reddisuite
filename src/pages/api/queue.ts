@@ -34,7 +34,9 @@ export default async function handler(req: NextRequest, res: NextResponse) {
 
   if (result.length === 0 || result === undefined) {
     console.log("LIST EMPTY!!!!!");
-    return {};
+
+    res.status(200).json({ message: "EMPTY_QUEUE" });
+    return;
 
     // res.status(200).json({ message: "QUEUE EMPTY" });
   }
@@ -97,5 +99,6 @@ export default async function handler(req: NextRequest, res: NextResponse) {
     // res.status(200).json({ message: "ok" || "not found" });
   }
   console.log("______________LOOP FINISHED");
-  res.status(200).json({ name: "John Doe" });
+  res.status(200).json({ message: "TASK_FINISHED" });
+  return;
 }
