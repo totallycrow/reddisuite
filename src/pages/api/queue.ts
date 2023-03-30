@@ -78,7 +78,9 @@ export default async function handler(req: NextRequest, res: NextResponse) {
 
     if (isRateLimit) {
       console.log("RATE LIMIT ERROR, ABORTING OPERATION");
+
       res.status(200).json({ message: "RATE_LIMIT" });
+      return;
     }
 
     const submissionResult = await prisma.redditPost.update({
@@ -94,11 +96,13 @@ export default async function handler(req: NextRequest, res: NextResponse) {
 
     console.log("Update Result:");
     console.log(submissionResult);
+    return;
 
-    return submissionResult;
+    // return submissionResult;
     // res.status(200).json({ message: "ok" || "not found" });
   }
   console.log("______________LOOP FINISHED");
-  res.status(200).json({ message: "TASK_FINISHED" });
-  return;
+  res.status(200).json({
+    success: true,
+  });
 }
