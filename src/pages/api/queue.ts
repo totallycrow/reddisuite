@@ -69,6 +69,16 @@ export default async function handler(req: NextRequest, res: NextResponse) {
     console.log("IS RES OK?");
     console.log(isOK);
 
+    const isRateLimit =
+      !isOK &&
+      res.json.errors[0][0] !== undefined &&
+      res.json.errors[0][0] === "RATELIMIT";
+
+    if (isRateLimit) {
+      console.log("RATE LIMIT ERROR, ABORTING OPERATION");
+      return;
+    }
+
     const submissionResult = await prisma.redditPost.update({
       where: {
         id: result[i].id,
