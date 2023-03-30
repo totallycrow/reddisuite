@@ -27,6 +27,8 @@ export default async function handler(req: NextRequest, res: NextResponse) {
       },
     },
   });
+  console.log("NUMBER OF SCHEDULED POSTS:");
+  console.log(result.length);
   console.log("LIST OF POSTS:");
   console.log(result);
 
@@ -84,4 +86,6 @@ export default async function handler(req: NextRequest, res: NextResponse) {
     return submissionResult;
     // res.status(200).json({ message: "ok" || "not found" });
   }
+  console.log("______________LOOP FINISHED");
+  res.status(200).json({ name: "John Doe" });
 }
