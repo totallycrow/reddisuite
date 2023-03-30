@@ -6,10 +6,22 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export default async function handler(req: NextRequest, res: NextResponse) {
+  if (req.method !== "POST") {
+    res.status(400).send({ message: "" });
+    return;
+  }
+
   console.log(
     "********************************************************************************"
   );
+  console.log(req.headers);
+
   console.log("STARTING QUEUE");
+
+  res.status(200).json({ message: "EMPTY_QUEUE" });
+  return;
+
+  console.log(req.headers);
 
   const currentTimeStamp = Date.now();
 
