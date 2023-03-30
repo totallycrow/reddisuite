@@ -78,7 +78,7 @@ export default async function handler(req: NextRequest, res: NextResponse) {
 
     if (isRateLimit) {
       console.log("RATE LIMIT ERROR, ABORTING OPERATION");
-      return;
+      res.status(200).json({ message: "RATE_LIMIT" });
     }
 
     const submissionResult = await prisma.redditPost.update({
