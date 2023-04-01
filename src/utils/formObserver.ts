@@ -12,6 +12,22 @@ export interface IFormItem {
   flairID: string;
 }
 
+// const useFormObserverState = (inputIndex) => {
+//   const [state, setState] = useState(
+//     FormObserver.getInstance().getState(inputIndex)
+//   );
+
+//   useEffect(() => {
+//     const unsub = FormObserver.getInstance().subscribe(() => {
+//       setState(FormObserver.getInstance().getState(inputIndex));
+//     });
+
+//     return () => unsub();
+//   }, []);
+
+//   return state;
+// };
+
 /**
  * The Singleton class defines the `getInstance` method that lets clients access
  * the unique singleton instance.
@@ -55,6 +71,12 @@ export class FormObserver {
       FormObserver.instance = new FormObserver();
     }
     return FormObserver.instance;
+  }
+
+  getState() {
+    return {
+      isError: this.setIsError(),
+    };
   }
 
   /**

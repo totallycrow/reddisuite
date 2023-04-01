@@ -33,6 +33,8 @@ export const PostsList = ({
   publish: () => void;
   controllerConfig: IMainControllerConfig;
 }) => {
+  // useFormState
+  // const disabled =
   return (
     <div>
       <div>
@@ -51,6 +53,7 @@ export const PostsList = ({
                   isAnyInputSubmitting={isAnyInputSubmitting}
                   setIsAnyInputSubmitting={setIsAnyInputSubmitting}
                   controllerConfig={controllerConfig}
+                  {...PostItemProps}
                 />
               );
             })

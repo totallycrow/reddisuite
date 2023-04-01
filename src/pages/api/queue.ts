@@ -88,6 +88,10 @@ export default async function handler(req: NextRequest, res: NextResponse) {
   // ***************************************
   // ***************************************
 
+  // MESSAGE broker
+  // message Queue
+  // https://www.rabbitmq.com/
+
   for (let i = 0; i < result.length; i++) {
     console.log("LOOP START!!!!");
 
