@@ -23,6 +23,7 @@ export default async function handler(req, res) {
   // ***************************************
 
   const secret = process.env.API_SECRET;
+  console.log(secret);
 
   console.log(req.headers);
   console.log(req.body);
@@ -32,12 +33,12 @@ export default async function handler(req, res) {
   console.log("_________");
 
   if (!req.body || !req.body.secret || !req.body.redditPostId) {
-    res.status(200).json({ message: "INVALID" });
+    res.status(200).json({ message: "INVALID BODY" });
     return;
   }
 
   if (req.body.secret !== secret) {
-    res.status(200).json({ message: "INVALID" });
+    res.status(200).json({ message: "INVALID SECRET" });
     return;
   }
 
