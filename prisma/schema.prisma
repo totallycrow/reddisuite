@@ -72,7 +72,8 @@ model RedditPost {
     redditAuthorId    String       
     url         String
     title       String
-    sub         String    
+    sub         String
+    flairId     String    
     isSuccess   Boolean  
     SubmissionDate BigInt
     isScheduled Boolean    

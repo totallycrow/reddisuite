@@ -53,7 +53,7 @@ export const PostsList = ({
                   isAnyInputSubmitting={isAnyInputSubmitting}
                   setIsAnyInputSubmitting={setIsAnyInputSubmitting}
                   controllerConfig={controllerConfig}
-                  {...PostItemProps}
+                  isScheduler={controllerConfig.schedulerModule}
                 />
               );
             })

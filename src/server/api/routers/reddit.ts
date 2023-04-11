@@ -128,6 +128,7 @@ export const redditRouter = createTRPCRouter({
             sub,
             isOK,
             date,
+            flair,
             isScheduler
           );
 
@@ -149,6 +150,7 @@ export const redditRouter = createTRPCRouter({
           sub,
           false,
           date,
+          flair,
           isScheduler
         );
 
