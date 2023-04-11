@@ -65,8 +65,6 @@ export default async function handler(req, res) {
   });
 
   // ***************************************
-  console.log("NUMBER OF SCHEDULED POSTS:");
-  console.log(result);
 
   // ***************************************
 
@@ -79,26 +77,60 @@ export default async function handler(req, res) {
     },
   });
 
-  console.log("****** USER *********");
-  console.log(user);
-
-  const { url, title, sub } = result;
-
-  console.log(url);
-  console.log(title);
-  console.log(sub);
+  const { url, title, sub, flairId } = result;
 
   // ***************************************
-  if (result.length === 0 || result === undefined) {
-    console.log("LIST EMPTY!!!!!");
+  //   if (result.length === 0 || result === undefined) {
+  //     console.log("LIST EMPTY!!!!!");
 
-    res.status(200).json({ message: "EMPTY_QUEUE" });
-    return;
+  //     res.status(200).json({ message: "EMPTY_QUEUE" });
+  //     return;
 
-    // res.status(200).json({ message: "QUEUE EMPTY" });
-  }
+  //     // res.status(200).json({ message: "QUEUE EMPTY" });
+  //   }
 
   //   ______________-
+
+  console.log("****");
+  const accessToken = user?.access_token;
+
+  const submission = await submitPost(accessToken, sub, url, title, flairId);
+  console.log(submission);
+  const isOK = submission.json.errors.length === 0;
+  console.log("IS RES OK?");
+  console.log(isOK);
+
+  // ***************************************
+  // ***************************************
+  //             HANDLE RESULT
+  // ***************************************
+  // ***************************************
+
+  const isRateLimit =
+    !isOK &&
+    submission.json.errors[0][0] !== undefined &&
+    submission.json.errors[0][0] === "RATELIMIT";
+
+  if (isRateLimit) {
+    console.log("RATE LIMIT ERROR, ABORTING OPERATION");
+
+    res.status(200).json({ message: "RATE_LIMIT" });
+    return;
+  }
+
+  const submissionResult = await prisma.redditPost.update({
+    where: {
+      id: result.id,
+    },
+    data: {
+      redditPostId: submission.json.data.id,
+      isSuccess: isOK,
+      isScheduled: false,
+    },
+  });
+
+  console.log("Update Result:");
+  console.log(submissionResult);
 
   res.status(200).json({ message: result?.redditPostId });
   return;
