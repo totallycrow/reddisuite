@@ -127,6 +127,7 @@ export const addPostToDb = async (
   sub: string,
   status: boolean,
   date: any,
+  flairId: string,
   isScheduled: boolean
 ) => {
   const result = await prisma.redditPost.upsert({
@@ -139,6 +140,7 @@ export const addPostToDb = async (
       redditAuthorId: authorId,
       url: url,
       sub: sub,
+      flairId: flairId,
       isSuccess: status,
       SubmissionDate: parseInt(date),
       isScheduled: isScheduled,
@@ -149,6 +151,7 @@ export const addPostToDb = async (
       redditAuthorId: authorId,
       url: url,
       sub: sub,
+      flairId: flairId,
       isSuccess: status,
       SubmissionDate: parseInt(date),
       isScheduled: isScheduled,

@@ -7,17 +7,25 @@ const prisma = new PrismaClient();
 
 export default async function handler(req: NextRequest, res: NextResponse) {
   //
+
+  // ***************************************
+  // CHECK FOR REQUEST METHOD
+  // ***************************************
+
   if (req.method !== "POST") {
     res.status(400).send({ message: "" });
     return;
   }
+  console.log("STARTING QUEUE");
+
+  // ***************************************
+  // CHECK IF REQUEST COMING FROM AUTHORIZED SOURCE
+  // ***************************************
 
   const secret = process.env.API_SECRET;
 
   console.log(req.headers);
   console.log(req.body);
-
-  console.log("STARTING QUEUE");
   console.log(secret);
 
   if (!req.body || !req.body.secret) {
@@ -30,16 +38,19 @@ export default async function handler(req: NextRequest, res: NextResponse) {
     return;
   }
 
-  res.status(200).json({ message: "EMPTY_QUEUE" });
-  return;
+  // ***************************************
+  // ***************************************
+  //              MAIN LOGIC
+  // ***************************************
+  // ***************************************
 
   console.log(req.headers);
 
+  // TIMESTAMP
   const currentTimeStamp = Date.now();
 
-  console.log(currentTimeStamp);
-  console.log(typeof currentTimeStamp);
-  console.log(1686310029822 < currentTimeStamp);
+  // ***************************************
+  // FIND POSTS SCHEDULED TO BE SUBMITTED IN THIS QUEUE RUN
 
   const result = await prisma.redditPost.findMany({
     where: {
@@ -51,11 +62,15 @@ export default async function handler(req: NextRequest, res: NextResponse) {
       },
     },
   });
+
+  // ***************************************
   console.log("NUMBER OF SCHEDULED POSTS:");
   console.log(result.length);
   console.log("LIST OF POSTS:");
   console.log(result);
+  // ***************************************
 
+  // ***************************************
   if (result.length === 0 || result === undefined) {
     console.log("LIST EMPTY!!!!!");
 
@@ -64,16 +79,40 @@ export default async function handler(req: NextRequest, res: NextResponse) {
 
     // res.status(200).json({ message: "QUEUE EMPTY" });
   }
+  // ***************************************
+  // ***************************************
+
+  // ***************************************
+  // ***************************************
+  //            MAIN POSTS LOOP
+  // ***************************************
+  // ***************************************
+
+  // MESSAGE broker
+  // message Queue
+  // https://www.rabbitmq.com/
 
   for (let i = 0; i < result.length; i++) {
     console.log("LOOP START!!!!");
+
+    // ***************************************
+    // ***************************************
     // LOOP THROUGH RESULTS
     // FIND AUTHOR ID AND GET TOKEN
     // check if token valid
     //  if not valid refresh token and get new token
     // ADD TO REDDIT
-    // WAIT FOR RESULT
-    // GRAB INTERNAL POST ID AND UPDATE IN DB
+    // CHECK RESUTLS: IS REJECTED? IS RATE LIMITED?
+
+    // ***************************************
+    /* TODO [OPTIONAL?]: IF RATE LIMIT, TAKE A NOTE OF THAT, AND
+    FIND A WAY TO FLAG A USER, NOT TO SUBMIT ANYTHING 
+    FROM THAT USER FOR N MINUTES.                  
+    */
+
+    // GRAB INTERNAL POST ID AND UPDATE IN DB IF SUCCESSFUL
+    // ***************************************
+    // ***************************************
 
     if (!result[i] || result[i] === undefined) return;
 
@@ -94,6 +133,12 @@ export default async function handler(req: NextRequest, res: NextResponse) {
     const isOK = res.json.errors.length === 0;
     console.log("IS RES OK?");
     console.log(isOK);
+
+    // ***************************************
+    // ***************************************
+    //             HANDLE RESULT
+    // ***************************************
+    // ***************************************
 
     const isRateLimit =
       !isOK &&
@@ -125,7 +170,10 @@ export default async function handler(req: NextRequest, res: NextResponse) {
     // res.status(200).json({ message: "ok" || "not found" });
   }
   console.log("______________LOOP FINISHED");
+
+  // END
   res.status(200).json({
     success: true,
   });
+  return;
 }
