@@ -168,7 +168,7 @@ export const redditRouter = createTRPCRouter({
 
         const secret = process.env.API_SECRET;
 
-        const cronReq = `https://www.easycron.com/rest/add?token=fad86873a0a32c6def17481c4fce71b0&cron_expression=${cronString}&url=https%3A%2F%2Freddisuite.vercel.app%2Fapi%2Fsubmit&http_method=POST&http_message_body={"secret": "${secret}", "redditPostId": "${id}}"&http_headers=Content-Type:application/json`;
+        const cronReq = `https://www.easycron.com/rest/add?token=fad86873a0a32c6def17481c4fce71b0&cron_expression=${cronString}&url=https%3A%2F%2Freddisuite.vercel.app%2Fapi%2Fsubmit&http_method=POST&http_message_body={"secret": "${secret}", "redditPostId": "${id}"}&http_headers=Content-Type:application/json`;
 
         console.log("????????????????????????????????");
         console.log(cronReq);
