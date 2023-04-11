@@ -7,6 +7,7 @@ import {
 } from "../../../services/reddit";
 import { PrismaClient } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
 export const redditRouter = createTRPCRouter({
   // ************************************************************
@@ -76,7 +77,6 @@ export const redditRouter = createTRPCRouter({
     .mutation(async (req) => {
       const { ctx } = req;
       const { title, link, sub, flair, date, isScheduler } = req.input;
-      const url = `https://oauth.reddit.com/api/submit`;
 
       const token = ctx.session?.user.token;
       const userId = ctx.session?.user.id;
@@ -153,6 +153,25 @@ export const redditRouter = createTRPCRouter({
           flair,
           isScheduler
         );
+
+        // ADD CRON
+
+        const dateFormatted = new Date(date);
+
+        const minutes = dateFormatted.getMinutes();
+        const hours = dateFormatted.getHours();
+        const days = dateFormatted.getDate();
+        const months = dateFormatted.getMonth() + 1;
+        const dayOfWeek = dateFormatted.getDay();
+
+        const cronString = `${minutes} ${hours} ${days} ${months} ${dayOfWeek}`;
+
+        const cronReq = `https://www.easycron.com/rest/add?token=fad86873a0a32c6def17481c4fce71b0&cron_expression=${cronString}&url=https%3A%2F%2Freddisuite.vercel.app%2Fapi%2Ftest&http_method=POST&http_message_body={"secret":"QiYYxpseuHWQxey1+wrY5pK3sQc3/XPfaoXrmH2tEYs=", "redditPostId": ${id}}&http_headers=Content-Type:application/json`;
+
+        const res = await axios.get(cronReq);
+        console.log(res);
+
+        console.log(cronString);
 
         return {
           json: {
