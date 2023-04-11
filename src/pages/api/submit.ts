@@ -32,15 +32,15 @@ export default async function handler(req, res) {
   console.log(req.body.redditPostId);
   console.log("_________");
 
-  if (!req.body || !req.body.secret || !req.body.redditPostId) {
+  if (!req.body || !req.body.redditPostId) {
     res.status(200).json({ message: "INVALID BODY" });
     return;
   }
 
-  if (req.body.secret !== secret) {
-    res.status(200).json({ message: "INVALID SECRET" });
-    return;
-  }
+  //   if (req.body.secret !== secret) {
+  //     res.status(200).json({ message: "INVALID SECRET" });
+  //     return;
+  //   }
 
   const postID = req.body.redditPostId;
 
