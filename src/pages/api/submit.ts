@@ -83,6 +83,10 @@ export default async function handler(req, res) {
 
   const { url, title, sub } = result;
 
+  console.log(url);
+  console.log(title);
+  console.log(sub);
+
   // ***************************************
   if (result.length === 0 || result === undefined) {
     console.log("LIST EMPTY!!!!!");
