@@ -29,7 +29,7 @@ export default async function handler(req, res) {
   console.log(req.body);
   console.log(secret);
   console.log("_________");
-  console.log(req.body.redditPostId);
+  console.log(req.body.redditPostIds);
   console.log("_________");
 
   // make redditPosts array of IDs
@@ -42,7 +42,7 @@ export default async function handler(req, res) {
   //   }
   //
 
-  if (!req.body || !req.body.redditPostId) {
+  if (!req.body || !req.body.redditPostIds) {
     res.status(200).json({ message: "INVALID BODY" });
     return;
   }
@@ -52,13 +52,7 @@ export default async function handler(req, res) {
   //     return;
   //   }
 
-  const postID = req.body.redditPostId;
-
-  // ***************************************
-  // ***************************************
-  //              MAIN LOGIC
-  // ***************************************
-  // ***************************************
+  const postIDs = req.body.redditPostIds;
 
   // TIMESTAMP
   const currentTimeStamp = Date.now();
@@ -68,80 +62,87 @@ export default async function handler(req, res) {
   // ***************************************
   // FIND THE SCHEDULED POST
 
-  const result = await prisma.redditPost.findUnique({
-    where: {
-      redditPostId: postID,
-    },
-  });
+  for (let i = 0; i < postIDs.length; i++) {
+    // ***************************************
+    // ***************************************
+    //              MAIN LOGIC
+    // ***************************************
+    // ***************************************
 
-  // ***************************************
+    const result = await prisma.redditPost.findUnique({
+      where: {
+        redditPostId: postIDs[i],
+      },
+    });
 
-  // ***************************************
+    // ***************************************
+    // ***************************************
 
-  //   GET USER TO GET TOKEN
-  //   TODO: REFRESH TOKEN IF EXPIRED
+    //   GET USER TO GET TOKEN
+    //   TODO: REFRESH TOKEN IF EXPIRED
 
-  const user = await prisma.account.findUnique({
-    where: {
-      providerAccountId: result.redditAuthorId,
-    },
-  });
+    const user = await prisma.account.findUnique({
+      where: {
+        providerAccountId: result.redditAuthorId,
+      },
+    });
 
-  const { url, title, sub, flairId } = result;
+    const { url, title, sub, flairId } = result;
 
-  // ***************************************
-  //   if (result.length === 0 || result === undefined) {
-  //     console.log("LIST EMPTY!!!!!");
+    // ***************************************
+    //   if (result.length === 0 || result === undefined) {
+    //     console.log("LIST EMPTY!!!!!");
 
-  //     res.status(200).json({ message: "EMPTY_QUEUE" });
-  //     return;
+    //     res.status(200).json({ message: "EMPTY_QUEUE" });
+    //     return;
 
-  //     // res.status(200).json({ message: "QUEUE EMPTY" });
-  //   }
+    //     // res.status(200).json({ message: "QUEUE EMPTY" });
+    //   }
 
-  //   ______________-
+    //   ______________-
 
-  console.log("****");
-  const accessToken = user?.access_token;
+    console.log("****");
+    const accessToken = user?.access_token;
 
-  const submission = await submitPost(accessToken, sub, url, title, flairId);
-  console.log(submission);
-  const isOK = submission.json.errors.length === 0;
-  console.log("IS RES OK?");
-  console.log(isOK);
+    const submission = await submitPost(accessToken, sub, url, title, flairId);
+    console.log(submission);
+    const isOK = submission.json.errors.length === 0;
+    console.log("IS RES OK?");
+    console.log(isOK);
 
-  // ***************************************
-  // ***************************************
-  //             HANDLE RESULT
-  // ***************************************
-  // ***************************************
+    // ***************************************
+    // ***************************************
+    //             HANDLE RESULT
+    // ***************************************
+    // ***************************************
 
-  //   const isRateLimit =
-  //     !isOK &&
-  //     submission.json.errors[0][0] !== undefined &&
-  //     submission.json.errors[0][0] === "RATELIMIT";
+    //   const isRateLimit =
+    //     !isOK &&
+    //     submission.json.errors[0][0] !== undefined &&
+    //     submission.json.errors[0][0] === "RATELIMIT";
 
-  //   if (isRateLimit) {
-  //     console.log("RATE LIMIT ERROR, ABORTING OPERATION");
+    //   if (isRateLimit) {
+    //     console.log("RATE LIMIT ERROR, ABORTING OPERATION");
 
-  //     res.status(200).json({ message: "RATE_LIMIT" });
-  //     return;
-  //   }
+    //     res.status(200).json({ message: "RATE_LIMIT" });
+    //     return;
+    //   }
 
-  const submissionResult = await prisma.redditPost.update({
-    where: {
-      id: result.id,
-    },
-    data: {
-      redditPostId: submission.json.data.id,
-      isSuccess: isOK,
-      isScheduled: false,
-    },
-  });
+    const submissionResult = await prisma.redditPost.update({
+      where: {
+        id: result.id,
+      },
+      data: {
+        redditPostId: submission.json.data.id,
+        isSuccess: isOK,
+        isScheduled: false,
+      },
+    });
 
-  console.log("Update Result:");
-  console.log(submissionResult);
+    console.log("Update Result:");
+    console.log(submissionResult);
+  }
 
-  res.status(200).json({ message: result?.redditPostId });
+  res.status(200).json({ message: "finished" });
   return;
 }
