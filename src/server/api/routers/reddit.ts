@@ -50,15 +50,23 @@ export const redditRouter = createTRPCRouter({
       const token = ctx.session?.user.token;
       const redditUser = ctx.session?.user.redditId;
 
-      const post = await ctx.prisma.redditPost.delete(
-        {
-          where: {
-            id: req.input.internalId,
-          },
-        }
-        //
-        // REMOVE FROM CRON
-      );
+      console.log(")______________0000000___________ REMOVE START");
+      console.log(")______________0000000___________ REMOVE START");
+      console.log(")______________0000000___________ REMOVE START");
+      console.log(")______________0000000___________ REMOVE START");
+      console.log(")______________0000000___________ REMOVE START");
+      console.log(")______________0000000___________ REMOVE START");
+
+      // c0721ed3-9c44-4871-836c-39346a7d9d8a
+      // clgdszons00003jsfod2sjvh1
+
+      console.log(req.input.internalId);
+
+      const post = await ctx.prisma.redditPost.delete({
+        where: {
+          id: req.input.internalId,
+        },
+      });
 
       const date = post.SubmissionDate;
 
@@ -74,7 +82,7 @@ export const redditRouter = createTRPCRouter({
 
       const secret = process.env.API_SECRET;
 
-      const cronReq = `https://www.easycron.com/rest/add?token=fad86873a0a32c6def17481c4fce71b0&cron_expression=${cronString}&url=https%3A%2F%2Freddisuite.vercel.app%2Fapi%2Fsubmit&http_method=POST&http_message_body={"secret": "${secret}", "redditPostIds": ["${id}"]}&http_headers=Content-Type:application/json`;
+      // const cronReq = `https://www.easycron.com/rest/add?token=fad86873a0a32c6def17481c4fce71b0&cron_expression=${cronString}&url=https%3A%2F%2Freddisuite.vercel.app%2Fapi%2Fsubmit&http_method=POST&http_message_body={"secret": "${secret}", "redditPostIds": ["${post.redditPostId}"]}&http_headers=Content-Type:application/json`;
 
       const cronList = await axios.get(
         "https://www.easycron.com/rest/list?token=fad86873a0a32c6def17481c4fce71b0"
@@ -93,16 +101,29 @@ export const redditRouter = createTRPCRouter({
         (cron) => cron.cron_expression === cronString
       );
 
-      let previousPayload = await JSON.parse(
-        matchingCronJob.http_message_body
-      );
+      // DELETE CRONJOB IF ONLY ONE TASK
+
+      let previousPayload = await JSON.parse(matchingCronJob.http_message_body);
 
       console.log(previousPayload);
 
-      const filteredData = previousPayload.redditPostIds.filter((id) => id !== req.input.internalId)
+      if (
+        previousPayload.redditPostIds.length === 1 &&
+        previousPayload.redditPostIds[0] === post.redditPostId
+      ) {
+        const res = await axios.get(
+          `https://www.easycron.com/rest/delete?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}`
+        );
+        return post;
+      }
 
-      
-      previousPayload.redditPostIds = filteredData
+      // TODO: remove cron if it holds only 1 item that is currently being removed
+
+      const filteredData = previousPayload.redditPostIds.filter(
+        (id) => id !== post.redditPostId
+      );
+
+      previousPayload.redditPostIds = filteredData;
 
       const jsonPayload = JSON.stringify(previousPayload);
 
@@ -114,9 +135,6 @@ export const redditRouter = createTRPCRouter({
         `https://www.easycron.com/rest/edit?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}&http_message_body=${jsonPayload}`
       );
       console.log(res);
-    }
-
-
 
       if (!token) throw new Error("Invalid Token");
       return post;
