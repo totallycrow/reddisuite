@@ -32,6 +32,16 @@ export default async function handler(req, res) {
   console.log(req.body.redditPostId);
   console.log("_________");
 
+  // make redditPosts array of IDs
+  // modify payload of cron for the specific date already exists
+  // on front, when setting up the post in db?
+  //   SAMPLE CRON DATA
+  //   {
+  //     secret: 'QiYYxpseuHWQxey1ZwrY5pK3sQc3XPfaoXrmH2tEYs',
+  //     redditPostId: 'daad1248-92a2-432a-8c1e-08c95431e43e'
+  //   }
+  //
+
   if (!req.body || !req.body.redditPostId) {
     res.status(200).json({ message: "INVALID BODY" });
     return;
