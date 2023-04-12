@@ -116,17 +116,28 @@ export default async function handler(req, res) {
     // ***************************************
     // ***************************************
 
-    //   const isRateLimit =
-    //     !isOK &&
-    //     submission.json.errors[0][0] !== undefined &&
-    //     submission.json.errors[0][0] === "RATELIMIT";
+    const isRateLimit =
+      !isOK &&
+      submission.json.errors[0][0] !== undefined &&
+      submission.json.errors[0][0] === "RATELIMIT";
 
-    //   if (isRateLimit) {
-    //     console.log("RATE LIMIT ERROR, ABORTING OPERATION");
+    if (isRateLimit) {
+      console.log("RATE LIMIT ERROR, ABORTING OPERATION");
 
-    //     res.status(200).json({ message: "RATE_LIMIT" });
-    //     return;
-    //   }
+      const submissionResult = await prisma.redditPost.update({
+        where: {
+          id: result.id,
+        },
+        data: {
+          redditPostId: submission.json.data.id,
+          isSuccess: false,
+          isScheduled: false,
+        },
+      });
+
+      res.status(200).json({ message: "RATE_LIMIT" });
+      return;
+    }
 
     const submissionResult = await prisma.redditPost.update({
       where: {

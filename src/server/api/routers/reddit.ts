@@ -50,11 +50,73 @@ export const redditRouter = createTRPCRouter({
       const token = ctx.session?.user.token;
       const redditUser = ctx.session?.user.redditId;
 
-      const post = await ctx.prisma.redditPost.delete({
-        where: {
-          id: req.input.internalId,
-        },
-      });
+      const post = await ctx.prisma.redditPost.delete(
+        {
+          where: {
+            id: req.input.internalId,
+          },
+        }
+        //
+        // REMOVE FROM CRON
+      );
+
+      const date = post.SubmissionDate;
+
+      const dateFormatted = new Date(Number(date));
+
+      const minutes = dateFormatted.getMinutes();
+      const hours = dateFormatted.getHours();
+      const days = dateFormatted.getDate();
+      const months = dateFormatted.getMonth() + 1;
+      const dayOfWeek = dateFormatted.getDay();
+
+      const cronString = `${minutes} ${hours} ${days} ${months} ${dayOfWeek}`;
+
+      const secret = process.env.API_SECRET;
+
+      const cronReq = `https://www.easycron.com/rest/add?token=fad86873a0a32c6def17481c4fce71b0&cron_expression=${cronString}&url=https%3A%2F%2Freddisuite.vercel.app%2Fapi%2Fsubmit&http_method=POST&http_message_body={"secret": "${secret}", "redditPostIds": ["${id}"]}&http_headers=Content-Type:application/json`;
+
+      const cronList = await axios.get(
+        "https://www.easycron.com/rest/list?token=fad86873a0a32c6def17481c4fce71b0"
+      );
+
+      const cronJobs = cronList.data.cron_jobs;
+
+      console.log("????????????????????????????????");
+      console.log("????????????????????????????????");
+      console.log("????????????????????????????????");
+      console.log("????????????????????????????????");
+
+      console.log(cronJobs);
+
+      const matchingCronJob = cronJobs.find(
+        (cron) => cron.cron_expression === cronString
+      );
+
+      let previousPayload = await JSON.parse(
+        matchingCronJob.http_message_body
+      );
+
+      console.log(previousPayload);
+
+      const filteredData = previousPayload.redditPostIds.filter((id) => id !== req.input.internalId)
+
+      
+      previousPayload.redditPostIds = filteredData
+
+      const jsonPayload = JSON.stringify(previousPayload);
+
+      console.log(previousPayload);
+
+      // EDIT THE CRON JOB BY ID
+
+      const res = await axios.get(
+        `https://www.easycron.com/rest/edit?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}&http_message_body=${jsonPayload}`
+      );
+      console.log(res);
+    }
+
+
 
       if (!token) throw new Error("Invalid Token");
       return post;
@@ -219,6 +281,8 @@ export const redditRouter = createTRPCRouter({
           console.log(cronString);
           console.log("????????????????????????????????");
           console.log("NO MATCH FOUND, ADDED NEW CRON");
+          //
+          //
         } else {
           console.log("__________________________________-");
           console.log("!!!!!!!!!!!!!!!!!!!!");
