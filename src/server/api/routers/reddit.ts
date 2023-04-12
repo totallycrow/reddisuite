@@ -168,14 +168,85 @@ export const redditRouter = createTRPCRouter({
 
         const secret = process.env.API_SECRET;
 
-        const cronReq = `https://www.easycron.com/rest/add?token=fad86873a0a32c6def17481c4fce71b0&cron_expression=${cronString}&url=https%3A%2F%2Freddisuite.vercel.app%2Fapi%2Fsubmit&http_method=POST&http_message_body={"secret": "${secret}", "redditPostId": "${id}"}&http_headers=Content-Type:application/json`;
+        // check if date exisits for any cronjob
+
+        // JSON FORMAT FOR CRON DATA
+        /* 
+        
+        {
+          secret: DSAHJDSHDJSA
+          redditPostIds: []
+        }        
+        */
+
+        const cronReq = `https://www.easycron.com/rest/add?token=fad86873a0a32c6def17481c4fce71b0&cron_expression=${cronString}&url=https%3A%2F%2Freddisuite.vercel.app%2Fapi%2Fsubmit&http_method=POST&http_message_body={"secret": "${secret}", "redditPostIds": ["${id}"]}&http_headers=Content-Type:application/json`;
+
+        const cronList = await axios.get(
+          "https://www.easycron.com/rest/list?token=fad86873a0a32c6def17481c4fce71b0"
+        );
+
+        const cronJobs = cronList.data.cron_jobs;
+
+        console.log("????????????????????????????????");
+        console.log("????????????????????????????????");
+        console.log("????????????????????????????????");
+        console.log("????????????????????????????????");
+
+        console.log(cronJobs);
+
+        const matchingCronJob = cronJobs.find(
+          (cron) => cron.cron_expression === cronString
+        );
+
+        console.log("????????????????????????????????");
+        console.log("MATCHING DATE");
+        console.log("MATCHING DATE");
+        console.log("MATCHING DATE");
+        console.log("MATCHING DATE");
+        console.log("MATCHING DATE");
+        console.log("MATCHING DATE");
+        console.log(matchingCronJob);
+
+        // CHECK IF EXISTS IF NOT ADD SINGLE CRON ELSE MODIFY PAYLOAD
 
         console.log("????????????????????????????????");
         console.log(cronReq);
-        const res = await axios.get(cronReq);
-        console.log(res);
 
-        console.log(cronString);
+        if (matchingCronJob === undefined) {
+          const res = await axios.get(cronReq);
+          console.log(res);
+
+          console.log(cronString);
+          console.log("????????????????????????????????");
+          console.log("NO MATCH FOUND, ADDED NEW CRON");
+        } else {
+          console.log("__________________________________-");
+          console.log("!!!!!!!!!!!!!!!!!!!!");
+          console.log("DUPLICATE");
+
+          let previousPayload = await JSON.parse(
+            matchingCronJob.http_message_body
+          );
+
+          console.log(previousPayload);
+
+          previousPayload.redditPostIds = [
+            ...previousPayload.redditPostIds,
+            id,
+          ];
+
+          const jsonPayload = JSON.stringify(previousPayload);
+
+          console.log(previousPayload);
+
+          // EDIT THE CRON JOB BY ID
+
+          const res = await axios.get(
+            `https://www.easycron.com/rest/edit?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}&http_message_body=${jsonPayload}`
+          );
+          console.log(res);
+        }
+        // console.log(res);
 
         return {
           json: {
