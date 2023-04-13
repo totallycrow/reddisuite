@@ -3,6 +3,7 @@ import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 import {
   addPostToDb,
   getSubredditRequirements,
+  refreshToken,
   submitPost,
 } from "../../../services/reddit";
 import { PrismaClient } from "@prisma/client";
@@ -162,8 +163,19 @@ export const redditRouter = createTRPCRouter({
       const token = ctx.session?.user.token;
       const userId = ctx.session?.user.id;
       const redditId = ctx.session?.user.redditId;
+      const expires_at = ctx.session?.user.expires_at;
+      const refresh_token = ctx.session?.user.refresh_token;
 
       if (!token) throw new Error("Invalid Token");
+
+      if (
+        refresh_token &&
+        redditId &&
+        expires_at &&
+        expires_at <= Math.floor(new Date().getTime() / 1000.0)
+      ) {
+        refreshToken(redditId, refresh_token);
+      }
 
       const parambody = new URLSearchParams({
         ad: "false",

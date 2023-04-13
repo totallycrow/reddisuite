@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { api } from "../../utils/api";
-import { submitPost } from "../../services/reddit";
+import { refreshToken, submitPost } from "../../services/reddit";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -87,7 +87,20 @@ export default async function handler(req, res) {
       },
     });
 
+    const { expires_at, refresh_token } = user;
+
     const { url, title, sub, flairId } = result;
+
+    if (
+      result &&
+      refresh_token &&
+      result.redditAuthorId &&
+      expires_at &&
+      expires_at <= Math.floor(new Date().getTime() / 1000.0)
+    ) {
+      console.log("");
+      refreshToken(result.redditAuthorId, refresh_token);
+    }
 
     // ***************************************
     //   if (result.length === 0 || result === undefined) {
