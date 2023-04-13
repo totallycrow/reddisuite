@@ -7,15 +7,17 @@ import Layout from "../components/ui/Layout";
 import { api } from "../utils/api";
 import moment from "moment";
 import { useState } from "react";
+import { InputItem } from "../components/ui/InputItem";
+import { PostItem } from "../components/modules/postSubmission/postItem/PostItem";
+import { PostModify } from "../components/modules/postSubmission/postModify/PostModify";
 
 export default function Dashboard() {
   const { data: session } = useSession();
-
   const utils = api.useContext();
 
   const data = api.reddit.getUserPosts.useQuery();
   const removal = api.reddit.removePostFromSchedule.useMutation({
-    async onSettled(newPost) {
+    async onSettled() {
       await utils.reddit.getUserPosts.invalidate();
     },
   });
@@ -49,26 +51,7 @@ export default function Dashboard() {
               {data.data.map((post) => {
                 return (
                   <div key={post.id} className="m-4">
-                    <h3>Title: {post.title}</h3>
-                    <h3>URL: {post.url}</h3>
-                    <h3>Subreddit: {post.sub}</h3>
-                    <h3>Is Scheduled? {post.isScheduled ? "YES" : "NO"}</h3>
-                    <h3>
-                      Is Submitted Sucessfully? {post.isSuccess ? "YES" : "NO"}
-                    </h3>
-                    <h3>
-                      {moment(Number(post.SubmissionDate)).format(
-                        "DD/MM/YYYY kk:mm A"
-                      )}
-                    </h3>
-                    <button
-                      className="btn"
-                      onClick={() => {
-                        removal.mutate({ internalId: post.id });
-                      }}
-                    >
-                      REMOVE
-                    </button>
+                    <PostModify post={post} removal={removal} />
                   </div>
                 );
               })}

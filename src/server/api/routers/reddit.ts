@@ -152,11 +152,12 @@ export const redditRouter = createTRPCRouter({
         flair: z.string(),
         date: z.number(),
         isScheduler: z.boolean(),
+        postId: z.string(),
       })
     )
     .mutation(async (req) => {
       const { ctx } = req;
-      const { title, link, sub, flair, date, isScheduler } = req.input;
+      const { title, link, sub, flair, date, isScheduler, postId } = req.input;
 
       const token = ctx.session?.user.token;
       const userId = ctx.session?.user.id;
@@ -220,21 +221,16 @@ export const redditRouter = createTRPCRouter({
         }
 
         // set dummy id until submission time and getting actual reddit id
-        const id = uuidv4() as string;
 
-        const dbresponse = await addPostToDb(
-          id,
-          redditId,
-          title,
-          link,
-          sub,
-          false,
-          date,
-          flair,
-          isScheduler
-        );
+        // CHECK IF UPDATE? GET ID FROM REQUEST
+        // if id not empty then use provided ID, else generate
 
-        // ADD CRON
+        const isUpdate = postId !== "";
+
+        const id = isUpdate ? postId : uuidv4();
+
+        // ADD NEW CRON
+        // IF UPDATE, REMOVE ID FROM PREVIOUS CRON
 
         const dateFormatted = new Date(date);
 
@@ -266,6 +262,83 @@ export const redditRouter = createTRPCRouter({
         );
 
         const cronJobs = cronList.data.cron_jobs;
+
+        // IS UPDATE? IF SO, REMOVE JOB FROM CURRENT CRON
+        if (isUpdate) {
+          // find original post date
+          //
+          // FIND CRON BY DATE
+          // REMOVE ID
+
+          const originalPost = await ctx.prisma.redditPost.findUnique({
+            where: {
+              redditPostId: postId,
+            },
+          });
+
+          const dateFormatted = new Date(Number(originalPost?.SubmissionDate));
+
+          const minutes = dateFormatted.getMinutes();
+          const hours = dateFormatted.getHours();
+          const days = dateFormatted.getDate();
+          const months = dateFormatted.getMonth() + 1;
+          const dayOfWeek = dateFormatted.getDay();
+
+          const cronStringOriginal = `${minutes} ${hours} ${days} ${months} ${dayOfWeek}`;
+
+          const secret = process.env.API_SECRET;
+
+          const matchingCronJob = cronJobs.find(
+            (cron) => cron.cron_expression === cronStringOriginal
+          );
+          // DELETE CRONJOB IF ONLY ONE TASK
+
+          let previousPayload = await JSON.parse(
+            matchingCronJob.http_message_body
+          );
+
+          console.log(previousPayload);
+
+          if (
+            previousPayload.redditPostIds.length === 1 &&
+            previousPayload.redditPostIds[0] === postId
+          ) {
+            const res = await axios.get(
+              `https://www.easycron.com/rest/delete?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}`
+            );
+          }
+
+          // TODO: remove cron if it holds only 1 item that is currently being removed
+
+          const filteredData = previousPayload.redditPostIds.filter(
+            (id) => id !== postId
+          );
+
+          previousPayload.redditPostIds = filteredData;
+
+          const jsonPayload = JSON.stringify(previousPayload);
+
+          console.log(previousPayload);
+
+          // EDIT THE CRON JOB BY ID
+
+          const res = await axios.get(
+            `https://www.easycron.com/rest/edit?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}&http_message_body=${jsonPayload}`
+          );
+          console.log(res);
+
+          // id,
+          // redditId,
+          // title,
+          // link,
+          // sub,
+          // false,
+          // date,
+          // flair,
+          // isScheduler
+        }
+
+        // CONTINUE
 
         console.log("????????????????????????????????");
         console.log("????????????????????????????????");
@@ -329,6 +402,19 @@ export const redditRouter = createTRPCRouter({
           console.log(res);
         }
         // console.log(res);
+
+        // ************* ADD NEW TO DB **************
+        const dbresponse = await addPostToDb(
+          id,
+          redditId,
+          title,
+          link,
+          sub,
+          false,
+          date,
+          flair,
+          isScheduler
+        );
 
         return {
           json: {

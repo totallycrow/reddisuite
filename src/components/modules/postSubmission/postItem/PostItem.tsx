@@ -17,7 +17,7 @@ export const PostItem = (postConfig: IPostFormValues) => {
     isFormItemValidated,
     shouldShowSpinner,
     postDate,
-    setPostDate,
+    setPostDate,        
   } = usePostItemManager(postConfig);
 
   return (
@@ -78,4 +78,5 @@ export interface IPostFormValues {
   isAnyInputSubmitting: boolean;
   controllerConfig: IMainControllerConfig;
   isScheduler: boolean;
+  postId: string;
 }

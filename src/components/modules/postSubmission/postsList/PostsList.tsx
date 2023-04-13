@@ -54,6 +54,7 @@ export const PostsList = ({
                   setIsAnyInputSubmitting={setIsAnyInputSubmitting}
                   controllerConfig={controllerConfig}
                   isScheduler={controllerConfig.schedulerModule}
+                  postId={""}
                 />
               );
             })

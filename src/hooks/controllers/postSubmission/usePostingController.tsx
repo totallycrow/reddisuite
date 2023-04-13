@@ -22,7 +22,8 @@ export const usePostingController = (
   setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>,
   postDate: number,
   setPostDate,
-  isScheduler: boolean
+  isScheduler: boolean,
+  postId: string
 ) => {
   console.log(title);
   console.log(sub);
@@ -125,6 +126,7 @@ export const usePostingController = (
       flair: flairID,
       date: submissionDate,
       isScheduler,
+      postId: postId,
     });
     console.log("ONCLICK END");
 
