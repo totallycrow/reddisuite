@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { api } from "../../../../utils/api";
 import { useFormController } from "../../../../hooks/controllers/postSubmission/useFormController";
 import { PostItem } from "../postItem/PostItem";
+import { CardContainer } from "../../../ui/CardContainer";
 
 export const PostModify = ({
   post,
@@ -19,18 +20,19 @@ export const PostModify = ({
   return (
     <div>
       <div>
-        <PostItem
-          title={title}
-          link={link}
-          subreddit={userInput}
-          triggerLocalChange={() => ""}
-          setIsAnyInputSubmitting={() => ""}
-          isAnyInputSubmitting={false}
-          controllerConfig={{ schedulerModule: true }}
-          isScheduler={true}
-          postId={post.redditPostId}
-        />
-        <h3>Title: {title}</h3>
+        <CardContainer borderColor="red">
+          <PostItem
+            title={title}
+            link={link}
+            subreddit={userInput}
+            triggerLocalChange={() => ""}
+            setIsAnyInputSubmitting={() => ""}
+            isAnyInputSubmitting={false}
+            controllerConfig={{ schedulerModule: true }}
+            isScheduler={true}
+            postId={post.redditPostId}
+          />
+          {/* <h3>Title: {title}</h3>
         <h3>URL: {link}</h3>
         <h3>Subreddit: {userInput}</h3>
         <h3>Flair: {flair}</h3>
@@ -38,15 +40,16 @@ export const PostModify = ({
         <h3>Is Submitted Sucessfully? {post.isSuccess ? "YES" : "NO"}</h3>
         <h3>
           {moment(Number(post.SubmissionDate)).format("DD/MM/YYYY kk:mm A")}
-        </h3>
-        <button
-          className="btn"
-          onClick={() => {
-            removal.mutate({ internalId: post.id });
-          }}
-        >
-          REMOVE
-        </button>
+        </h3> */}
+          <button
+            className="btn"
+            onClick={() => {
+              removal.mutate({ internalId: post.id });
+            }}
+          >
+            REMOVE
+          </button>
+        </CardContainer>
       </div>
     </div>
   );
