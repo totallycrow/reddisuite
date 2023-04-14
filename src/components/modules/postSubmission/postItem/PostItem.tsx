@@ -7,6 +7,17 @@ import moment, { Moment } from "moment";
 import { IMainControllerConfig } from "../mainPostController/MainPostController";
 
 export const PostItem = (postConfig: IPostFormValues) => {
+  // PostItem = logic
+  // v
+  // define variables
+  // building blocks:
+  // header
+  // inputs
+  // scheduler
+  // postItemControls
+  // button [submit / update || delete]
+  // check form status -> disable update if form hasn't changed
+
   const isScheduler = postConfig.controllerConfig.schedulerModule;
   const {
     formObserver,
@@ -17,7 +28,7 @@ export const PostItem = (postConfig: IPostFormValues) => {
     isFormItemValidated,
     shouldShowSpinner,
     postDate,
-    setPostDate,        
+    setPostDate,
   } = usePostItemManager(postConfig);
 
   return (

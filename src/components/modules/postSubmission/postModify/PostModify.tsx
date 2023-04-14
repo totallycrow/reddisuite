@@ -20,19 +20,18 @@ export const PostModify = ({
   return (
     <div>
       <div>
-        <CardContainer borderColor="red">
-          <PostItem
-            title={title}
-            link={link}
-            subreddit={userInput}
-            triggerLocalChange={() => ""}
-            setIsAnyInputSubmitting={() => ""}
-            isAnyInputSubmitting={false}
-            controllerConfig={{ schedulerModule: true }}
-            isScheduler={true}
-            postId={post.redditPostId}
-          />
-          {/* <h3>Title: {title}</h3>
+        <PostItem
+          title={title}
+          link={link}
+          subreddit={userInput}
+          triggerLocalChange={() => ""}
+          setIsAnyInputSubmitting={() => ""}
+          isAnyInputSubmitting={false}
+          controllerConfig={{ schedulerModule: true }}
+          isScheduler={true}
+          postId={post.redditPostId}
+        />
+        {/* <h3>Title: {title}</h3>
         <h3>URL: {link}</h3>
         <h3>Subreddit: {userInput}</h3>
         <h3>Flair: {flair}</h3>
@@ -41,15 +40,14 @@ export const PostModify = ({
         <h3>
           {moment(Number(post.SubmissionDate)).format("DD/MM/YYYY kk:mm A")}
         </h3> */}
-          <button
-            className="btn"
-            onClick={() => {
-              removal.mutate({ internalId: post.id });
-            }}
-          >
-            REMOVE
-          </button>
-        </CardContainer>
+        <button
+          className="btn"
+          onClick={() => {
+            removal.mutate({ internalId: post.id });
+          }}
+        >
+          REMOVE
+        </button>
       </div>
     </div>
   );

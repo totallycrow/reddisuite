@@ -8,8 +8,6 @@ import { IConfig } from "../../../../hooks/controllers/postSubmission/usePostCon
 
 export const PostsList = ({
   subsList,
-  clean,
-  validation,
   config,
   setLocalChangeTriggered,
   isAnyInputSubmitting,
@@ -21,8 +19,6 @@ export const PostsList = ({
   controllerConfig,
 }: {
   subsList: Set<string>;
-  clean: boolean;
-  validation: ITitleLinkSublistValidation;
   config: IConfig;
   setLocalChangeTriggered: React.Dispatch<React.SetStateAction<boolean>>;
   isAnyInputSubmitting: boolean;
@@ -38,27 +34,22 @@ export const PostsList = ({
   return (
     <div>
       <div>
-        {subsList.size > 0 &&
-        clean &&
-        validation.isLinkValidated &&
-        validation.isTitleValidated
-          ? ([...subsList] as Array<string>).map((sub) => {
-              return (
-                <PostItem
-                  key={sub}
-                  title={config.title}
-                  link={config.link}
-                  subreddit={sub}
-                  triggerLocalChange={setLocalChangeTriggered}
-                  isAnyInputSubmitting={isAnyInputSubmitting}
-                  setIsAnyInputSubmitting={setIsAnyInputSubmitting}
-                  controllerConfig={controllerConfig}
-                  isScheduler={controllerConfig.schedulerModule}
-                  postId={""}
-                />
-              );
-            })
-          : ""}
+        {([...subsList] as Array<string>).map((sub) => {
+          return (
+            <PostItem
+              key={sub}
+              title={config.title}
+              link={config.link}
+              subreddit={sub}
+              triggerLocalChange={setLocalChangeTriggered}
+              isAnyInputSubmitting={isAnyInputSubmitting}
+              setIsAnyInputSubmitting={setIsAnyInputSubmitting}
+              controllerConfig={controllerConfig}
+              isScheduler={controllerConfig.schedulerModule}
+              postId={""}
+            />
+          );
+        })}
       </div>
 
       {(isAnySubmitted || !isMainPostControllerFullyValidated) &&

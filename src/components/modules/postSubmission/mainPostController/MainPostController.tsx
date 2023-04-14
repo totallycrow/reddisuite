@@ -50,6 +50,12 @@ export const MainPostController = ({
   );
   console.log(controllerConfig);
 
+  const shouldDisplayList =
+    subsList.size > 0 &&
+    clean &&
+    validation.isLinkValidated &&
+    validation.isTitleValidated;
+
   return (
     <div>
       <h1>Setup Your Post</h1>
@@ -82,22 +88,26 @@ export const MainPostController = ({
         {/* ****** POSTS LIST ******* */}
         {/* *************** */}
 
-        <PostsList
-          {...{
-            subsList,
-            clean,
-            validation,
-            config,
-            setLocalChangeTriggered,
-            isAnyInputSubmitting,
-            setIsAnyInputSubmitting,
-            isMainPostControllerFullyValidated,
-            debouncedStatus,
-            isAnySubmitted,
-            publish,
-            controllerConfig,
-          }}
-        />
+        {shouldDisplayList ? (
+          <div>
+            <PostsList
+              {...{
+                subsList,
+                config,
+                setLocalChangeTriggered,
+                isAnyInputSubmitting,
+                setIsAnyInputSubmitting,
+                isMainPostControllerFullyValidated,
+                debouncedStatus,
+                isAnySubmitted,
+                publish,
+                controllerConfig,
+              }}
+            />
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );
