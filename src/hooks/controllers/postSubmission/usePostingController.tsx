@@ -31,8 +31,8 @@ export const usePostingController = (
   console.log(flairID);
 
   const mutationController = api.reddit.sendPost.useMutation();
-  const scheduleController = api.reddit.schedulePost.useMutation();
   const [submissionStatus, setSubmissionStatus] = useState("IDLE");
+  // const dat = mutationController.data;
 
   useEffect(() => {
     console.log("MUTATION TRIGGER");
@@ -153,6 +153,23 @@ export const usePostingController = (
     return;
   };
 
+  // function isError(pet: Fish | Bird): pet is Fish {
+  //   return (pet as Fish).swim !== undefined;
+  // }
+
+  const isBusy = mutationController.isLoading;
+  const mutationErrorMessage =
+    mutationController.data &&
+    mutationController.data.json &&
+    mutationController.data.json.errors.length > 0 &&
+    mutationController.data.json.errors[0] &&
+    mutationController.data.json.errors[0][1]
+      ? mutationController.data.json.errors[0][1]
+      : "";
+  const mutationErrorDataMessage =
+    mutationController.data && mutationController.data.error
+      ? mutationController.data.message
+      : "";
   // ************************************************************************************
 
   return { mutationController, sendData, submissionStatus };

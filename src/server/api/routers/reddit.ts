@@ -166,7 +166,13 @@ export const redditRouter = createTRPCRouter({
       const expires_at = ctx.session?.user.expires_at;
       const refresh_token = ctx.session?.user.refresh_token;
 
-      if (!token) throw new Error("Invalid Token");
+      if (!token)
+        return {
+          json: {
+            errors: "INVALID_TOKEN",
+            data: {},
+          },
+        };
 
       if (
         refresh_token &&
@@ -174,7 +180,7 @@ export const redditRouter = createTRPCRouter({
         expires_at &&
         expires_at <= Math.floor(new Date().getTime() / 1000.0)
       ) {
-        refreshToken(redditId, refresh_token);
+        await refreshToken(redditId, refresh_token);
       }
 
       const parambody = new URLSearchParams({
@@ -190,243 +196,43 @@ export const redditRouter = createTRPCRouter({
         nsfw: "false",
         flair_id: flair,
       });
-      try {
-        console.log("_________________________RES____________________________");
 
-        // export interface ISubmissionResponse {
-        //   json: ISubmissionResponseJson;
-        // }
+      console.log("_________________________RES____________________________");
 
-        // export interface ISubmissionResponseJson {
-        //   errors: string[];
-        //   data: ISubmissionResponseData;
-        // }
+      // export interface ISubmissionResponse {
+      //   json: ISubmissionResponseJson;
+      // }
 
-        if (!isScheduler) {
-          const result = await submitPost<ISubmissionResponse>(
-            token,
-            sub,
-            link,
-            title,
-            flair
-          );
+      // export interface ISubmissionResponseJson {
+      //   errors: string[];
+      //   data: ISubmissionResponseData;
+      // }
 
-          const isOK = result.json.errors.length === 0;
-
-          const dbresponse = await addPostToDb(
-            result.json.data.id || String(Date.now()),
-            redditId,
-            title,
-            link,
-            sub,
-            isOK,
-            date,
-            flair,
-            isScheduler
-          );
-
-          console.log("################ DB ################");
-          console.log(dbresponse);
-
-          return result;
-          // return response.json();
-        }
-
-        // set dummy id until submission time and getting actual reddit id
-
-        // CHECK IF UPDATE? GET ID FROM REQUEST
-        // if id not empty then use provided ID, else generate
-
-        const isUpdate = postId !== "";
-
-        const id = isUpdate ? postId : uuidv4();
-
-        // ADD NEW CRON
-        // IF UPDATE, REMOVE ID FROM PREVIOUS CRON
-
-        const dateFormatted = new Date(date);
-
-        const minutes = dateFormatted.getMinutes();
-        const hours = dateFormatted.getHours();
-        const days = dateFormatted.getDate();
-        const months = dateFormatted.getMonth() + 1;
-        const dayOfWeek = dateFormatted.getDay();
-
-        const cronString = `${minutes} ${hours} ${days} ${months} ${dayOfWeek}`;
-
-        const secret = process.env.API_SECRET;
-
-        // check if date exisits for any cronjob
-
-        // JSON FORMAT FOR CRON DATA
-        /* 
-        
-        {
-          secret: DSAHJDSHDJSA
-          redditPostIds: []
-        }        
-        */
-
-        const cronReq = `https://www.easycron.com/rest/add?token=fad86873a0a32c6def17481c4fce71b0&cron_expression=${cronString}&url=https%3A%2F%2Freddisuite.vercel.app%2Fapi%2Fsubmit&http_method=POST&http_message_body={"secret": "${secret}", "redditPostIds": ["${id}"]}&http_headers=Content-Type:application/json`;
-
-        const cronList = await axios.get(
-          "https://www.easycron.com/rest/list?token=fad86873a0a32c6def17481c4fce71b0"
+      if (!isScheduler) {
+        const result = await submitPost<ISubmissionResponse>(
+          token,
+          sub,
+          link,
+          title,
+          flair
         );
 
-        const cronJobs = cronList.data.cron_jobs;
+        const isOK = result.json.errors.length === 0;
 
-        // IS UPDATE? IF SO, REMOVE JOB FROM CURRENT CRON
-        if (isUpdate) {
-          // find original post date
-          //
-          // FIND CRON BY DATE
-          // REMOVE ID
-
-          const originalPost = await ctx.prisma.redditPost.findUnique({
-            where: {
-              redditPostId: postId,
-            },
-          });
-
-          const dateFormatted = new Date(Number(originalPost?.SubmissionDate));
-
-          const minutes = dateFormatted.getMinutes();
-          const hours = dateFormatted.getHours();
-          const days = dateFormatted.getDate();
-          const months = dateFormatted.getMonth() + 1;
-          const dayOfWeek = dateFormatted.getDay();
-
-          const cronStringOriginal = `${minutes} ${hours} ${days} ${months} ${dayOfWeek}`;
-
-          const secret = process.env.API_SECRET;
-
-          const matchingCronJob = cronJobs.find(
-            (cron) => cron.cron_expression === cronStringOriginal
-          );
-          // DELETE CRONJOB IF ONLY ONE TASK
-
-          let previousPayload = await JSON.parse(
-            matchingCronJob.http_message_body
-          );
-
-          console.log(previousPayload);
-
-          if (
-            previousPayload.redditPostIds.length === 1 &&
-            previousPayload.redditPostIds[0] === postId
-          ) {
-            const res = await axios.get(
-              `https://www.easycron.com/rest/delete?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}`
-            );
-          }
-
-          // TODO: remove cron if it holds only 1 item that is currently being removed
-
-          const filteredData = previousPayload.redditPostIds.filter(
-            (id) => id !== postId
-          );
-
-          previousPayload.redditPostIds = filteredData;
-
-          const jsonPayload = JSON.stringify(previousPayload);
-
-          console.log(previousPayload);
-
-          // EDIT THE CRON JOB BY ID
-
-          const res = await axios.get(
-            `https://www.easycron.com/rest/edit?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}&http_message_body=${jsonPayload}`
-          );
-          console.log(res);
-
-          // id,
-          // redditId,
-          // title,
-          // link,
-          // sub,
-          // false,
-          // date,
-          // flair,
-          // isScheduler
-        }
-
-        // CONTINUE
-
-        console.log("????????????????????????????????");
-        console.log("????????????????????????????????");
-        console.log("????????????????????????????????");
-        console.log("????????????????????????????????");
-
-        console.log(cronJobs);
-
-        const matchingCronJob = cronJobs.find(
-          (cron) => cron.cron_expression === cronString
-        );
-
-        console.log("????????????????????????????????");
-        console.log("MATCHING DATE");
-        console.log("MATCHING DATE");
-        console.log("MATCHING DATE");
-        console.log("MATCHING DATE");
-        console.log("MATCHING DATE");
-        console.log("MATCHING DATE");
-        console.log(matchingCronJob);
-
-        // CHECK IF EXISTS IF NOT ADD SINGLE CRON ELSE MODIFY PAYLOAD
-
-        console.log("????????????????????????????????");
-        console.log(cronReq);
-
-        if (matchingCronJob === undefined) {
-          const res = await axios.get(cronReq);
-          console.log(res);
-
-          console.log(cronString);
-          console.log("????????????????????????????????");
-          console.log("NO MATCH FOUND, ADDED NEW CRON");
-          //
-          //
-        } else {
-          console.log("__________________________________-");
-          console.log("!!!!!!!!!!!!!!!!!!!!");
-          console.log("DUPLICATE");
-
-          let previousPayload = await JSON.parse(
-            matchingCronJob.http_message_body
-          );
-
-          console.log(previousPayload);
-
-          previousPayload.redditPostIds = [
-            ...previousPayload.redditPostIds,
-            id,
-          ];
-
-          const jsonPayload = JSON.stringify(previousPayload);
-
-          console.log(previousPayload);
-
-          // EDIT THE CRON JOB BY ID
-
-          const res = await axios.get(
-            `https://www.easycron.com/rest/edit?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}&http_message_body=${jsonPayload}`
-          );
-          console.log(res);
-        }
-        // console.log(res);
-
-        // ************* ADD NEW TO DB **************
         const dbresponse = await addPostToDb(
-          id,
+          result.json.data.id || String(Date.now()),
           redditId,
           title,
           link,
           sub,
-          false,
+          isOK,
           date,
           flair,
           isScheduler
         );
+
+        console.log("################ DB ################");
+        console.log(dbresponse);
 
         return {
           json: {
@@ -434,9 +240,207 @@ export const redditRouter = createTRPCRouter({
             data: dbresponse,
           },
         };
-      } catch (error) {
-        throw error;
       }
+
+      // set dummy id until submission time and getting actual reddit id
+
+      // CHECK IF UPDATE? GET ID FROM REQUEST
+      // if id not empty then use provided ID, else generate
+
+      const isUpdate = postId !== "";
+
+      const id = isUpdate ? postId : uuidv4();
+
+      // ADD NEW CRON
+      // IF UPDATE, REMOVE ID FROM PREVIOUS CRON
+
+      const dateFormatted = new Date(date);
+
+      const minutes = dateFormatted.getMinutes();
+      const hours = dateFormatted.getHours();
+      const days = dateFormatted.getDate();
+      const months = dateFormatted.getMonth() + 1;
+      const dayOfWeek = dateFormatted.getDay();
+
+      const cronString = `${minutes} ${hours} ${days} ${months} ${dayOfWeek}`;
+
+      const secret = process.env.API_SECRET;
+
+      // check if date exisits for any cronjob
+
+      // JSON FORMAT FOR CRON DATA
+      /* 
+        
+        {
+          secret: DSAHJDSHDJSA
+          redditPostIds: []
+        }        
+        */
+
+      const cronReq = `https://www.easycron.com/rest/add?token=fad86873a0a32c6def17481c4fce71b0&cron_expression=${cronString}&url=https%3A%2F%2Freddisuite.vercel.app%2Fapi%2Fsubmit&http_method=POST&http_message_body={"secret": "${secret}", "redditPostIds": ["${id}"]}&http_headers=Content-Type:application/json`;
+
+      const cronList = await axios.get(
+        "https://www.easycron.com/rest/list?token=fad86873a0a32c6def17481c4fce71b0"
+      );
+
+      const cronJobs = cronList.data.cron_jobs;
+
+      // IS UPDATE? IF SO, REMOVE JOB FROM CURRENT CRON
+      if (isUpdate) {
+        // find original post date
+        //
+        // FIND CRON BY DATE
+        // REMOVE ID
+
+        const originalPost = await ctx.prisma.redditPost.findUnique({
+          where: {
+            redditPostId: postId,
+          },
+        });
+
+        const dateFormatted = new Date(Number(originalPost?.SubmissionDate));
+
+        const minutes = dateFormatted.getMinutes();
+        const hours = dateFormatted.getHours();
+        const days = dateFormatted.getDate();
+        const months = dateFormatted.getMonth() + 1;
+        const dayOfWeek = dateFormatted.getDay();
+
+        const cronStringOriginal = `${minutes} ${hours} ${days} ${months} ${dayOfWeek}`;
+
+        const secret = process.env.API_SECRET;
+
+        const matchingCronJob = cronJobs.find(
+          (cron) => cron.cron_expression === cronStringOriginal
+        );
+        // DELETE CRONJOB IF ONLY ONE TASK
+
+        let previousPayload = await JSON.parse(
+          matchingCronJob.http_message_body
+        );
+
+        console.log(previousPayload);
+
+        if (
+          previousPayload.redditPostIds.length === 1 &&
+          previousPayload.redditPostIds[0] === postId
+        ) {
+          const res = await axios.get(
+            `https://www.easycron.com/rest/delete?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}`
+          );
+        }
+
+        // TODO: remove cron if it holds only 1 item that is currently being removed
+
+        const filteredData = previousPayload.redditPostIds.filter(
+          (id) => id !== postId
+        );
+
+        previousPayload.redditPostIds = filteredData;
+
+        const jsonPayload = JSON.stringify(previousPayload);
+
+        console.log(previousPayload);
+
+        // EDIT THE CRON JOB BY ID
+
+        const res = await axios.get(
+          `https://www.easycron.com/rest/edit?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}&http_message_body=${jsonPayload}`
+        );
+        console.log(res);
+
+        // id,
+        // redditId,
+        // title,
+        // link,
+        // sub,
+        // false,
+        // date,
+        // flair,
+        // isScheduler
+      }
+
+      // CONTINUE
+
+      console.log("????????????????????????????????");
+      console.log("????????????????????????????????");
+      console.log("????????????????????????????????");
+      console.log("????????????????????????????????");
+
+      console.log(cronJobs);
+
+      const matchingCronJob = cronJobs.find(
+        (cron) => cron.cron_expression === cronString
+      );
+
+      console.log("????????????????????????????????");
+      console.log("MATCHING DATE");
+      console.log("MATCHING DATE");
+      console.log("MATCHING DATE");
+      console.log("MATCHING DATE");
+      console.log("MATCHING DATE");
+      console.log("MATCHING DATE");
+      console.log(matchingCronJob);
+
+      // CHECK IF EXISTS IF NOT ADD SINGLE CRON ELSE MODIFY PAYLOAD
+
+      console.log("????????????????????????????????");
+      console.log(cronReq);
+
+      if (matchingCronJob === undefined) {
+        const res = await axios.get(cronReq);
+        console.log(res);
+
+        console.log(cronString);
+        console.log("????????????????????????????????");
+        console.log("NO MATCH FOUND, ADDED NEW CRON");
+        //
+        //
+      } else {
+        console.log("__________________________________-");
+        console.log("!!!!!!!!!!!!!!!!!!!!");
+        console.log("DUPLICATE");
+
+        let previousPayload = await JSON.parse(
+          matchingCronJob.http_message_body
+        );
+
+        console.log(previousPayload);
+
+        previousPayload.redditPostIds = [...previousPayload.redditPostIds, id];
+
+        const jsonPayload = JSON.stringify(previousPayload);
+
+        console.log(previousPayload);
+
+        // EDIT THE CRON JOB BY ID
+
+        const res = await axios.get(
+          `https://www.easycron.com/rest/edit?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}&http_message_body=${jsonPayload}`
+        );
+        console.log(res);
+      }
+      // console.log(res);
+
+      // ************* ADD NEW TO DB **************
+      const dbresponse = await addPostToDb(
+        id,
+        redditId,
+        title,
+        link,
+        sub,
+        false,
+        date,
+        flair,
+        isScheduler
+      );
+
+      return {
+        json: {
+          errors: [],
+          data: dbresponse,
+        },
+      };
     }),
 
   // ************
