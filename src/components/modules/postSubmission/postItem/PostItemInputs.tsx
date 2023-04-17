@@ -4,6 +4,7 @@ import { IFormValidationResult } from "../../../../hooks/validation/useFormItemV
 import Datetime from "react-datetime";
 import moment, { Moment } from "moment";
 import { IMainControllerConfig } from "../mainPostController/MainPostController";
+import { PostItemScheduler } from "./PostItemScheduler";
 
 interface IPostItemInputsConfig {
   title: string;
@@ -30,8 +31,10 @@ interface IPostItemInputsConfig {
 
 export const PostItemInputs = ({
   config,
+  isButtonDisabled,
 }: {
   config: IPostItemInputsConfig;
+  isButtonDisabled: boolean;
 }) => {
   const yesterday = moment().subtract(1, "day");
   const {
@@ -137,7 +140,7 @@ export const PostItemInputs = ({
         </div>
 
         {/* SCHEDULER */}
-        {controllerConfig.schedulerModule && (
+        {/* {controllerConfig.schedulerModule && (
           <div>
             <h4 className="px-4 pt-4 text-lg font-bold">Schedule post time</h4>
             <div className="ml-4 mt-2 mb-4 rounded border-x-4 border-emerald-400 p-4">
@@ -154,22 +157,15 @@ export const PostItemInputs = ({
               />
             </div>
           </div>
-        )}
+        )} */}
+        <PostItemScheduler setPostDate={setPostDate} />
+        {/* ******************* */}
+        {/* CONTROLS */}
         {/* ******************* */}
 
         <button
           className="btn m-2"
-          disabled={
-            title === "" ||
-            link === "" ||
-            userInput === "" ||
-            isSubmittedOK ||
-            isLoading ||
-            isSubmitting ||
-            !isFormItemValidated.isValid
-              ? true
-              : false
-          }
+          disabled={isButtonDisabled}
           onClick={() => {
             setIsAnyInputSubmitting(true);
             void sendData();
@@ -177,6 +173,9 @@ export const PostItemInputs = ({
         >
           Submit
         </button>
+        {/* ************* */}
+        {/* ************* */}
+        {/* ************* */}
         {/* ************* */}
       </div>
       <div>{mutationController.isLoading && <p>Loading...</p>}</div>

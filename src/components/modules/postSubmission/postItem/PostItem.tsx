@@ -5,6 +5,7 @@ import Datetime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
 import moment, { Moment } from "moment";
 import { IMainControllerConfig } from "../mainPostController/MainPostController";
+import { PostItemControls } from "./PostItemControls";
 
 export const PostItem = (postConfig: IPostFormValues) => {
   // PostItem = logic
@@ -30,6 +31,20 @@ export const PostItem = (postConfig: IPostFormValues) => {
     postDate,
     setPostDate,
   } = usePostItemManager(postConfig);
+
+  const isSubmittedOK = submissionStatus === "SUCCESS";
+  const isLoading = loadingState !== "Idle";
+
+  const isButtonDisabled =
+    formConfig.title === "" ||
+    formConfig.link === "" ||
+    formConfig.userInput === "" ||
+    isSubmittedOK ||
+    isLoading ||
+    formConfig.isSubmitting ||
+    !isFormItemValidated.isValid
+      ? true
+      : false;
 
   return (
     <div>
@@ -72,10 +87,13 @@ export const PostItem = (postConfig: IPostFormValues) => {
       <div data-theme="" className="m-auto flex w-full">
         <div className=""></div>
       </div>
-      <PostItemInputs config={formConfig} />
+      <PostItemInputs config={formConfig} isButtonDisabled={isButtonDisabled}/>
       <div className="flex w-full flex-col">
         <div className="divider"></div>
       </div>
+      {/* SCHEDULER */}
+      {/* FORM CONTROLS */}
+      <PostItemControls />
     </div>
   );
 };
