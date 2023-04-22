@@ -6,6 +6,7 @@ import "react-datetime/css/react-datetime.css";
 import moment, { Moment } from "moment";
 import { IMainControllerConfig } from "../mainPostController/MainPostController";
 import { PostItemControls } from "./PostItemControls";
+import { PostItemScheduler } from "./PostItemScheduler";
 
 export const PostItem = (postConfig: IPostFormValues) => {
   // PostItem = logic
@@ -45,6 +46,8 @@ export const PostItem = (postConfig: IPostFormValues) => {
     !isFormItemValidated.isValid
       ? true
       : false;
+
+  const formItem = formObserver.getFormItemBySubreddit(userInput);
 
   return (
     <div>
@@ -87,11 +90,12 @@ export const PostItem = (postConfig: IPostFormValues) => {
       <div data-theme="" className="m-auto flex w-full">
         <div className=""></div>
       </div>
-      <PostItemInputs config={formConfig} isButtonDisabled={isButtonDisabled}/>
+      <PostItemInputs config={formConfig} isButtonDisabled={isButtonDisabled} />
       <div className="flex w-full flex-col">
         <div className="divider"></div>
       </div>
       {/* SCHEDULER */}
+      <PostItemScheduler setPostDate={setPostDate} />
       {/* FORM CONTROLS */}
       <PostItemControls />
     </div>

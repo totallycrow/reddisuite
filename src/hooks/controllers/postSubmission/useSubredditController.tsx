@@ -48,20 +48,84 @@ export const useSubredditController = (
 
   const subData = subRedditController.data;
 
-  if (!subData) return { subRedditController, debouncedStatus };
+  if (!subData) {
+    const subredditUtils = {
+      error: "subData undefined",
+      isTitleTagRequired: false,
+      titleTags: [],
+      isSubredditControllerBusy: false,
+    };
 
+    return { subRedditController, debouncedStatus, subredditUtils };
+  }
+
+  /*
+  utils 
+  {
+    error: ""
+  } 
+  
+  */
+
+  // IF ERROR ******************************
   if (isISubredditError(subData)) {
     formObserver.setIsError(debouncedInput, true);
-    return { subRedditController, debouncedStatus };
+
+    const subredditExplanation =
+      subData && subData.explanation ? subData.explanation : "";
+
+    const subredditUtils = {
+      error: subredditExplanation,
+      isTitleTagRequired: false,
+      titleTags: [],
+      isSubredditControllerBusy: false,
+    };
+
+    return { subRedditController, debouncedStatus, subredditUtils };
   }
 
   const isTitleTagRequired = subData.titleTags.length > 0;
   const titleTags = subData.titleTags || [];
+
+  const isSubredditControllerBusy =
+    subRedditController.isLoading ||
+    subRedditController.isFetching ||
+    subRedditController.isRefetching ||
+    subRedditController.isInitialLoading;
+
+  // subRedditController.isLoading ||
+  //     subRedditController.isFetching ||
+  //     subRedditController.isRefetching ||
+  //     subRedditController.isInitialLoading ||
+
+  //   <div>
+  //   {subRedditController.data && subRedditController.data.explanation && (
+  //     <p>{subRedditController.data.explanation}</p>
+  //   )}
+  // </div>
+  // <div>
+  //   {subRedditController.data &&
+  //     subRedditController.data.titleTags &&
+  //     subRedditController.data.titleTags.length > 0 && (
+  //       <p>
+  //         Title tag required: &quot;
+  //         {subRedditController.data.titleTags[0]}&quot;
+  //       </p>
+  //     )}
+  // </div>
+
+  const subredditUtils = {
+    error: "",
+    isTitleTagRequired: isTitleTagRequired,
+    titleTags: titleTags,
+    isSubredditControllerBusy: isSubredditControllerBusy,
+  };
 
   return {
     subRedditController,
     debouncedStatus,
     isTitleTagRequired,
     titleTags,
+    subredditUtils,
   };
 };

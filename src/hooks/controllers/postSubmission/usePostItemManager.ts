@@ -32,6 +32,7 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
     isTitleTagRequired,
     titleTags,
     debouncedStatus,
+    subredditUtils,
   } = useSubredditController(userInput, setLoadingState);
 
   const subData = subRedditController.data ?? {
@@ -40,7 +41,7 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
 
   const { selectedFlair, setSelectedFlair, isFlairRequired, flairList } =
     useFlairController(subData);
-  const { mutationController, sendData, submissionStatus } =
+  const { mutationController, sendData, submissionStatus, mutationUtilities } =
     usePostingController(
       title,
       userInput,
@@ -72,10 +73,7 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
   // LOADING CHECKS
   useEffect(() => {
     if (
-      subRedditController.isLoading ||
-      subRedditController.isFetching ||
-      subRedditController.isRefetching ||
-      subRedditController.isInitialLoading ||
+      subredditUtils.isSubredditControllerBusy ||
       submissionStatus === "LOADING"
     ) {
       setLoadingState("Loading...");
@@ -173,8 +171,6 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
     isSubmitting ||
     postConfig.isAnyInputSubmitting ||
     (debouncedStatus === "Loading..." && !hasBeenSubmitted);
-
-  
 
   // <div>{mutationController.isLoading && <p>Loading...</p>}</div>
   // <div>

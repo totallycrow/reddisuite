@@ -158,12 +158,12 @@ export const PostItemInputs = ({
             </div>
           </div>
         )} */}
-        <PostItemScheduler setPostDate={setPostDate} />
+        {/* <PostItemScheduler setPostDate={setPostDate} /> */}
         {/* ******************* */}
         {/* CONTROLS */}
         {/* ******************* */}
 
-        <button
+        {/* <button
           className="btn m-2"
           disabled={isButtonDisabled}
           onClick={() => {
@@ -172,13 +172,17 @@ export const PostItemInputs = ({
           }}
         >
           Submit
-        </button>
+        </button> */}
         {/* ************* */}
         {/* ************* */}
         {/* ************* */}
         {/* ************* */}
       </div>
-      <div>{mutationController.isLoading && <p>Loading...</p>}</div>
+      {/* ************* */}
+      {/* ***** MUTATION FEEDBACK ******** */}
+      {/* ************* */}
+      {/* ************* */}
+      {/* <div>{mutationController.isLoading && <p>Loading...</p>}</div>
       <div>
         {mutationController.data &&
           mutationController.data.json &&
@@ -205,7 +209,7 @@ export const PostItemInputs = ({
               {subRedditController.data.titleTags[0]}&quot;
             </p>
           )}
-      </div>
+      </div> */}
       <div></div>
     </div>
   );
