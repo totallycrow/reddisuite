@@ -6,7 +6,7 @@ import { authOptions } from "../server/auth";
 import Layout from "../components/ui/Layout";
 
 const config = {
-  schedulerModule: true,
+  updaterModule: false,
 };
 
 export default function Dashboard() {

@@ -52,7 +52,8 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
       postDate,
       setPostDate,
       postConfig.controllerConfig.schedulerModule,
-      postConfig.postId
+      postConfig.postId,
+      postConfig.setIsAnyInputSubmitting
     );
 
   const isFormItemValidated = useFormItemValidation(

@@ -284,9 +284,11 @@ export const redditRouter = createTRPCRouter({
       );
 
       const cronJobs = cronList.data.cron_jobs;
+      console.log(cronJobs);
 
       // IS UPDATE? IF SO, REMOVE JOB FROM CURRENT CRON
-      if (isUpdate) {
+      if (isUpdate && cronJobs.length > 0) {
+        console.log("UPDATE START");
         // find original post date
         //
         // FIND CRON BY DATE
@@ -314,6 +316,7 @@ export const redditRouter = createTRPCRouter({
           (cron) => cron.cron_expression === cronStringOriginal
         );
         // DELETE CRONJOB IF ONLY ONE TASK
+        console.log(matchingCronJob);
 
         let previousPayload = await JSON.parse(
           matchingCronJob.http_message_body
@@ -387,6 +390,9 @@ export const redditRouter = createTRPCRouter({
       console.log("????????????????????????????????");
       console.log(cronReq);
 
+      let responseResult: string;
+      let responseStatus: string;
+
       if (matchingCronJob === undefined) {
         const res = await axios.get(cronReq);
         console.log(res);
@@ -396,6 +402,13 @@ export const redditRouter = createTRPCRouter({
         console.log("NO MATCH FOUND, ADDED NEW CRON");
         //
         //
+        responseStatus = res.data.status as string;
+
+        if (responseStatus !== "error") {
+          responseResult = res.data.status as string;
+        } else {
+          responseResult = res.data.error.message;
+        }
       } else {
         console.log("__________________________________-");
         console.log("!!!!!!!!!!!!!!!!!!!!");
@@ -419,6 +432,12 @@ export const redditRouter = createTRPCRouter({
           `https://www.easycron.com/rest/edit?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}&http_message_body=${jsonPayload}`
         );
         console.log(res);
+        responseStatus = res.data.status as string;
+        if (responseStatus !== "error") {
+          responseResult = res.data.status as string;
+        } else {
+          responseResult = res.data.error.message;
+        }
       }
       // console.log(res);
 
@@ -435,9 +454,17 @@ export const redditRouter = createTRPCRouter({
         isScheduler
       );
 
+      if (responseStatus !== "error") {
+        return {
+          json: {
+            errors: "",
+            data: dbresponse,
+          },
+        };
+      }
       return {
         json: {
-          errors: "",
+          errors: responseResult,
           data: dbresponse,
         },
       };

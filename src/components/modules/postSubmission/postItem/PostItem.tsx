@@ -9,6 +9,9 @@ import { PostItemControls } from "./PostItemControls";
 import { PostItemScheduler } from "./PostItemScheduler";
 import { PostItemFeedback } from "./PostItemFeedback";
 import { CardContainer } from "../../../ui/CardContainer";
+import { Spinner } from "../../../ui/Spinner";
+import { Divider } from "../../../ui/Divider";
+import { SubmitButton } from "../../../ui/SubmitButton";
 
 export const PostItem = (postConfig: IPostFormValues) => {
   // PostItem = logic
@@ -22,7 +25,7 @@ export const PostItem = (postConfig: IPostFormValues) => {
   // button [submit / update || delete]
   // check form status -> disable update if form hasn't changed
 
-  const isScheduler = postConfig.controllerConfig.schedulerModule;
+  const isUpdater = postConfig.isUpdater;
   const {
     formObserver,
     userInput,
@@ -51,12 +54,13 @@ export const PostItem = (postConfig: IPostFormValues) => {
       ? "red"
       : "default";
     setBorderColour(border);
-  }, [isSubmittedOK, isLoading]);
+  }, [isSubmittedOK, isLoading, formConfig.isError, submissionStatus]);
 
   return (
     <div>
       <CardContainer borderColor={borderColour}>
-        <h1>
+        {/* DEBUG STATUS PANEL */}
+        {/* <h1>
           Is Submitting? :{" "}
           {formItem?.isSubmitting || postConfig.isAnyInputSubmitting
             ? "YES"
@@ -75,24 +79,10 @@ export const PostItem = (postConfig: IPostFormValues) => {
           formObserver.getFormItemBySubreddit(userInput)?.isIdle
             ? "YES"
             : "NO"}
-        </div>
+        </div> */}
+        {/* DEBUG PANEL */}
         <h3 className="px-4 pt-4 text-lg font-bold">r/{userInput}</h3>
-        <div>
-          {shouldShowSpinner ? (
-            <div className="flex items-center justify-center">
-              <div
-                className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-                role="status"
-              >
-                <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-                  Loading...
-                </span>
-              </div>
-            </div>
-          ) : (
-            ""
-          )}
-        </div>
+        <div>{shouldShowSpinner ? <Spinner /> : ""}</div>
         <div data-theme="" className="m-auto flex w-full">
           <div className=""></div>
         </div>
@@ -100,13 +90,26 @@ export const PostItem = (postConfig: IPostFormValues) => {
           config={formConfig}
           isButtonDisabled={isButtonDisabled}
         />
-        <div className="flex w-full flex-col">
-          <div className="divider"></div>
-        </div>
+
         {/* SCHEDULER */}
+        <Divider />
         <PostItemScheduler setPostDate={setPostDate} />
+
         {/* FORM CONTROLS */}
-        <PostItemControls />
+        {/* <PostItemControls /> */}
+        <SubmitButton
+          isButtonDisabled={isButtonDisabled}
+          callback={formConfig.sendData}
+          buttonText={isUpdater ? "Update" : "Submit"}
+        />
+        {isUpdater && (
+          <SubmitButton
+            isButtonDisabled={isButtonDisabled}
+            callback={postConfig.removal}
+            buttonText={"Remove"}
+          />
+        )}
+
         <PostItemFeedback
           mutationUtilities={mutationUtilities}
           subredditUtils={subredditUtils}
@@ -124,6 +127,7 @@ export interface IPostFormValues {
   setIsAnyInputSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
   isAnyInputSubmitting: boolean;
   controllerConfig: IMainControllerConfig;
-  isScheduler: boolean;
+  isUpdater: boolean;
   postId: string;
+  removal: () => void;
 }

@@ -1,6 +1,6 @@
 import React from "react";
 
-export const PostItemControls = () => {
+export const PostItemControls = ({ buttonStatus }) => {
   return (
     <div>
       <div>controls</div>

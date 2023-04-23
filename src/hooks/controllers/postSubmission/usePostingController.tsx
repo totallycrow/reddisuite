@@ -23,7 +23,8 @@ export const usePostingController = (
   postDate: number,
   setPostDate,
   isScheduler: boolean,
-  postId: string
+  postId: string,
+  setIsAnyInputSubmitting: (value: boolean) => void
 ) => {
   console.log(title);
   console.log(sub);
@@ -110,6 +111,7 @@ export const usePostingController = (
 
   // ************************************************************************************
   const sendData = async () => {
+    setIsAnyInputSubmitting(true);
     formObserver.setIsSubmitting(sub, true);
     if (setIsSubmitting) {
       setIsSubmitting(true);
@@ -166,8 +168,6 @@ export const usePostingController = (
     mutationController.data.json.errors[0][1]
       ? true
       : false;
-
-  const checkDataError = () => {};
 
   const mutationErrorMessage =
     mutationController.data &&

@@ -45,8 +45,9 @@ export const PostsList = ({
               isAnyInputSubmitting={isAnyInputSubmitting}
               setIsAnyInputSubmitting={setIsAnyInputSubmitting}
               controllerConfig={controllerConfig}
-              isScheduler={controllerConfig.schedulerModule}
+              isUpdater={controllerConfig.updaterModule}
               postId={""}
+              removal={() => ""}
             />
           );
         })}

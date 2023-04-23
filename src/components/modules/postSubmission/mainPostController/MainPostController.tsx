@@ -12,7 +12,7 @@ export type ITitleLinkSublistValidation = {
 };
 
 export interface IMainControllerConfig {
-  schedulerModule: boolean;
+  updaterModule: boolean;
 }
 
 export const MainPostController = ({

@@ -28,8 +28,11 @@ export const PostModify = ({
           setIsAnyInputSubmitting={() => ""}
           isAnyInputSubmitting={false}
           controllerConfig={{ schedulerModule: true }}
-          isScheduler={true}
+          isUpdater={true}
           postId={post.redditPostId}
+          removal={() => {
+            removal.mutate({ internalId: post.id });
+          }}
         />
         {/* <h3>Title: {title}</h3>
         <h3>URL: {link}</h3>
@@ -40,14 +43,14 @@ export const PostModify = ({
         <h3>
           {moment(Number(post.SubmissionDate)).format("DD/MM/YYYY kk:mm A")}
         </h3> */}
-        <button
+        {/* <button
           className="btn"
           onClick={() => {
             removal.mutate({ internalId: post.id });
           }}
         >
           REMOVE
-        </button>
+        </button> */}
       </div>
     </div>
   );
