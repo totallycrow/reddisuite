@@ -1,6 +1,6 @@
 import React from "react";
 
-export type IBorderColor = "red" | "green" | "default";
+export type IBorderColor = string;
 
 type Props = {
   borderColor: IBorderColor;

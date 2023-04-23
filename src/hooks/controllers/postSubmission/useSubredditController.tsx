@@ -52,7 +52,7 @@ export const useSubredditController = (
     const subredditUtils = {
       error: "subData undefined",
       isTitleTagRequired: false,
-      titleTags: [],
+      titleTags: [] as string[],
       isSubredditControllerBusy: false,
     };
 
@@ -77,7 +77,7 @@ export const useSubredditController = (
     const subredditUtils = {
       error: subredditExplanation,
       isTitleTagRequired: false,
-      titleTags: [],
+      titleTags: [] as string[],
       isSubredditControllerBusy: false,
     };
 
@@ -85,7 +85,7 @@ export const useSubredditController = (
   }
 
   const isTitleTagRequired = subData.titleTags.length > 0;
-  const titleTags = subData.titleTags || [];
+  const titleTags = subData.titleTags;
 
   const isSubredditControllerBusy =
     subRedditController.isLoading ||

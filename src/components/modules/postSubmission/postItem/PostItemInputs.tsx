@@ -68,79 +68,68 @@ export const PostItemInputs = ({
   return (
     <div>
       Date: {postDate}
-      <div
-        className={
-          isSubmittedOK
-            ? "rounded border border-emerald-400 p-4"
-            : submissionStatus === "ERROR" || isError
-            ? "rounded border border-rose-600 p-4"
-            : "rounded border border-slate-800 p-4"
-        }
-      >
-        <h2 className="p-4">Submit Your Post to: r/{userInput}</h2>
-        <div>{isSubmittedOK ? <div>SUBMITTED SUCESSFULLY!</div> : ""}</div>
+      <h2 className="p-4">Submit Your Post to: r/{userInput}</h2>
+      <div>{isSubmittedOK ? <div>SUBMITTED SUCESSFULLY!</div> : ""}</div>
+      <div>
+        <InputItem
+          title={"Post Title"}
+          key="title"
+          value={title}
+          type="text"
+          placeholder="Enter your post title here..."
+          callback={setTitle}
+          disabled={isSubmittedOK || isLoading}
+          isValid={isFormItemValidated.titleValid}
+          label=""
+        />
 
-        <div>
-          <InputItem
-            title={"Post Title"}
-            key="title"
-            value={title}
-            type="text"
-            placeholder="Enter your post title here..."
-            callback={setTitle}
-            disabled={isSubmittedOK || isLoading}
-            isValid={isFormItemValidated.titleValid}
-            label=""
-          />
+        <InputItem
+          title={"Link URL"}
+          key="link"
+          value={link}
+          type="text"
+          placeholder="Enter your image URL here..."
+          callback={setLink}
+          disabled={isSubmittedOK || isLoading}
+          isValid={isFormItemValidated.linkValid}
+          label=""
+        />
 
-          <InputItem
-            title={"Link URL"}
-            key="link"
-            value={link}
-            type="text"
-            placeholder="Enter your image URL here..."
-            callback={setLink}
-            disabled={isSubmittedOK || isLoading}
-            isValid={isFormItemValidated.linkValid}
-            label=""
-          />
-
-          <InputItem
-            title={"Subreddit"}
-            key="subreddit"
-            value={userInput}
-            type="text"
-            placeholder="Enter your subreddit name here..."
-            callback={setUserInput}
-            disabled={true}
-            label=""
-            isValid={true}
-          />
-        </div>
-        <div>
-          {subRedditController.data &&
-            subRedditController.data.flairs &&
-            subRedditController.data.flairs.length > 0 && (
-              <div className="mt-2 mb-2">
-                <p>Flair required:</p>
-                <div>
-                  <select
-                    className="select-bordered select mt-2 w-full max-w-xs"
-                    onChange={(e) => setSelectedFlair(e.target.value)}
-                  >
-                    {subRedditController.data.flairs.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.text}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+        <InputItem
+          title={"Subreddit"}
+          key="subreddit"
+          value={userInput}
+          type="text"
+          placeholder="Enter your subreddit name here..."
+          callback={setUserInput}
+          disabled={true}
+          label=""
+          isValid={true}
+        />
+      </div>
+      <div>
+        {subRedditController.data &&
+          subRedditController.data.flairs &&
+          subRedditController.data.flairs.length > 0 && (
+            <div className="mt-2 mb-2">
+              <p>Flair required:</p>
+              <div>
+                <select
+                  className="select-bordered select mt-2 w-full max-w-xs"
+                  onChange={(e) => setSelectedFlair(e.target.value)}
+                >
+                  {subRedditController.data.flairs.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.text}
+                    </option>
+                  ))}
+                </select>
               </div>
-            )}
-        </div>
-
-        {/* SCHEDULER */}
-        {/* {controllerConfig.schedulerModule && (
+            </div>
+          )}
+      </div>
+      {/* SCHEDULER */}
+      {/* {controllerConfig.schedulerModule && (
           <div>
             <h4 className="px-4 pt-4 text-lg font-bold">Schedule post time</h4>
             <div className="ml-4 mt-2 mb-4 rounded border-x-4 border-emerald-400 p-4">
@@ -158,12 +147,11 @@ export const PostItemInputs = ({
             </div>
           </div>
         )} */}
-        {/* <PostItemScheduler setPostDate={setPostDate} /> */}
-        {/* ******************* */}
-        {/* CONTROLS */}
-        {/* ******************* */}
-
-        {/* <button
+      {/* <PostItemScheduler setPostDate={setPostDate} /> */}
+      {/* ******************* */}
+      {/* CONTROLS */}
+      {/* ******************* */}
+      {/* <button
           className="btn m-2"
           disabled={isButtonDisabled}
           onClick={() => {
@@ -173,11 +161,10 @@ export const PostItemInputs = ({
         >
           Submit
         </button> */}
-        {/* ************* */}
-        {/* ************* */}
-        {/* ************* */}
-        {/* ************* */}
-      </div>
+      {/* ************* */}
+      {/* ************* */}
+      {/* ************* */}
+      {/* ************* */}
       {/* ************* */}
       {/* ***** MUTATION FEEDBACK ******** */}
       {/* ************* */}

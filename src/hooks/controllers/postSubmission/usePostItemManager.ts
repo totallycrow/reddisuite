@@ -201,6 +201,21 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
   //     )}
   // </div>
 
+  const isSubmittedOK = submissionStatus === "SUCCESS";
+
+  const isButtonDisabled =
+    formConfig.title === "" ||
+    formConfig.link === "" ||
+    formConfig.userInput === "" ||
+    isSubmittedOK ||
+    isLoading ||
+    formConfig.isSubmitting ||
+    !isFormItemValidated.isValid
+      ? true
+      : false;
+
+  const formItem = formObserver.getFormItemBySubreddit(userInput);
+
   return {
     formObserver,
     loadingState,
@@ -211,5 +226,10 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
     formConfig,
     postDate,
     setPostDate,
+    isLoading,
+    isButtonDisabled,
+    formItem,
+    mutationUtilities,
+    subredditUtils,
   };
 };

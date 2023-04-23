@@ -236,7 +236,7 @@ export const redditRouter = createTRPCRouter({
 
         return {
           json: {
-            errors: [],
+            errors: "",
             data: dbresponse,
           },
         };
@@ -437,7 +437,7 @@ export const redditRouter = createTRPCRouter({
 
       return {
         json: {
-          errors: [],
+          errors: "",
           data: dbresponse,
         },
       };

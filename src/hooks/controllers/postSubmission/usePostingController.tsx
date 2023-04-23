@@ -158,6 +158,17 @@ export const usePostingController = (
   // }
 
   const isBusy = mutationController.isLoading;
+  const mutationIsError =
+    mutationController.data &&
+    mutationController.data.json &&
+    mutationController.data.json.errors.length > 0 &&
+    mutationController.data.json.errors[0] &&
+    mutationController.data.json.errors[0][1]
+      ? true
+      : false;
+
+  const checkDataError = () => {};
+
   const mutationErrorMessage =
     mutationController.data &&
     mutationController.data.json &&
@@ -166,13 +177,21 @@ export const usePostingController = (
     mutationController.data.json.errors[0][1]
       ? mutationController.data.json.errors[0][1]
       : "";
-  const mutationErrorDataMessage =
+
+  const mutationIsErrorData =
     mutationController.data && mutationController.data.json.errors
+      ? true
+      : false;
+
+  const mutationErrorDataMessage =
+    mutationIsErrorData && mutationController.data
       ? mutationController.data.json.errors
       : "";
 
   const mutationUtilities = {
     isBusy,
+    mutationIsError,
+    mutationIsErrorData,
     mutationErrorMessage,
     mutationErrorDataMessage,
   };
