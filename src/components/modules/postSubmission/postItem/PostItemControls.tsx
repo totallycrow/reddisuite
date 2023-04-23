@@ -28,7 +28,7 @@ export const PostItemControls = ({ buttonStatus }) => {
         </button>
       </div> */}
       <div>
-        <button className="btn m-2">Submit</button>
+        {/* <button className="btn m-2">Submit</button> */}
       </div>
     </div>
   );
