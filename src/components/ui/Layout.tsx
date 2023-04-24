@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 // components/layout.js
 type LayoutProps = { children?: ReactNode };

@@ -6,16 +6,21 @@ import { useFormController } from "../../../../hooks/controllers/postSubmission/
 import { PostItem } from "../postItem/PostItem";
 import { CardContainer } from "../../../ui/CardContainer";
 
-export const PostModify = ({
-  post,
-  removal,
-}: {
-  post: RedditPost;
-  removal: any;
-}) => {
-  const [flair, setFlair] = useState(post.flairId);
+const config = {
+  schedulerModule: true,
+  updaterModule: true,
+};
+
+export const PostModify = ({ post }: { post: RedditPost }) => {
+  const utils = api.useContext();
   const { title, setTitle, link, setLink, userInput, setUserInput } =
     useFormController(post.title, post.url, post.sub);
+
+  const removal = api.reddit.removePostFromSchedule.useMutation({
+    async onSettled() {
+      await utils.reddit.getUserPosts.invalidate();
+    },
+  });
 
   return (
     <div>
@@ -27,9 +32,8 @@ export const PostModify = ({
           triggerLocalChange={() => ""}
           setIsAnyInputSubmitting={() => ""}
           isAnyInputSubmitting={false}
-          controllerConfig={{ schedulerModule: true }}
-          isUpdater={true}
-          postId={post.redditPostId}
+          controllerConfig={config}
+          postId={post.redditPostId || ""}
           removal={() => {
             removal.mutate({ internalId: post.id });
           }}

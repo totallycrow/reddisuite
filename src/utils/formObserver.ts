@@ -73,11 +73,11 @@ export class FormObserver {
     return FormObserver.instance;
   }
 
-  getState() {
-    return {
-      isError: this.setIsError(),
-    };
-  }
+  // getState() {
+  //   return {
+  //     isError: this.setIsError(),
+  //   };
+  // }
 
   /**
    */

@@ -32,7 +32,7 @@ export default function Dashboard() {
               {data.data.map((post) => {
                 return (
                   <div key={post.id} className="m-4">
-                    <PostModify post={post} removal={removal} />
+                    <PostModify post={post} />
                   </div>
                 );
               })}
