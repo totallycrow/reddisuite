@@ -15,7 +15,7 @@ export default function Layout({ children }: LayoutProps) {
             <div className="sticky top-0 z-50">
               <h3 className="p-2 text-lg font-bold">Menu</h3>
               <div className="p-2">
-                <Link href="bulk-submit">Bulk Submissions</Link>
+                {/* <Link href="bulk-submit">Bulk Submissions</Link> */}
               </div>
               <div className="p-2">
                 <Link href="schedule">Schedule Posts</Link>

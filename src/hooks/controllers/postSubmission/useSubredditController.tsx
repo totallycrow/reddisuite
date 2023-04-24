@@ -4,7 +4,11 @@ import { useDebouncedSearch } from "../../utils/useDebouncedSearch";
 
 import { IError } from "./useFlairController";
 import { FormObserver } from "../../../utils/formObserver";
-import { IFullSubredditData, ISubredditError } from "../../../services/reddit";
+import {
+  IFlair,
+  IFullSubredditData,
+  ISubredditError,
+} from "../../../services/reddit";
 
 export const useSubredditController = (
   userInput: string,
@@ -54,6 +58,8 @@ export const useSubredditController = (
       isTitleTagRequired: false,
       titleTags: [] as string[],
       isSubredditControllerBusy: false,
+      isFlairRequired: false,
+      flairList: [] as IFlair[],
     };
 
     return { subRedditController, debouncedStatus, subredditUtils };
@@ -79,6 +85,8 @@ export const useSubredditController = (
       isTitleTagRequired: false,
       titleTags: [] as string[],
       isSubredditControllerBusy: false,
+      isFlairRequired: false,
+      flairList: [] as IFlair[],
     };
 
     return { subRedditController, debouncedStatus, subredditUtils };
@@ -92,6 +100,11 @@ export const useSubredditController = (
     subRedditController.isFetching ||
     subRedditController.isRefetching ||
     subRedditController.isInitialLoading;
+
+  const isFlairRequired =
+    subData.flairs && subData.flairs.length > 0 ? true : false;
+
+  const flairList = subData.flairs;
 
   // subRedditController.isLoading ||
   //     subRedditController.isFetching ||
@@ -119,6 +132,8 @@ export const useSubredditController = (
     isTitleTagRequired: isTitleTagRequired,
     titleTags: titleTags,
     isSubredditControllerBusy: isSubredditControllerBusy,
+    isFlairRequired: isFlairRequired,
+    flairList: flairList,
   };
 
   return {

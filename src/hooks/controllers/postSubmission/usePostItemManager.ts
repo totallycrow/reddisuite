@@ -15,15 +15,11 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
   const formObserver = useMemo(() => FormObserver.getInstance(), []);
   const isSubmitting = formObserver.isAnyInputSubmitting();
 
+  const [borderColour, setBorderColour] = useState("default");
+
   // Form Controls
   const { title, setTitle, link, setLink, userInput, setUserInput } =
     useFormController(postConfig.title, postConfig.link, postConfig.subreddit);
-
-  console.log(
-    "************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************"
-  );
-  console.log("POST CONFIG");
-  console.log(postConfig);
 
   // *********************** DATA FETCH / POST *************************************
 
@@ -41,6 +37,7 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
 
   const { selectedFlair, setSelectedFlair, isFlairRequired, flairList } =
     useFlairController(subData);
+
   const { mutationController, sendData, submissionStatus, mutationUtilities } =
     usePostingController(
       title,
@@ -88,7 +85,6 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
   // LIST FOR LOCAL INPUT CHANGES
   useEffect(() => {
     postConfig.triggerLocalChange(true);
-    // setPostDate(Date.now());
 
     if (formObserver.isSubredditInList(userInput)) {
       console.log("UPDATING");
@@ -138,6 +134,38 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
     isFormItemValidated,
   ]);
 
+  const isLoading =
+    submissionStatus === "LOADING" || loadingState === "Loading...";
+  const hasBeenSubmitted =
+    formObserver.getFormItemBySubreddit(userInput)?.isSubmitted ||
+    formObserver.getFormItemBySubreddit(userInput)?.successfullySubmitted;
+
+  const isSubmittedOK = submissionStatus === "SUCCESS";
+
+  const isButtonDisabled =
+    title === "" ||
+    link === "" ||
+    userInput === "" ||
+    isSubmittedOK ||
+    isLoading ||
+    isSubmitting ||
+    !isFormItemValidated.isValid
+      ? true
+      : false;
+
+  const formItem = formObserver.getFormItemBySubreddit(userInput);
+
+  useEffect(() => {
+    const border = isSubmittedOK
+      ? "green"
+      : submissionStatus === "ERROR" || isError
+      ? "red"
+      : "default";
+    setBorderColour(border);
+  }, [isSubmittedOK, isLoading, isError, submissionStatus]);
+
+  // *******************************
+
   const formConfig = {
     title: title,
     setTitle: setTitle,
@@ -158,64 +186,14 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
     setIsAnyInputSubmitting: postConfig.setIsAnyInputSubmitting,
     postDate,
     setPostDate,
-    controllerConfig: postConfig.controllerConfig,
+    configController: postConfig.controllerConfig,
   };
-
-  const isLoading =
-    submissionStatus === "LOADING" || loadingState === "Loading...";
-  const hasBeenSubmitted =
-    formObserver.getFormItemBySubreddit(userInput)?.isSubmitted ||
-    formObserver.getFormItemBySubreddit(userInput)?.successfullySubmitted;
 
   const shouldShowSpinner =
     isLoading ||
     isSubmitting ||
     postConfig.isAnyInputSubmitting ||
     (debouncedStatus === "Loading..." && !hasBeenSubmitted);
-
-  // <div>{mutationController.isLoading && <p>Loading...</p>}</div>
-  // <div>
-  //   {mutationController.data &&
-  //     mutationController.data.json &&
-  //     mutationController.data.json.errors.length > 0 && (
-  //       <p>{mutationController.data.json.errors[0][1]}</p>
-  //     )}
-  // </div>
-  // <div>
-  //   {mutationController.data && mutationController.data.error && (
-  //     <p>{mutationController.data.message}</p>
-  //   )}
-  // </div>
-  // <div>
-  //   {subRedditController.data && subRedditController.data.explanation && (
-  //     <p>{subRedditController.data.explanation}</p>
-  //   )}
-  // </div>
-  // <div>
-  //   {subRedditController.data &&
-  //     subRedditController.data.titleTags &&
-  //     subRedditController.data.titleTags.length > 0 && (
-  //       <p>
-  //         Title tag required: &quot;
-  //         {subRedditController.data.titleTags[0]}&quot;
-  //       </p>
-  //     )}
-  // </div>
-
-  const isSubmittedOK = submissionStatus === "SUCCESS";
-
-  const isButtonDisabled =
-    formConfig.title === "" ||
-    formConfig.link === "" ||
-    formConfig.userInput === "" ||
-    isSubmittedOK ||
-    isLoading ||
-    formConfig.isSubmitting ||
-    !isFormItemValidated.isValid
-      ? true
-      : false;
-
-  const formItem = formObserver.getFormItemBySubreddit(userInput);
 
   return {
     formObserver,
@@ -232,5 +210,7 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
     formItem,
     mutationUtilities,
     subredditUtils,
+    isSubmittedOK,
+    borderColour,
   };
 };

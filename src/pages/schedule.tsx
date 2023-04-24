@@ -7,6 +7,7 @@ import Layout from "../components/ui/Layout";
 
 const config = {
   updaterModule: false,
+  schedulerModule: true,
 };
 
 export default function Dashboard() {

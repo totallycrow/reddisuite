@@ -107,6 +107,8 @@ export const PostItemInputs = ({
           isValid={true}
         />
       </div>
+      {/*  */}
+      {/* FLAIR CONTROLLER */}
       <div>
         {subRedditController.data &&
           subRedditController.data.flairs &&
@@ -128,75 +130,7 @@ export const PostItemInputs = ({
             </div>
           )}
       </div>
-      {/* SCHEDULER */}
-      {/* {controllerConfig.schedulerModule && (
-          <div>
-            <h4 className="px-4 pt-4 text-lg font-bold">Schedule post time</h4>
-            <div className="ml-4 mt-2 mb-4 rounded border-x-4 border-emerald-400 p-4">
-              <Datetime
-                input={true}
-                initialValue={new Date()}
-                onChange={(moment: Moment) => {
-                  console.log(moment);
-                  setPostDate(moment.valueOf());
-                }}
-                isValidDate={(currentDate, selectedDate) =>
-                  currentDate.isAfter(yesterday)
-                }
-              />
-            </div>
-          </div>
-        )} */}
-      {/* <PostItemScheduler setPostDate={setPostDate} /> */}
-      {/* ******************* */}
-      {/* CONTROLS */}
-      {/* ******************* */}
-      {/* <button
-          className="btn m-2"
-          disabled={isButtonDisabled}
-          onClick={() => {
-            setIsAnyInputSubmitting(true);
-            void sendData();
-          }}
-        >
-          Submit
-        </button> */}
-      {/* ************* */}
-      {/* ************* */}
-      {/* ************* */}
-      {/* ************* */}
-      {/* ************* */}
-      {/* ***** MUTATION FEEDBACK ******** */}
-      {/* ************* */}
-      {/* ************* */}
-      {/* <div>{mutationController.isLoading && <p>Loading...</p>}</div>
-      <div>
-        {mutationController.data &&
-          mutationController.data.json &&
-          mutationController.data.json.errors.length > 0 && (
-            <p>{mutationController.data.json.errors[0][1]}</p>
-          )}
-      </div>
-      <div>
-        {mutationController.data && mutationController.data.error && (
-          <p>{mutationController.data.message}</p>
-        )}
-      </div>
-      <div>
-        {subRedditController.data && subRedditController.data.explanation && (
-          <p>{subRedditController.data.explanation}</p>
-        )}
-      </div>
-      <div>
-        {subRedditController.data &&
-          subRedditController.data.titleTags &&
-          subRedditController.data.titleTags.length > 0 && (
-            <p>
-              Title tag required: &quot;
-              {subRedditController.data.titleTags[0]}&quot;
-            </p>
-          )}
-      </div> */}
+      {/*  */}
       <div></div>
     </div>
   );

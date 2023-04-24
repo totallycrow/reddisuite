@@ -1,4 +1,5 @@
 import React from "react";
+import { SubmitButton } from "../../../ui/SubmitButton";
 
 export const MainPostControllerControls = ({
   isAnySubmitted,
@@ -14,9 +15,20 @@ export const MainPostControllerControls = ({
   setIsAnyInputSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
   publish: () => void;
 }) => {
+  const isButtonDisabled =
+    isAnySubmitted ||
+    !isMainPostControllerFullyValidated ||
+    debouncedStatus === "Loading..." ||
+    isAnyInputSubmitting;
+
   return (
     <div>
-      <button
+      <SubmitButton
+        isButtonDisabled={isButtonDisabled}
+        callback={publish}
+        buttonText="Submit all"
+      />
+      {/* <button
         className="btn mt-4"
         disabled={
           isAnySubmitted ||
@@ -26,15 +38,7 @@ export const MainPostControllerControls = ({
         }
         onClick={() => publish()}
       >
-        submit all
-      </button>
-      {/* <button
-        className="btn m-2"
-        onClick={() => {
-          console.log(formObserver.getFormItems());
-        }}
-      >
-        log form items
+        Submit all
       </button> */}
       <div>
         <h3 className="px-4 pt-4 text-lg font-bold">Your Submissions</h3>

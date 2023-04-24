@@ -111,13 +111,14 @@ export const usePostingController = (
 
   // ************************************************************************************
   const sendData = async () => {
+    console.log("SEND DATA FIRED");
     setIsAnyInputSubmitting(true);
     formObserver.setIsSubmitting(sub, true);
     if (setIsSubmitting) {
       setIsSubmitting(true);
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const submissionDate = isScheduler ? postDate : Date.now();
 

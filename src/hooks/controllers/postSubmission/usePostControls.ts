@@ -97,6 +97,9 @@ export const usePostControls = (config: IConfig) => {
     void formObserver.publish();
   };
 
+  const shouldDisplayList =
+    subsList.size > 0 && clean && isLinkValidated && isTitleValidated;
+
   return {
     isMainPostControllerFullyValidated,
     isAnySubmitted,
@@ -110,6 +113,7 @@ export const usePostControls = (config: IConfig) => {
     isAnyInputSubmitting,
     setIsAnyInputSubmitting,
     publish,
+    shouldDisplayList,
   };
 };
 

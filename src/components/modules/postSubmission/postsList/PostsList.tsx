@@ -45,7 +45,6 @@ export const PostsList = ({
               isAnyInputSubmitting={isAnyInputSubmitting}
               setIsAnyInputSubmitting={setIsAnyInputSubmitting}
               controllerConfig={controllerConfig}
-              isUpdater={controllerConfig.updaterModule}
               postId={""}
               removal={() => ""}
             />

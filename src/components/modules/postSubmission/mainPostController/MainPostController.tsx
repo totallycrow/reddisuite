@@ -13,6 +13,7 @@ export type ITitleLinkSublistValidation = {
 
 export interface IMainControllerConfig {
   updaterModule: boolean;
+  schedulerModule: boolean;
 }
 
 export const MainPostController = ({
@@ -35,6 +36,7 @@ export const MainPostController = ({
     isAnyInputSubmitting,
     setIsAnyInputSubmitting,
     publish,
+    shouldDisplayList,
   } = usePostControls(config);
 
   const validation = useMemo(() => {
@@ -44,17 +46,6 @@ export const MainPostController = ({
       isSubListValidated: isSubListValidated,
     };
   }, [isTitleValidated, isLinkValidated, isSubListValidated]);
-
-  console.log(
-    "**************************************************************************************************"
-  );
-  console.log(controllerConfig);
-
-  const shouldDisplayList =
-    subsList.size > 0 &&
-    clean &&
-    validation.isLinkValidated &&
-    validation.isTitleValidated;
 
   return (
     <div>
