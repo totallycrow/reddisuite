@@ -1,5 +1,5 @@
 import React from "react";
-import { IFlair } from "../../../../services/reddit";
+import type { IFlair } from "../../../../services/reddit";
 
 export const PostItemFlairs = ({
   isFlairRequired,

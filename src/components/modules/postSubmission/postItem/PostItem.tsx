@@ -2,7 +2,7 @@ import React from "react";
 import { PostItemInputs } from "./PostItemInputs";
 import { usePostItemManager } from "../../../../hooks/controllers/postSubmission/usePostItemManager";
 import "react-datetime/css/react-datetime.css";
-import { IMainControllerConfig } from "../mainPostController/MainPostController";
+import type { IMainControllerConfig } from "../mainPostController/MainPostController";
 import { PostItemScheduler } from "./PostItemScheduler";
 import { PostItemFeedback } from "./PostItemFeedback";
 import { CardContainer } from "../../../ui/CardContainer";
@@ -33,10 +33,8 @@ export const PostItem = (postConfig: IPostFormValues) => {
         <div data-theme="" className="m-auto flex w-full">
           <div className=""></div>
         </div>
-        <PostItemInputs
-          config={formConfig}
-          isButtonDisabled={isButtonDisabled}
-        />
+        <PostItemInputs config={formConfig} />
+
         {/* FLAIR CONTROLLER */}
         <PostItemFlairs
           setFlair={formConfig.setSelectedFlair}
@@ -61,6 +59,7 @@ export const PostItem = (postConfig: IPostFormValues) => {
             buttonText={"Remove"}
           />
         )}
+
         {/* RESULT FEEDBACK */}
         <PostItemFeedback
           mutationUtilities={mutationUtilities}
@@ -70,6 +69,9 @@ export const PostItem = (postConfig: IPostFormValues) => {
     </div>
   );
 };
+
+// ***************************************************************
+// ***************************************************************
 
 export interface IPostFormValues {
   title: string;
@@ -83,6 +85,9 @@ export interface IPostFormValues {
   removal: () => void;
 }
 
+// ***************************************************************
+// ***************************************************************
+// ***************************************************************
 // ***************************************************************
 {
   /* DEBUG STATUS PANEL */

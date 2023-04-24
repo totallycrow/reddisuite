@@ -1,42 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { InputItem } from "../../../ui/InputItem";
-import { IFormValidationResult } from "../../../../hooks/validation/useFormItemValidation/useFormItemValidation";
-import Datetime from "react-datetime";
-import moment, { Moment } from "moment";
-import { IMainControllerConfig } from "../mainPostController/MainPostController";
-import { PostItemScheduler } from "./PostItemScheduler";
-
-interface IPostItemInputsConfig {
-  title: string;
-  setTitle: React.Dispatch<React.SetStateAction<string>>;
-  link: string;
-  setLink: React.Dispatch<React.SetStateAction<string>>;
-  userInput: string;
-  setUserInput: React.Dispatch<React.SetStateAction<string>>;
-  subRedditController: any;
-  mutationController: any;
-  setSelectedFlair: React.Dispatch<React.SetStateAction<string>>;
-  sendData: () => Promise<void>;
-  submissionStatus: string;
-  loadingState: string;
-  isFormItemValidated: IFormValidationResult;
-  isError: boolean;
-  isSubmitting: boolean;
-  isAnyInputSubmitting: boolean;
-  setIsAnyInputSubmitting: React.Dispatch<React.SetStateAction<boolean>>;
-  postDate;
-  setPostDate;
-  configController: IMainControllerConfig;
-}
+import type { IFormValidationResult } from "../../../../hooks/validation/useFormItemValidation/useFormItemValidation";
 
 export const PostItemInputs = ({
   config,
-  isButtonDisabled,
 }: {
   config: IPostItemInputsConfig;
-  isButtonDisabled: boolean;
 }) => {
-  const yesterday = moment().subtract(1, "day");
   const {
     title,
     setTitle,
@@ -44,22 +14,10 @@ export const PostItemInputs = ({
     setLink,
     userInput,
     setUserInput,
-    // ?????????????????????????????????????????????????????????????????????????????????????????
-    // HOW TO GET THESE TYPES?
-    // ?????????????????????????????????????????????????????????????????????????????????????????
-    mutationController,
-    subRedditController,
-    sendData,
-    setSelectedFlair,
     submissionStatus,
     loadingState,
     isFormItemValidated,
-    isError,
-    isSubmitting,
-    setIsAnyInputSubmitting,
     postDate,
-    setPostDate,
-    controllerConfig,
   } = config;
 
   const isSubmittedOK = submissionStatus === "SUCCESS";
@@ -107,31 +65,20 @@ export const PostItemInputs = ({
           isValid={true}
         />
       </div>
-      {/*  */}
-      {/* FLAIR CONTROLLER */}
-      <div>
-        {subRedditController.data &&
-          subRedditController.data.flairs &&
-          subRedditController.data.flairs.length > 0 && (
-            <div className="mt-2 mb-2">
-              <p>Flair required:</p>
-              <div>
-                <select
-                  className="select-bordered select mt-2 w-full max-w-xs"
-                  onChange={(e) => setSelectedFlair(e.target.value)}
-                >
-                  {subRedditController.data.flairs.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.text}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          )}
-      </div>
-      {/*  */}
       <div></div>
     </div>
   );
 };
+
+export interface IPostItemInputsConfig {
+  title: string;
+  setTitle: React.Dispatch<React.SetStateAction<string>>;
+  link: string;
+  setLink: React.Dispatch<React.SetStateAction<string>>;
+  userInput: string;
+  setUserInput: React.Dispatch<React.SetStateAction<string>>;
+  submissionStatus: string;
+  loadingState: string;
+  isFormItemValidated: IFormValidationResult;
+  postDate: number;
+}

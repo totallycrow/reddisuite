@@ -28,7 +28,6 @@ export const MainPostController = ({
     isAnySubmitted,
     debouncedStatus,
     subsList,
-    clean,
     isLinkValidated,
     isTitleValidated,
     isSubListValidated,

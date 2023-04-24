@@ -5,7 +5,7 @@ import { IPostFormValues } from "../../../components/modules/postSubmission/post
 import { useFlairController } from "./useFlairController";
 
 import { useFormItemValidation } from "../../validation/useFormItemValidation/useFormItemValidation";
-import { useSubredditController } from "./useSubredditController";
+import { useSubredditController } from "./useSubredditController/useSubredditController";
 import { usePostingController } from "./usePostingController";
 
 export const usePostItemManager = (postConfig: IPostFormValues) => {
@@ -35,8 +35,7 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
     error: "subReddit data not defined",
   };
 
-  const { selectedFlair, setSelectedFlair, isFlairRequired, flairList } =
-    useFlairController(subData);
+  const { selectedFlair, setSelectedFlair } = useFlairController(subData);
 
   const { mutationController, sendData, submissionStatus, mutationUtilities } =
     usePostingController(
@@ -47,7 +46,6 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
       setLoadingState,
       () => "",
       postDate,
-      setPostDate,
       postConfig.controllerConfig.schedulerModule,
       postConfig.postId,
       postConfig.setIsAnyInputSubmitting

@@ -1,17 +1,8 @@
 import { useEffect, useState } from "react";
-
 import { api } from "../../../utils/api";
 import { FormObserver } from "../../../utils/formObserver";
-import { addPostToDb } from "../../../services/reddit";
 
 const formObserver = FormObserver.getInstance();
-
-export interface IPostData {
-  title: string;
-  sub: string;
-  link: string;
-  flairID: string;
-}
 
 export const usePostingController = (
   title: string,
@@ -21,26 +12,15 @@ export const usePostingController = (
   setLoadingState: React.Dispatch<React.SetStateAction<string>>,
   setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>,
   postDate: number,
-  setPostDate,
   isScheduler: boolean,
   postId: string,
   setIsAnyInputSubmitting: (value: boolean) => void
 ) => {
-  console.log(title);
-  console.log(sub);
-  console.log(link);
-  console.log(flairID);
-
   const mutationController = api.reddit.sendPost.useMutation();
   const [submissionStatus, setSubmissionStatus] = useState("IDLE");
-  // const dat = mutationController.data;
 
   useEffect(() => {
-    console.log("MUTATION TRIGGER");
-    console.log(mutationController);
-
     if (!mutationController.data) {
-      console.log("NO MUTATION DATA");
       return;
     }
 
@@ -230,3 +210,10 @@ export const usePostingController = (
 
   return { mutationController, sendData, submissionStatus, mutationUtilities };
 };
+
+export interface IPostData {
+  title: string;
+  sub: string;
+  link: string;
+  flairID: string;
+}

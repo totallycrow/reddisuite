@@ -1,20 +1,3 @@
-import React from "react";
-
-export type TMutationUtilities = {
-  isBusy: boolean;
-  mutationIsError: boolean;
-  mutationIsErrorData: boolean;
-  mutationErrorMessage: string;
-  mutationErrorDataMessage: string;
-};
-
-export type TSubredditUtilities = {
-  error: string;
-  isTitleTagRequired: boolean;
-  titleTags: string[];
-  isSubredditControllerBusy: boolean;
-};
-
 export const PostItemFeedback = ({
   mutationUtilities,
   subredditUtils,
@@ -51,4 +34,19 @@ export const PostItemFeedback = ({
       </div>
     </div>
   );
+};
+
+export type TMutationUtilities = {
+  isBusy: boolean;
+  mutationIsError: boolean;
+  mutationIsErrorData: boolean;
+  mutationErrorMessage: string;
+  mutationErrorDataMessage: string;
+};
+
+export type TSubredditUtilities = {
+  error: string;
+  isTitleTagRequired: boolean;
+  titleTags: string[];
+  isSubredditControllerBusy: boolean;
 };

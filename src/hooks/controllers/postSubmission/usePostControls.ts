@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDebouncedSearch } from "../utils/../../utils/useDebouncedSearch";
 import { FormObserver } from "../../../utils/formObserver";
-import { useFormItemValidation } from "../../validation/useFormItemValidation/useFormItemValidation";
 import {
   isTitleValid,
   isValidUrl,
 } from "../../validation/useFormItemValidation/utils";
 
 export const usePostControls = (config: IConfig) => {
-  // ***************************************************************************
-  // ***************************************************************************
-
   const { debouncedInput, debouncedStatus } = useDebouncedSearch(
     config.userInput,
     () => Promise.resolve()
