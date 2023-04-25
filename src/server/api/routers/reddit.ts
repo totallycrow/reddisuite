@@ -9,6 +9,11 @@ import {
 import { PrismaClient } from "@prisma/client";
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import {
+  generateCronDateString,
+  getCronsList,
+  removePostFromCronJob,
+} from "../../../services/cron";
 
 export const redditRouter = createTRPCRouter({
   // ************************************************************
@@ -52,11 +57,6 @@ export const redditRouter = createTRPCRouter({
       const redditUser = ctx.session?.user.redditId;
 
       console.log(")______________0000000___________ REMOVE START");
-      console.log(")______________0000000___________ REMOVE START");
-      console.log(")______________0000000___________ REMOVE START");
-      console.log(")______________0000000___________ REMOVE START");
-      console.log(")______________0000000___________ REMOVE START");
-      console.log(")______________0000000___________ REMOVE START");
 
       // c0721ed3-9c44-4871-836c-39346a7d9d8a
       // clgdszons00003jsfod2sjvh1
@@ -69,76 +69,86 @@ export const redditRouter = createTRPCRouter({
         },
       });
 
+      if (post.redditPostId === null) throw new Error("Invalid redditPostId");
       const date = post.SubmissionDate;
 
-      const dateFormatted = new Date(Number(date));
-
-      const minutes = dateFormatted.getMinutes();
-      const hours = dateFormatted.getHours();
-      const days = dateFormatted.getDate();
-      const months = dateFormatted.getMonth() + 1;
-      const dayOfWeek = dateFormatted.getDay();
-
-      const cronString = `${minutes} ${hours} ${days} ${months} ${dayOfWeek}`;
-
+      const cronString = generateCronDateString(date);
       const secret = process.env.API_SECRET;
 
-      // const cronReq = `https://www.easycron.com/rest/add?token=fad86873a0a32c6def17481c4fce71b0&cron_expression=${cronString}&url=https%3A%2F%2Freddisuite.vercel.app%2Fapi%2Fsubmit&http_method=POST&http_message_body={"secret": "${secret}", "redditPostIds": ["${post.redditPostId}"]}&http_headers=Content-Type:application/json`;
+      // ************************************************************
+      // ************************************************************  // ************************************************************
+      // ************************************************************  // ************************************************************
+      // ************************************************************
+      // ************************************************************
 
-      const cronList = await axios.get(
-        "https://www.easycron.com/rest/list?token=fad86873a0a32c6def17481c4fce71b0"
+      // // const cronReq = `https://www.easycron.com/rest/add?token=fad86873a0a32c6def17481c4fce71b0&cron_expression=${cronString}&url=https%3A%2F%2Freddisuite.vercel.app%2Fapi%2Fsubmit&http_method=POST&http_message_body={"secret": "${secret}", "redditPostIds": ["${post.redditPostId}"]}&http_headers=Content-Type:application/json`;
+
+      // const cronList = await axios.get(
+      //   "https://www.easycron.com/rest/list?token=fad86873a0a32c6def17481c4fce71b0"
+      // );
+
+      // const cronJobs = await getCronsList();
+
+      // console.log("????????????????????????????????");
+      // console.log("????????????????????????????????");
+      // console.log("????????????????????????????????");
+      // console.log("????????????????????????????????");
+
+      // console.log(cronJobs);
+
+      // const matchingCronJob = cronJobs.find(
+      //   (cron) => cron.cron_expression === cronString
+      // );
+
+      // // DELETE CRONJOB IF ONLY ONE TASK
+
+      // const test = await removePostFromCronJob("1", "2");
+
+      // let previousPayload = await JSON.parse(matchingCronJob.http_message_body);
+
+      // console.log(previousPayload);
+
+      // if (
+      //   previousPayload.redditPostIds.length === 1 &&
+      //   previousPayload.redditPostIds[0] === post.redditPostId
+      // ) {
+      //   const res = await axios.get(
+      //     `https://www.easycron.com/rest/delete?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}`
+      //   );
+      //   return post;
+      // }
+
+      // // TODO: remove cron if it holds only 1 item that is currently being removed
+
+      // const filteredData = previousPayload.redditPostIds.filter(
+      //   (id) => id !== post.redditPostId
+      // );
+
+      // previousPayload.redditPostIds = filteredData;
+
+      // const jsonPayload = JSON.stringify(previousPayload);
+
+      // console.log(previousPayload);
+
+      // // EDIT THE CRON JOB BY ID
+
+      // const res = await axios.get(
+      //   `https://www.easycron.com/rest/edit?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}&http_message_body=${jsonPayload}`
+      // );
+      // console.log(res);
+
+      // if (!token) throw new Error("Invalid Token");
+
+      // ************************************************************
+      // ************************************************************  // ************************************************************
+      const removePostFromCron = await removePostFromCronJob(
+        cronString,
+        post.redditPostId
       );
 
-      const cronJobs = cronList.data.cron_jobs;
-
-      console.log("????????????????????????????????");
-      console.log("????????????????????????????????");
-      console.log("????????????????????????????????");
-      console.log("????????????????????????????????");
-
-      console.log(cronJobs);
-
-      const matchingCronJob = cronJobs.find(
-        (cron) => cron.cron_expression === cronString
-      );
-
-      // DELETE CRONJOB IF ONLY ONE TASK
-
-      let previousPayload = await JSON.parse(matchingCronJob.http_message_body);
-
-      console.log(previousPayload);
-
-      if (
-        previousPayload.redditPostIds.length === 1 &&
-        previousPayload.redditPostIds[0] === post.redditPostId
-      ) {
-        const res = await axios.get(
-          `https://www.easycron.com/rest/delete?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}`
-        );
-        return post;
-      }
-
-      // TODO: remove cron if it holds only 1 item that is currently being removed
-
-      const filteredData = previousPayload.redditPostIds.filter(
-        (id) => id !== post.redditPostId
-      );
-
-      previousPayload.redditPostIds = filteredData;
-
-      const jsonPayload = JSON.stringify(previousPayload);
-
-      console.log(previousPayload);
-
-      // EDIT THE CRON JOB BY ID
-
-      const res = await axios.get(
-        `https://www.easycron.com/rest/edit?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}&http_message_body=${jsonPayload}`
-      );
-      console.log(res);
-
-      if (!token) throw new Error("Invalid Token");
       return post;
+      // ************************************************************
+      // ************************************************************
     }),
 
   // ************************************************************
