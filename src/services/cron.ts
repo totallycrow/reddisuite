@@ -3,7 +3,7 @@ import axios from "axios";
 const token = process.env.CRON_TOKEN;
 const secret = process.env.API_SECRET;
 
-export const generateCronDateString = (date: bigint) => {
+export const generateCronDateString = (date: bigint | number) => {
   const dateFormatted = new Date(Number(date));
 
   const minutes = dateFormatted.getMinutes();

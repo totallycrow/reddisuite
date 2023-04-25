@@ -12,6 +12,7 @@ import axios from "axios";
 import {
   generateCronDateString,
   getCronsList,
+  getMatchingCronJobByCronString,
   removePostFromCronJob,
 } from "../../../services/cron";
 
@@ -37,6 +38,8 @@ export const redditRouter = createTRPCRouter({
     const { ctx } = req;
     const token = ctx.session?.user.token;
     const redditUser = ctx.session?.user.redditId;
+
+    if (!redditUser) throw new Error("Invalid User");
 
     const list = await ctx.prisma.redditPost.findMany({
       where: {
@@ -218,6 +221,7 @@ export const redditRouter = createTRPCRouter({
       //   data: ISubmissionResponseData;
       // }
 
+      // ***************************************************************************************************
       if (!isScheduler) {
         const result = await submitPost<ISubmissionResponse>(
           token,
@@ -251,6 +255,8 @@ export const redditRouter = createTRPCRouter({
           },
         };
       }
+      // ***************************************************************************************************
+      // ***************************************************************************************************
 
       // set dummy id until submission time and getting actual reddit id
 
@@ -260,20 +266,20 @@ export const redditRouter = createTRPCRouter({
       const isUpdate = postId !== "";
 
       const id = isUpdate ? postId : uuidv4();
+      // ************************************************************************************************************
 
       // ADD NEW CRON
       // IF UPDATE, REMOVE ID FROM PREVIOUS CRON
 
-      const dateFormatted = new Date(date);
+      // const dateFormatted = new Date(date);
 
-      const minutes = dateFormatted.getMinutes();
-      const hours = dateFormatted.getHours();
-      const days = dateFormatted.getDate();
-      const months = dateFormatted.getMonth() + 1;
-      const dayOfWeek = dateFormatted.getDay();
+      // const minutes = dateFormatted.getMinutes();
+      // const hours = dateFormatted.getHours();
+      // const days = dateFormatted.getDate();
+      // const months = dateFormatted.getMonth() + 1;
+      // const dayOfWeek = dateFormatted.getDay();
 
-      const cronString = `${minutes} ${hours} ${days} ${months} ${dayOfWeek}`;
-
+      const cronString = generateCronDateString(date);
       const secret = process.env.API_SECRET;
 
       // check if date exisits for any cronjob
@@ -297,6 +303,9 @@ export const redditRouter = createTRPCRouter({
       console.log(cronJobs);
 
       // IS UPDATE? IF SO, REMOVE JOB FROM CURRENT CRON
+      // ************************************************************************************************************
+      // ************************************************************************************************************
+      // ************************************************************************************************************
       if (isUpdate && cronJobs.length > 0) {
         console.log("UPDATE START");
         // find original post date
@@ -310,57 +319,69 @@ export const redditRouter = createTRPCRouter({
           },
         });
 
-        const dateFormatted = new Date(Number(originalPost?.SubmissionDate));
+        if (!originalPost || !originalPost.SubmissionDate)
+          throw new Error("Invalid submission date");
 
-        const minutes = dateFormatted.getMinutes();
-        const hours = dateFormatted.getHours();
-        const days = dateFormatted.getDate();
-        const months = dateFormatted.getMonth() + 1;
-        const dayOfWeek = dateFormatted.getDay();
-
-        const cronStringOriginal = `${minutes} ${hours} ${days} ${months} ${dayOfWeek}`;
-
-        const secret = process.env.API_SECRET;
-
-        const matchingCronJob = cronJobs.find(
-          (cron) => cron.cron_expression === cronStringOriginal
-        );
-        // DELETE CRONJOB IF ONLY ONE TASK
-        console.log(matchingCronJob);
-
-        let previousPayload = await JSON.parse(
-          matchingCronJob.http_message_body
+        const cronStringOriginal = generateCronDateString(
+          originalPost?.SubmissionDate
         );
 
-        console.log(previousPayload);
+        const removeResponse = removePostFromCronJob(
+          cronStringOriginal,
+          postId
+        );
 
-        if (
-          previousPayload.redditPostIds.length === 1 &&
-          previousPayload.redditPostIds[0] === postId
-        ) {
-          const res = await axios.get(
-            `https://www.easycron.com/rest/delete?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}`
-          );
-        }
+        // const dateFormatted = new Date(Number(originalPost?.SubmissionDate));
+
+        // const minutes = dateFormatted.getMinutes();
+        // const hours = dateFormatted.getHours();
+        // const days = dateFormatted.getDate();
+        // const months = dateFormatted.getMonth() + 1;
+        // const dayOfWeek = dateFormatted.getDay();
+
+        // const cronStringOriginal = `${minutes} ${hours} ${days} ${months} ${dayOfWeek}`;
+
+        // const secret = process.env.API_SECRET;
+
+        // const matchingCronJob = cronJobs.find(
+        //   (cron) => cron.cron_expression === cronStringOriginal
+        // );
+        // // DELETE CRONJOB IF ONLY ONE TASK
+        // console.log(matchingCronJob);
+
+        // let previousPayload = await JSON.parse(
+        //   matchingCronJob.http_message_body
+        // );
+
+        // console.log(previousPayload);
+
+        // if (
+        //   previousPayload.redditPostIds.length === 1 &&
+        //   previousPayload.redditPostIds[0] === postId
+        // ) {
+        //   const res = await axios.get(
+        //     `https://www.easycron.com/rest/delete?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}`
+        //   );
+        // }
 
         // TODO: remove cron if it holds only 1 item that is currently being removed
 
-        const filteredData = previousPayload.redditPostIds.filter(
-          (id) => id !== postId
-        );
+        // const filteredData = previousPayload.redditPostIds.filter(
+        //   (id) => id !== postId
+        // );
 
-        previousPayload.redditPostIds = filteredData;
+        // previousPayload.redditPostIds = filteredData;
 
-        const jsonPayload = JSON.stringify(previousPayload);
+        // const jsonPayload = JSON.stringify(previousPayload);
 
-        console.log(previousPayload);
+        // console.log(previousPayload);
 
-        // EDIT THE CRON JOB BY ID
+        // // EDIT THE CRON JOB BY ID
 
-        const res = await axios.get(
-          `https://www.easycron.com/rest/edit?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}&http_message_body=${jsonPayload}`
-        );
-        console.log(res);
+        // const res = await axios.get(
+        //   `https://www.easycron.com/rest/edit?token=fad86873a0a32c6def17481c4fce71b0&id=${matchingCronJob.cron_job_id}&http_message_body=${jsonPayload}`
+        // );
+        // console.log(res);
 
         // id,
         // redditId,
@@ -373,18 +394,15 @@ export const redditRouter = createTRPCRouter({
         // isScheduler
       }
 
-      // CONTINUE
+      // ************************************************************************************************************
+      // ************************************************************************************************************
+      // ************************************************************************************************************
 
-      console.log("????????????????????????????????");
-      console.log("????????????????????????????????");
-      console.log("????????????????????????????????");
-      console.log("????????????????????????????????");
+      // CONTINUE
 
       console.log(cronJobs);
 
-      const matchingCronJob = cronJobs.find(
-        (cron) => cron.cron_expression === cronString
-      );
+      const matchingCronJob = await getMatchingCronJobByCronString(cronString);
 
       console.log("????????????????????????????????");
       console.log("MATCHING DATE");
