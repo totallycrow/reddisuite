@@ -11,6 +11,7 @@ export const PostModify = ({ post }: { post: RedditPost }) => {
     schedulerModule: true,
     updaterModule: true,
     isLocked: false,
+    additionalDetails: post.SubmissionDetails,
   };
 
   const utils = api.useContext();

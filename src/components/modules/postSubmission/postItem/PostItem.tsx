@@ -64,10 +64,7 @@ export const PostItem = (postConfig: IPostFormValues) => {
         />
         {isUpdater && (
           <SubmitButton
-            isButtonDisabled={
-              isButtonDisabled === true ||
-              postConfig.controllerConfig.isLocked === true
-            }
+            isButtonDisabled={false}
             callback={postConfig.removal}
             buttonText={"Remove"}
           />
@@ -77,6 +74,9 @@ export const PostItem = (postConfig: IPostFormValues) => {
         <PostItemFeedback
           mutationUtilities={mutationUtilities}
           subredditUtils={subredditUtils}
+          additionalDetails={
+            postConfig.controllerConfig.additionalDetails || ""
+          }
         />
       </CardContainer>
     </div>

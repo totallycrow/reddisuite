@@ -15,6 +15,7 @@ export interface IMainControllerConfig {
   updaterModule: boolean;
   schedulerModule: boolean;
   isLocked: boolean;
+  additionalDetails?: string;
 }
 
 export const MainPostController = ({

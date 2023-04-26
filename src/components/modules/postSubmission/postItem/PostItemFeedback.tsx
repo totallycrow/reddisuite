@@ -1,9 +1,11 @@
 export const PostItemFeedback = ({
   mutationUtilities,
   subredditUtils,
+  additionalDetails,
 }: {
   mutationUtilities: TMutationUtilities;
   subredditUtils: TSubredditUtilities;
+  additionalDetails: string;
 }) => {
   const {
     isBusy,
@@ -31,6 +33,7 @@ export const PostItemFeedback = ({
             </p>
           )}
         </div>
+        {additionalDetails ? additionalDetails : ""}
       </div>
     </div>
   );

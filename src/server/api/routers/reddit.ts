@@ -160,6 +160,7 @@ export const redditRouter = createTRPCRouter({
       // IS UPDATE? IF SO, REMOVE JOB FROM CURRENT CRON
       // ****************************************************
       if (isUpdate && cronJobs.length > 0) {
+        console.log("IS UPDATE STARTED");
         const originalPost = await ctx.prisma.redditPost.findUnique({
           where: {
             redditPostId: postId,

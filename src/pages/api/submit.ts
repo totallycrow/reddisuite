@@ -3,6 +3,10 @@ import { api } from "../../utils/api";
 import { refreshToken, submitPost } from "../../services/reddit";
 import { PrismaClient } from "@prisma/client";
 import { NextApiResponse } from "next";
+import {
+  generateCronDateString,
+  removePostFromCronJob,
+} from "../../services/cron";
 
 const prisma = new PrismaClient();
 
@@ -163,6 +167,16 @@ export default async function handler(req: NextRequest, res: NextApiResponse) {
 
     console.log("Update Result:");
     console.log(submissionResult);
+
+    console.log("remove from cron now...");
+
+    const date = generateCronDateString(submissionResult.ScheduleDate);
+
+    // original postId?
+    // postIDs[i]
+
+    const removalResult = await removePostFromCronJob(date, postIDs[i]);
+    console.log(removalResult.status);
   }
 
   res.status(200).json({ message: "finished" });
