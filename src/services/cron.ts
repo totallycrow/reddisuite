@@ -43,9 +43,7 @@ export const addNewCronJob = async (cronString: string, postId: string) => {
 };
 
 export const editCronJob = async (cronJob: ICronJob, id: string) => {
-  // const res = await axios.get(
-  //   `https://www.easycron.com/rest/edit?token=${token}=${cronJob.cron_job_id}&http_message_body=${jsonPayload}`
-  // );
+  if (!token) throw new Error("Invalid token");
 
   const previousPayload = (await JSON.parse(
     cronJob.http_message_body
@@ -55,20 +53,10 @@ export const editCronJob = async (cronJob: ICronJob, id: string) => {
 
   const jsonPayload = JSON.stringify(previousPayload);
 
-  console.log(previousPayload);
-
   // EDIT THE CRON JOB BY ID
-
   const res = await axios.get<ICrobJobResponseOk | ICrobJobResponseError>(
     `https://www.easycron.com/rest/edit?token=${token}=${cronJob.cron_job_id}&http_message_body=${jsonPayload}`
   );
-  // console.log(res);
-  // responseStatus = res.data.status as string;
-  // if (responseStatus !== "error") {
-  //   responseResult = res.data.status as string;
-  // } else {
-  //   responseResult = res.data.error.message;
-  // }
   return res;
 };
 
@@ -138,7 +126,6 @@ export const removePostFromCronJob = async (
   }
 
   //    ELSE UPDATE CRON JOB'S PAYLOAD
-
   const filteredData = previousPayload.redditPostIds.filter(
     (id) => id !== postId
   );
@@ -236,5 +223,3 @@ export interface IHttpMessageBodyParsed {
   secret: string;
   redditPostIds: string[];
 }
-
-// \"secret\": \"QiYYxpseuHWQxey1ZwrY5pK3sQc3XPfaoXrmH2tEYs\", \"redditPostIds\": [\"6ccbef40-0e0a-4e6a-91a0-5c0edc22f19e\"]}",
