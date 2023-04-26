@@ -4,8 +4,10 @@ import moment, { Moment } from "moment";
 
 export const PostItemScheduler = ({
   setPostDate,
+  date,
 }: {
   setPostDate: React.Dispatch<React.SetStateAction<number>>;
+  date: bigint | number;
 }) => {
   const yesterday = useMemo(() => moment().subtract(1, "day"), []);
 
@@ -18,7 +20,7 @@ export const PostItemScheduler = ({
           <div className="ml-4 mt-2 mb-4 rounded border-x-4 border-emerald-400 p-4">
             <Datetime
               input={true}
-              initialValue={new Date()}
+              initialValue={new Date(Number(date))}
               onChange={(moment: string | Moment) => {
                 console.log(moment);
                 const date = moment.valueOf();

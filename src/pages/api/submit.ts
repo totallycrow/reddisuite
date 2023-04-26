@@ -138,6 +138,8 @@ export default async function handler(req: NextRequest, res: NextApiResponse) {
         data: {
           isSuccess: false,
           isScheduled: false,
+          SubmissionAttempted: true,
+          SubmissionDetails: "RATE_LIMIT ERROR",
         },
       });
 
@@ -154,6 +156,8 @@ export default async function handler(req: NextRequest, res: NextApiResponse) {
         redditPostId: submission.json.data.id,
         isSuccess: isOK,
         isScheduled: false,
+        SubmissionAttempted: true,
+        SubmissionDetails: "Submitted to Reddit OK",
       },
     });
 

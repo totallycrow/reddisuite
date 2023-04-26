@@ -14,6 +14,7 @@ export type ITitleLinkSublistValidation = {
 export interface IMainControllerConfig {
   updaterModule: boolean;
   schedulerModule: boolean;
+  isLocked: boolean;
 }
 
 export const MainPostController = ({

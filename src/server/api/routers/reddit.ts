@@ -92,6 +92,9 @@ export const redditRouter = createTRPCRouter({
       const expires_at = ctx.session?.user.expires_at;
       const refresh_token = ctx.session?.user.refresh_token;
 
+      const submissionDate = Date.now();
+      const scheduledDate = date;
+
       if (!token)
         return {
           json: {
@@ -111,13 +114,7 @@ export const redditRouter = createTRPCRouter({
 
       // *****************************************************************************************
       if (!isScheduler) {
-        const result = await submitPost<ISubmissionResponse>(
-          token,
-          sub,
-          link,
-          title,
-          flair
-        );
+        const result = await submitPost(token, sub, link, title, flair);
 
         const isOK = result.json.errors.length === 0;
 
@@ -129,9 +126,12 @@ export const redditRouter = createTRPCRouter({
           link,
           sub,
           isOK,
-          date,
+          submissionDate,
           flair,
-          isScheduler
+          isScheduler,
+          submissionDate,
+          true,
+          "SUBMITTED WITHOUT SCHEDULER"
         );
 
         console.log("################ DB ################");
@@ -217,9 +217,12 @@ export const redditRouter = createTRPCRouter({
         link,
         sub,
         false,
-        date,
+        submissionDate,
         flair,
-        isScheduler
+        isScheduler,
+        date,
+        false,
+        "SCHEDULED OK"
       );
 
       if (responseStatus !== "error") {

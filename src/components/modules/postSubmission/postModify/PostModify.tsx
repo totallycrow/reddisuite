@@ -6,21 +6,27 @@ import { useFormController } from "../../../../hooks/controllers/postSubmission/
 import { PostItem } from "../postItem/PostItem";
 import { CardContainer } from "../../../ui/CardContainer";
 
-const config = {
-  schedulerModule: true,
-  updaterModule: true,
-};
-
 export const PostModify = ({ post }: { post: RedditPost }) => {
+  const config = {
+    schedulerModule: true,
+    updaterModule: true,
+    isLocked: false,
+  };
+
   const utils = api.useContext();
   const { title, setTitle, link, setLink, userInput, setUserInput } =
     useFormController(post.title, post.url, post.sub);
 
+  const date = post.ScheduleDate;
   const removal = api.reddit.removePostFromSchedule.useMutation({
     async onSettled() {
       await utils.reddit.getUserPosts.invalidate();
     },
   });
+
+  if (post.SubmissionAttempted === true || post.isScheduled === false) {
+    config.isLocked = true;
+  }
 
   return (
     <div>
@@ -34,6 +40,7 @@ export const PostModify = ({ post }: { post: RedditPost }) => {
           isAnyInputSubmitting={false}
           controllerConfig={config}
           postId={post.redditPostId || ""}
+          postDate={date}
           removal={() => {
             removal.mutate({ internalId: post.id });
           }}

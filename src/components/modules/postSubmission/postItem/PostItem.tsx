@@ -25,6 +25,13 @@ export const PostItem = (postConfig: IPostFormValues) => {
     borderColour,
   } = usePostItemManager(postConfig);
 
+  const postDate =
+    postConfig.postDate === undefined ? Date.now() : postConfig.postDate;
+
+  if (!postDate) throw new Error("Invalid date");
+  console.log(isButtonDisabled);
+  console.log(postConfig.controllerConfig.isLocked);
+
   return (
     <div>
       <CardContainer borderColor={borderColour}>
@@ -44,17 +51,23 @@ export const PostItem = (postConfig: IPostFormValues) => {
 
         {/* SCHEDULER */}
         <Divider />
-        <PostItemScheduler setPostDate={setPostDate} />
+        <PostItemScheduler setPostDate={setPostDate} date={postDate} />
 
         {/* FORM CONTROLS */}
         <SubmitButton
-          isButtonDisabled={isButtonDisabled}
+          isButtonDisabled={
+            isButtonDisabled === true ||
+            postConfig.controllerConfig.isLocked === true
+          }
           callback={() => void formConfig.sendData()}
           buttonText={isUpdater ? "Update" : "Submit"}
         />
         {isUpdater && (
           <SubmitButton
-            isButtonDisabled={isButtonDisabled}
+            isButtonDisabled={
+              isButtonDisabled === true ||
+              postConfig.controllerConfig.isLocked === true
+            }
             callback={postConfig.removal}
             buttonText={"Remove"}
           />
@@ -83,6 +96,7 @@ export interface IPostFormValues {
   controllerConfig: IMainControllerConfig;
   postId: string;
   removal: () => void;
+  postDate?: bigint | number;
 }
 
 // ***************************************************************

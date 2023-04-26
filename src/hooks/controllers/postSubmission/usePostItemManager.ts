@@ -151,6 +151,7 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
       ? true
       : false;
 
+      
   const formItem = formObserver.getFormItemBySubreddit(userInput);
 
   useEffect(() => {

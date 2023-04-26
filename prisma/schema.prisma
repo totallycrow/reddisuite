@@ -76,7 +76,11 @@ model RedditPost {
     flairId     String    
     isSuccess   Boolean  
     SubmissionDate BigInt
-    isScheduled Boolean    
+    ScheduleDate BigInt
+    isScheduled Boolean
+    SubmissionAttempted Boolean
+    SubmissionDetails   String
+        
 }
 
 

@@ -127,9 +127,12 @@ export const addPostToDb = async (
   url: string,
   sub: string,
   status: boolean,
-  date: any,
+  date: number,
   flairId: string,
-  isScheduled: boolean
+  isScheduled: boolean,
+  ScheduleDate: number,
+  SubmissionAttempted: boolean,
+  SubmissionDetails: string
 ) => {
   const result = await prisma.redditPost.upsert({
     where: {
@@ -145,6 +148,9 @@ export const addPostToDb = async (
       isSuccess: status,
       SubmissionDate: parseInt(date),
       isScheduled: isScheduled,
+      ScheduleDate: ScheduleDate,
+      SubmissionAttempted: SubmissionAttempted,
+      SubmissionDetails: SubmissionDetails,
     },
     create: {
       redditPostId: postId,
@@ -156,6 +162,9 @@ export const addPostToDb = async (
       isSuccess: status,
       SubmissionDate: parseInt(date),
       isScheduled: isScheduled,
+      ScheduleDate: ScheduleDate,
+      SubmissionAttempted: SubmissionAttempted,
+      SubmissionDetails: SubmissionDetails,
     },
   });
 
@@ -186,7 +195,7 @@ export const getSubredditFlairs = async (token: string, subReddit: string) => {
 export const delay = async (delayMs: number) =>
   await new Promise((resolve) => setTimeout(resolve, delayMs));
 
-export const submitPost = async <ResponseType>(
+export const submitPost = async (
   token: string,
   sub: string,
   link: string,
