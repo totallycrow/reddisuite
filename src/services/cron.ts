@@ -31,6 +31,47 @@ export const getCronsList = async (): Promise<ICronJob[]> => {
   }
 };
 
+export const addNewCronJob = async (cronString: string, postId: string) => {
+  if (!token) throw new Error("invalid token");
+  if (!secret) throw new Error("invalid secret");
+  const cronReq = `https://www.easycron.com/rest/add?token=${token}&cron_expression=${cronString}&url=https%3A%2F%2Freddisuite.vercel.app%2Fapi%2Fsubmit&http_method=POST&http_message_body={"secret": "${secret}", "redditPostIds": ["${postId}"]}&http_headers=Content-Type:application/json`;
+
+  const res = await axios.get<ICrobJobResponseOk | ICrobJobResponseError>(
+    cronReq
+  );
+  return res;
+};
+
+export const editCronJob = async (cronJob: ICronJob, id: string) => {
+  // const res = await axios.get(
+  //   `https://www.easycron.com/rest/edit?token=${token}=${cronJob.cron_job_id}&http_message_body=${jsonPayload}`
+  // );
+
+  const previousPayload = (await JSON.parse(
+    cronJob.http_message_body
+  )) as IHttpMessageBodyParsed;
+
+  previousPayload.redditPostIds = [...previousPayload.redditPostIds, id];
+
+  const jsonPayload = JSON.stringify(previousPayload);
+
+  console.log(previousPayload);
+
+  // EDIT THE CRON JOB BY ID
+
+  const res = await axios.get<ICrobJobResponseOk | ICrobJobResponseError>(
+    `https://www.easycron.com/rest/edit?token=${token}=${cronJob.cron_job_id}&http_message_body=${jsonPayload}`
+  );
+  // console.log(res);
+  // responseStatus = res.data.status as string;
+  // if (responseStatus !== "error") {
+  //   responseResult = res.data.status as string;
+  // } else {
+  //   responseResult = res.data.error.message;
+  // }
+  return res;
+};
+
 export const getMatchingCronJobByCronString = async (cronString: string) => {
   const cronJobs = await getCronsList();
   if (cronJobs.length === 0) return undefined;
@@ -167,7 +208,7 @@ interface ICronJob {
   email_me: number;
   sensitivity: number;
   send_slack: number;
-  slack_sensitivity: 1;
+  slack_sensitivity: number;
   slack_url: string;
   group_id: number;
   http_method: string;
@@ -191,7 +232,7 @@ interface ICronJob {
   total_failures: string;
 }
 
-interface IHttpMessageBodyParsed {
+export interface IHttpMessageBodyParsed {
   secret: string;
   redditPostIds: string[];
 }
