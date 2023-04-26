@@ -30,10 +30,10 @@ export default async function handler(req: NextRequest, res: NextApiResponse) {
     return;
   }
 
-  //   if (req.body.secret !== secret) {
-  //     res.status(200).json({ message: "INVALID SECRET" });
-  //     return;
-  //   }
+  if (req.body.secret !== secret) {
+    res.status(200).json({ message: "INVALID SECRET" });
+    return;
+  }
 
   const postIDs = req.body.redditPostIds;
 
