@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { IConfig } from "./usePostControls";
+import { useEffect, useState } from "react";
+import type { IConfig } from "./usePostControls";
 
 export const useFormController = (
   initialTitle = "",

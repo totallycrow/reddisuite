@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { api } from "../../utils/api";
-import { submitPost } from "../../services/reddit";
+import { refreshToken, submitPost } from "../../services/reddit";
 import { PrismaClient } from "@prisma/client";
+import { NextApiResponse } from "next";
 
 const prisma = new PrismaClient();
 
-export default async function handler(req, res) {
+export default async function handler(req: NextRequest, res: NextApiResponse) {
   //
 
   // ***************************************
@@ -23,34 +24,16 @@ export default async function handler(req, res) {
   // ***************************************
 
   const secret = process.env.API_SECRET;
-  console.log(secret);
-
-  console.log(req.headers);
-  console.log(req.body);
-  console.log(secret);
-  console.log("_________");
-  console.log(req.body.redditPostIds);
-  console.log("_________");
-
-  // make redditPosts array of IDs
-  // modify payload of cron for the specific date already exists
-  // on front, when setting up the post in db?
-  //   SAMPLE CRON DATA
-  //   {
-  //     secret: 'QiYYxpseuHWQxey1ZwrY5pK3sQc3XPfaoXrmH2tEYs',
-  //     redditPostId: 'daad1248-92a2-432a-8c1e-08c95431e43e'
-  //   }
-  //
 
   if (!req.body || !req.body.redditPostIds) {
     res.status(200).json({ message: "INVALID BODY" });
     return;
   }
 
-  //   if (req.body.secret !== secret) {
-  //     res.status(200).json({ message: "INVALID SECRET" });
-  //     return;
-  //   }
+  if (req.body.secret !== secret) {
+    res.status(200).json({ message: "INVALID SECRET" });
+    return;
+  }
 
   const postIDs = req.body.redditPostIds;
 
@@ -75,11 +58,12 @@ export default async function handler(req, res) {
       },
     });
 
+    if (!result) throw new Error("Post not found");
+
     // ***************************************
     // ***************************************
 
-    //   GET USER TO GET TOKEN
-    //   TODO: REFRESH TOKEN IF EXPIRED
+    //   GET USER TO GET TOKEN / REFRESH IF EXPIRED
 
     const user = await prisma.account.findUnique({
       where: {
@@ -87,7 +71,19 @@ export default async function handler(req, res) {
       },
     });
 
+    if (!user) throw new Error("User not found");
+    const { expires_at, refresh_token } = user;
     const { url, title, sub, flairId } = result;
+
+    if (
+      result &&
+      refresh_token &&
+      result.redditAuthorId &&
+      expires_at &&
+      expires_at <= Math.floor(new Date().getTime() / 1000.0)
+    ) {
+      await refreshToken(result.redditAuthorId, refresh_token);
+    }
 
     // ***************************************
     //   if (result.length === 0 || result === undefined) {
@@ -104,8 +100,14 @@ export default async function handler(req, res) {
     console.log("****");
     const accessToken = user?.access_token;
 
+    if (!accessToken) throw new Error("Invalid access token");
+
     const submission = await submitPost(accessToken, sub, url, title, flairId);
     console.log(submission);
+
+    if (!submission)
+      throw new Error("Something went wrong when submitting the post ");
+
     const isOK = submission.json.errors.length === 0;
     console.log("IS RES OK?");
     console.log(isOK);
@@ -116,18 +118,33 @@ export default async function handler(req, res) {
     // ***************************************
     // ***************************************
 
-    //   const isRateLimit =
-    //     !isOK &&
-    //     submission.json.errors[0][0] !== undefined &&
-    //     submission.json.errors[0][0] === "RATELIMIT";
+    const isRateLimit =
+      !isOK &&
+      submission.json &&
+      submission.json.errors &&
+      submission.json.errors[0] &&
+      submission.json.errors[0][0] !== undefined &&
+      submission.json.errors[0][0] === "RATELIMIT";
 
-    //   if (isRateLimit) {
-    //     console.log("RATE LIMIT ERROR, ABORTING OPERATION");
+    if (isRateLimit) {
+      console.log("RATE LIMIT ERROR, ABORTING OPERATION");
 
-    //     res.status(200).json({ message: "RATE_LIMIT" });
-    //     return;
-    //   }
+      const submissionResult = await prisma.redditPost.update({
+        where: {
+          id: result.id,
+        },
+        data: {
+          redditPostId: submission.json.data.id,
+          isSuccess: false,
+          isScheduled: false,
+        },
+      });
 
+      res.status(200).json({ message: "RATE_LIMIT" });
+      return;
+    }
+
+    // *****************************************************************
     const submissionResult = await prisma.redditPost.update({
       where: {
         id: result.id,

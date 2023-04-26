@@ -1,17 +1,8 @@
 import { useEffect, useState } from "react";
-
 import { api } from "../../../utils/api";
 import { FormObserver } from "../../../utils/formObserver";
-import { addPostToDb } from "../../../services/reddit";
 
 const formObserver = FormObserver.getInstance();
-
-export interface IPostData {
-  title: string;
-  sub: string;
-  link: string;
-  flairID: string;
-}
 
 export const usePostingController = (
   title: string,
@@ -21,24 +12,15 @@ export const usePostingController = (
   setLoadingState: React.Dispatch<React.SetStateAction<string>>,
   setIsSubmitting: React.Dispatch<React.SetStateAction<boolean>>,
   postDate: number,
-  setPostDate,
-  isScheduler: boolean
+  isScheduler: boolean,
+  postId: string,
+  setIsAnyInputSubmitting: (value: boolean) => void
 ) => {
-  console.log(title);
-  console.log(sub);
-  console.log(link);
-  console.log(flairID);
-
   const mutationController = api.reddit.sendPost.useMutation();
-  const scheduleController = api.reddit.schedulePost.useMutation();
   const [submissionStatus, setSubmissionStatus] = useState("IDLE");
 
   useEffect(() => {
-    console.log("MUTATION TRIGGER");
-    console.log(mutationController);
-
     if (!mutationController.data) {
-      console.log("NO MUTATION DATA");
       return;
     }
 
@@ -50,24 +32,35 @@ export const usePostingController = (
     );
     console.log(mutationController.status);
     console.log(mutationResponse);
+    mutationResponse.errors;
 
-    if (mutationController.status !== "idle") {
-      setLoadingState("Loading...");
-      setSubmissionStatus("LOADING");
-      formObserver.setIsSubmitting(sub, true);
-    }
+    console.log(
+      "MUTATION CONTROLLER STATUS &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
+    );
+    console.log(mutationController.status);
+    console.log(mutationResponse);
+    mutationResponse.errors;
 
-    if (mutationResponse && mutationResponse.explanation) {
+    // if (mutationController.status !== "idle") {
+    //   setLoadingState("Loading...");
+    //   setSubmissionStatus("LOADING");
+    //   formObserver.setIsSubmitting(sub, true);
+    // }
+
+    if (mutationResponse && mutationResponse.errors !== "") {
+      console.log("_________________________");
+      setLoadingState("Idle");
       setSubmissionStatus("ERROR");
       formObserver.updateSubmissionStatus(sub, false);
       formObserver.setIsError(sub, true);
       formObserver.setIsSubmitting(sub, false);
     }
 
+    console.log(mutationResponse);
+
     if (
-      mutationResponse &&
-      mutationResponse.errors &&
-      mutationResponse.errors.length === 0
+      mutationResponse.data &&
+      Object.keys(mutationResponse.data).length !== 0
     ) {
       console.log("SUCESS");
       console.log(mutationController.data);
@@ -75,10 +68,16 @@ export const usePostingController = (
       setSubmissionStatus("SUCCESS");
       formObserver.updateSubmissionStatus(sub, true);
       formObserver.setIsSubmitting(sub, false);
-
-      // alert(mutationController.data.json.data.id);
     } else {
+      console.log(
+        mutationResponse &&
+          mutationResponse.errors &&
+          mutationResponse.errors === ""
+      );
       console.log("ERROR POSTING DATA!!");
+      console.log("__________");
+      console.log(mutationResponse.errors);
+      console.log("__________");
       setLoadingState("Idle");
       console.log(mutationController.data);
       console.log(mutationController.error);
@@ -98,23 +97,15 @@ export const usePostingController = (
   }, [mutationController.isLoading]);
 
   // ************************************************************************************
-  // ************************************************************************************// ************************************************************************************
-  // ************************************************************************************
 
-  console.log(
-    "************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************"
-  );
-  console.log("IS SHEDULER");
-  console.log(isScheduler);
-
-  // ************************************************************************************
   const sendData = async () => {
+    console.log("SEND DATA FIRED");
+    setIsAnyInputSubmitting(true);
     formObserver.setIsSubmitting(sub, true);
     if (setIsSubmitting) {
       setIsSubmitting(true);
     }
-
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    // await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const submissionDate = isScheduler ? postDate : Date.now();
 
@@ -125,6 +116,7 @@ export const usePostingController = (
       flair: flairID,
       date: submissionDate,
       isScheduler,
+      postId: postId,
     });
     console.log("ONCLICK END");
 
@@ -134,24 +126,53 @@ export const usePostingController = (
 
     formObserver.setIsSubmitting(sub, false);
     return;
+  };
 
-    // await scheduleController.mutateAsync({
-    //   title: title,
-    //   sub: sub,
-    //   link: link,
-    //   flair: flairID,
-    //   date: submissionDate,
-    // });
-    // console.log("ONCLICK END");
+  const isBusy = mutationController.isLoading;
+  const mutationIsError =
+    mutationController.data &&
+    mutationController.data.json &&
+    mutationController.data.json.errors.length > 0 &&
+    mutationController.data.json.errors[0] &&
+    mutationController.data.json.errors[0][1]
+      ? true
+      : false;
 
-    if (setIsSubmitting) {
-      setIsSubmitting(false);
-    }
-    formObserver.setIsSubmitting(sub, false);
-    return;
+  const mutationErrorMessage =
+    mutationController.data &&
+    mutationController.data.json &&
+    mutationController.data.json.errors.length > 0 &&
+    mutationController.data.json.errors[0] &&
+    mutationController.data.json.errors[0][1]
+      ? mutationController.data.json.errors[0][1]
+      : "";
+
+  const mutationIsErrorData =
+    mutationController.data && mutationController.data.json.errors
+      ? true
+      : false;
+
+  const mutationErrorDataMessage =
+    mutationIsErrorData && mutationController.data
+      ? mutationController.data.json.errors
+      : "";
+
+  const mutationUtilities = {
+    isBusy,
+    mutationIsError,
+    mutationIsErrorData,
+    mutationErrorMessage,
+    mutationErrorDataMessage,
   };
 
   // ************************************************************************************
 
-  return { mutationController, sendData, submissionStatus };
+  return { mutationController, sendData, submissionStatus, mutationUtilities };
 };
+
+export interface IPostData {
+  title: string;
+  sub: string;
+  link: string;
+  flairID: string;
+}

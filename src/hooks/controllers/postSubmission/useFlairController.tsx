@@ -1,40 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { api } from "../../../utils/api";
-import { DefinedUseTRPCQueryResult } from "@trpc/react-query/shared";
-import { IFullSubredditData, ISubredditError } from "../../../services/reddit";
-import { TRPCClientErrorLike } from "@trpc/client";
-
-export interface IError {
-  error: string;
-}
+import { useEffect, useState } from "react";
+import type {
+  IFlair,
+  IFullSubredditData,
+  ISubredditError,
+} from "../../../services/reddit";
 
 export const useFlairController = (
   subReddit: IFullSubredditData | ISubredditError | IError
 ) => {
   const [selectedFlair, setSelectedFlair] = useState("");
   const [isFlairRequired, setIsFlairRequired] = useState(false);
-  const [flairList, setFlairList] = useState(Array<any>);
-
-  //   TYPE GUARD
-  function isISubredditError(
-    data: IFullSubredditData | ISubredditError | IError
-  ): data is ISubredditError | IError {
-    const isSubredditError = (data as ISubredditError).message !== undefined;
-    const isIError = (data as IError).error !== undefined;
-
-    return isSubredditError || isIError;
-  }
+  const [flairList, setFlairList] = useState(Array<IFlair>);
 
   useEffect(() => {
-    console.log("GETSUBREDDIT TRIGGER");
-
     if (!subReddit) {
-      console.log("NO GETSUBREDDIT DATA");
       return;
     }
-
-    console.log(subReddit);
-    console.log(selectedFlair);
 
     if (isISubredditError(subReddit)) {
       setSelectedFlair("");
@@ -54,3 +35,17 @@ export const useFlairController = (
   }, [subReddit]);
   return { selectedFlair, setSelectedFlair, isFlairRequired, flairList };
 };
+
+export interface IError {
+  error: string;
+}
+
+//   TYPE GUARD
+function isISubredditError(
+  data: IFullSubredditData | ISubredditError | IError
+): data is ISubredditError | IError {
+  const isSubredditError = (data as ISubredditError).message !== undefined;
+  const isIError = (data as IError).error !== undefined;
+
+  return isSubredditError || isIError;
+}

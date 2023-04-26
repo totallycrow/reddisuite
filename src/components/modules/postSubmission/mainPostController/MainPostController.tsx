@@ -12,6 +12,7 @@ export type ITitleLinkSublistValidation = {
 };
 
 export interface IMainControllerConfig {
+  updaterModule: boolean;
   schedulerModule: boolean;
 }
 
@@ -27,7 +28,6 @@ export const MainPostController = ({
     isAnySubmitted,
     debouncedStatus,
     subsList,
-    clean,
     isLinkValidated,
     isTitleValidated,
     isSubListValidated,
@@ -35,6 +35,7 @@ export const MainPostController = ({
     isAnyInputSubmitting,
     setIsAnyInputSubmitting,
     publish,
+    shouldDisplayList,
   } = usePostControls(config);
 
   const validation = useMemo(() => {
@@ -44,11 +45,6 @@ export const MainPostController = ({
       isSubListValidated: isSubListValidated,
     };
   }, [isTitleValidated, isLinkValidated, isSubListValidated]);
-
-  console.log(
-    "**************************************************************************************************"
-  );
-  console.log(controllerConfig);
 
   return (
     <div>
@@ -82,22 +78,26 @@ export const MainPostController = ({
         {/* ****** POSTS LIST ******* */}
         {/* *************** */}
 
-        <PostsList
-          {...{
-            subsList,
-            clean,
-            validation,
-            config,
-            setLocalChangeTriggered,
-            isAnyInputSubmitting,
-            setIsAnyInputSubmitting,
-            isMainPostControllerFullyValidated,
-            debouncedStatus,
-            isAnySubmitted,
-            publish,
-            controllerConfig,
-          }}
-        />
+        {shouldDisplayList ? (
+          <div>
+            <PostsList
+              {...{
+                subsList,
+                config,
+                setLocalChangeTriggered,
+                isAnyInputSubmitting,
+                setIsAnyInputSubmitting,
+                isMainPostControllerFullyValidated,
+                debouncedStatus,
+                isAnySubmitted,
+                publish,
+                controllerConfig,
+              }}
+            />
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

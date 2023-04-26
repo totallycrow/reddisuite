@@ -9,6 +9,7 @@ import {
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "./db";
 import RedditProvider from "next-auth/providers/reddit";
+import { refreshToken } from "../services/reddit";
 
 /**
  * Module augmentation for `next-auth` types
@@ -24,6 +25,8 @@ declare module "next-auth" {
       // role: UserRole;
       token: string | null;
       redditId: string | null;
+      expires_at: number | null;
+      refresh_token: string | null;
     } & DefaultSession["user"];
   }
 
@@ -68,52 +71,54 @@ export const authOptions: NextAuthOptions = {
         reddit.refresh_token &&
         reddit.expires_at <= Math.floor(new Date().getTime() / 1000.0)
       ) {
-        try {
-          const user = process.env.REDDIT_CLIENT_ID;
-          const pass = process.env.REDDIT_CLIENT_SECRET;
+        // ) {
+        refreshToken(reddit.refresh_token, reddit.providerAccountId);
+        //   try {
+        //     const user = process.env.REDDIT_CLIENT_ID;
+        //     const pass = process.env.REDDIT_CLIENT_SECRET;
 
-          if (!user || !pass)
-            throw new Error("INVALID USER/PASS ENV CREDENTIALS");
+        //     if (!user || !pass)
+        //       throw new Error("INVALID USER/PASS ENV CREDENTIALS");
 
-          const base64encodedData = Buffer.from(user + ":" + pass).toString(
-            "base64"
-          );
+        //     const base64encodedData = Buffer.from(user + ":" + pass).toString(
+        //       "base64"
+        //     );
 
-          const response = await fetch(
-            "https://www.reddit.com/api/v1/access_token",
-            {
-              headers: {
-                Authorization: `Basic ${base64encodedData}`,
-              },
-              body: new URLSearchParams({
-                grant_type: "refresh_token",
-                refresh_token: reddit.refresh_token,
-              }),
-              method: "POST",
-            }
-          );
+        //     const response = await fetch(
+        //       "https://www.reddit.com/api/v1/access_token",
+        //       {
+        //         headers: {
+        //           Authorization: `Basic ${base64encodedData}`,
+        //         },
+        //         body: new URLSearchParams({
+        //           grant_type: "refresh_token",
+        //           refresh_token: reddit.refresh_token,
+        //         }),
+        //         method: "POST",
+        //       }
+        //     );
 
-          const tokens: TokenSet = (await response.json()) as TokenSet;
-          if (!response.ok) throw tokens;
+        //     const tokens: TokenSet = (await response.json()) as TokenSet;
+        //     if (!response.ok) throw tokens;
 
-          await prisma.account.update({
-            data: {
-              access_token: tokens.access_token,
-              expires_at:
-                Math.floor(new Date().getTime() / 1000.0) +
-                parseInt(parseInt(tokens.expires_in)),
-              refresh_token: tokens.refresh_token ?? reddit.refresh_token,
-            },
-            where: {
-              provider_providerAccountId: {
-                provider: "reddit",
-                providerAccountId: reddit.providerAccountId,
-              },
-            },
-          });
-        } catch (error) {
-          console.error("Error refreshing access token", error);
-        }
+        //     await prisma.account.update({
+        //       data: {
+        //         access_token: tokens.access_token,
+        //         expires_at:
+        //           Math.floor(new Date().getTime() / 1000.0) +
+        //           parseInt(parseInt(tokens.expires_in)),
+        //         refresh_token: tokens.refresh_token ?? reddit.refresh_token,
+        //       },
+        //       where: {
+        //         provider_providerAccountId: {
+        //           provider: "reddit",
+        //           providerAccountId: reddit.providerAccountId,
+        //         },
+        //       },
+        //     });
+        //   } catch (error) {
+        //     console.error("Error refreshing access token", error);
+        //   }
       }
       // ***********************************
 
@@ -134,6 +139,8 @@ export const authOptions: NextAuthOptions = {
         session.user.id = user.id;
         session.user.token = accessToken;
         session.user.redditId = reddit.providerAccountId;
+        session.user.expires_at = reddit.expires_at;
+        session.user.refresh_token = reddit.refresh_token;
 
         // session.user.role = user.role; <-- put other properties on the session here
       }

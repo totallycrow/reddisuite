@@ -6,6 +6,7 @@ import { authOptions } from "../server/auth";
 import Layout from "../components/ui/Layout";
 
 const config = {
+  updaterModule: false,
   schedulerModule: true,
 };
 

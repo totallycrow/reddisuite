@@ -1,7 +1,6 @@
-import React from "react";
 import { InputItem } from "../../../ui/InputItem";
-import { IConfig } from "../../../../hooks/controllers/postSubmission/usePostControls";
-import { ITitleLinkSublistValidation } from "./MainPostController";
+import type { IConfig } from "../../../../hooks/controllers/postSubmission/usePostControls";
+import type { ITitleLinkSublistValidation } from "./MainPostController";
 
 export const MainPostControllerInputs = ({
   inputsConfig,
