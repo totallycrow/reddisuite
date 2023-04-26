@@ -129,12 +129,13 @@ export default async function handler(req: NextRequest, res: NextApiResponse) {
     if (isRateLimit) {
       console.log("RATE LIMIT ERROR, ABORTING OPERATION");
 
+      console.log(submission.json);
+
       const submissionResult = await prisma.redditPost.update({
         where: {
           id: result.id,
         },
         data: {
-          redditPostId: submission.json.data.id,
           isSuccess: false,
           isScheduled: false,
         },
