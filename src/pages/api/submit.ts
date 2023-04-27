@@ -169,10 +169,11 @@ export default async function handler(req: NextRequest, res: NextApiResponse) {
 
     const date = generateCronDateString(submissionResult.ScheduleDate);
 
+    const cronJobId = result.CronJobId;
     // original postId?
     // postIDs[i]
 
-    const removalResult = await removePostFromCronJob(internalId, postIDs[i]);
+    const removalResult = await removePostFromCronJob(cronJobId, postIDs[i]);
     console.log(removalResult.status);
   }
 
