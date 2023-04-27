@@ -79,6 +79,7 @@ export const redditRouter = createTRPCRouter({
         flair: z.string(),
         date: z.number(),
         isScheduler: z.boolean(),
+        isUpdater: z.boolean(),
         postId: z.string(),
       })
     )

@@ -79,6 +79,8 @@ export default async function handler(req: NextRequest, res: NextApiResponse) {
     const { expires_at, refresh_token } = user;
     const { url, title, sub, flairId } = result;
 
+    const internalId = result.id;
+
     if (
       result &&
       refresh_token &&
@@ -99,7 +101,7 @@ export default async function handler(req: NextRequest, res: NextApiResponse) {
 
     // REMOVE JOB FROM CRON
     if (!result.redditPostId) throw new Error("PostId not found");
-    await removePostFromCronJob(result.CronJobId, result.redditPostId);
+    await removePostFromCronJob(result.CronJobId, internalId);
 
     const isOK = submission.json.errors.length === 0;
     console.log("IS RES OK?");
