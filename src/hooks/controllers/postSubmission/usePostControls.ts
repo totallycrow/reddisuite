@@ -29,8 +29,6 @@ export const usePostControls = (config: IConfig) => {
     formObserver.isAnyInputSubmitting()
   );
 
-  // useEffect(() => {}, []);
-
   //   Listen for change in debouced inputs and split & generate list of subreddits
   useEffect(() => {
     if (debouncedInput === "") {
@@ -53,12 +51,6 @@ export const usePostControls = (config: IConfig) => {
     userList.forEach((item: string) => {
       sanitizedSet.add(item);
     });
-
-    // const sanitizedList = new Set(
-    //   list.map((splitSub: string) => {
-    //     return splitSub.trim();
-    //   })
-    // );
 
     setClean(true);
     setSubsList(sanitizedSet);

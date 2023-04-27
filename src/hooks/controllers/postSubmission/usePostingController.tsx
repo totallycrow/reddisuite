@@ -23,32 +23,12 @@ export const usePostingController = (
     if (!mutationController.data) {
       return;
     }
-
-    console.log(mutationController.data.json);
     const mutationResponse = mutationController.data.json;
 
-    console.log(
-      "MUTATION CONTROLLER STATUS &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
-    );
-    console.log(mutationController.status);
-    console.log(mutationResponse);
     mutationResponse.errors;
-
-    console.log(
-      "MUTATION CONTROLLER STATUS &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
-    );
-    console.log(mutationController.status);
-    console.log(mutationResponse);
     mutationResponse.errors;
-
-    // if (mutationController.status !== "idle") {
-    //   setLoadingState("Loading...");
-    //   setSubmissionStatus("LOADING");
-    //   formObserver.setIsSubmitting(sub, true);
-    // }
 
     if (mutationResponse && mutationResponse.errors !== "") {
-      console.log("_________________________");
       setLoadingState("Idle");
       setSubmissionStatus("ERROR");
       formObserver.updateSubmissionStatus(sub, false);
@@ -56,31 +36,16 @@ export const usePostingController = (
       formObserver.setIsSubmitting(sub, false);
     }
 
-    console.log(mutationResponse);
-
     if (
       mutationResponse.data &&
       Object.keys(mutationResponse.data).length !== 0
     ) {
-      console.log("SUCESS");
-      console.log(mutationController.data);
       setLoadingState("Idle");
       setSubmissionStatus("SUCCESS");
       formObserver.updateSubmissionStatus(sub, true);
       formObserver.setIsSubmitting(sub, false);
     } else {
-      console.log(
-        mutationResponse &&
-          mutationResponse.errors &&
-          mutationResponse.errors === ""
-      );
-      console.log("ERROR POSTING DATA!!");
-      console.log("__________");
-      console.log(mutationResponse.errors);
-      console.log("__________");
       setLoadingState("Idle");
-      console.log(mutationController.data);
-      console.log(mutationController.error);
       setSubmissionStatus("ERROR");
       formObserver.updateSubmissionStatus(sub, false);
       formObserver.setIsError(sub, true);
@@ -99,14 +64,11 @@ export const usePostingController = (
   // ************************************************************************************
 
   const sendData = async () => {
-    console.log("SEND DATA FIRED");
     setIsAnyInputSubmitting(true);
     formObserver.setIsSubmitting(sub, true);
     if (setIsSubmitting) {
       setIsSubmitting(true);
     }
-    // await new Promise((resolve) => setTimeout(resolve, 2000));
-
     const submissionDate = isScheduler ? postDate : Date.now();
 
     await mutationController.mutateAsync({
@@ -118,7 +80,6 @@ export const usePostingController = (
       isScheduler,
       postId: postId,
     });
-    console.log("ONCLICK END");
 
     if (setIsSubmitting) {
       setIsSubmitting(false);

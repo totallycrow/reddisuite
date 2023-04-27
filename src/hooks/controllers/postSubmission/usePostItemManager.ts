@@ -64,8 +64,6 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
   const isError =
     formObserver.getFormItemBySubreddit(userInput)?.isError || false;
 
-  console.log(isFormItemValidated);
-
   // LOADING CHECKS
   useEffect(() => {
     if (
@@ -85,8 +83,6 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
     postConfig.triggerLocalChange(true);
 
     if (formObserver.isSubredditInList(userInput)) {
-      console.log("UPDATING");
-
       const idle =
         formObserver.getFormItemBySubreddit(userInput)?.isIdle || false;
 
@@ -107,7 +103,6 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
         isError: error,
       });
     } else {
-      console.log("CREATE NEW SUBSCRIBER");
       formObserver.subscribe({
         sendData: sendData,
         subreddit: userInput,
@@ -151,7 +146,6 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
       ? true
       : false;
 
-      
   const formItem = formObserver.getFormItemBySubreddit(userInput);
 
   useEffect(() => {
