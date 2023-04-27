@@ -80,6 +80,7 @@ model RedditPost {
     isScheduled Boolean
     SubmissionAttempted Boolean
     SubmissionDetails   String
+    CronJobId   String
         
 }
 

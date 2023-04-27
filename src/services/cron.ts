@@ -70,13 +70,33 @@ export const getMatchingCronJobByCronString = async (cronString: string) => {
   return matchingCronJob;
 };
 
+export const getMatchingCronJobById = async (cronId: number) => {
+  const cronJobs = await getCronsList();
+  if (cronJobs.length === 0) return undefined;
+
+  const matchingCronJob = cronJobs.find((cron) => cron.cron_job_id === cronId);
+  return matchingCronJob;
+};
+
 export const removePostFromCronJob = async (
-  cronString: string,
+  cronJobIdOriginal: string,
   postId: string
 ): Promise<ICrobJobResponseOk | ICrobJobResponseError> => {
   if (!token) throw new Error("invalid token");
 
-  const matchingCronJob = await getMatchingCronJobByCronString(cronString);
+  console.log("CRON REMOVE POST STARTED");
+  console.log(
+    "________________________________________________________________________________________________"
+  );
+  console.log(
+    "________________________________________________________________________________________________"
+  );
+
+  const matchingCronJob = await getMatchingCronJobById(
+    Number(cronJobIdOriginal)
+  );
+
+  console.log(matchingCronJob);
 
   if (!matchingCronJob) {
     const res = {

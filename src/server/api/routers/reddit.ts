@@ -13,6 +13,7 @@ import {
   generateCronDateString,
   getCronsList,
   getMatchingCronJobByCronString,
+  getMatchingCronJobById,
   removePostFromCronJob,
 } from "../../../services/cron";
 
@@ -131,7 +132,8 @@ export const redditRouter = createTRPCRouter({
           isScheduler,
           submissionDate,
           true,
-          "SUBMITTED WITHOUT SCHEDULER"
+          "SUBMITTED WITHOUT SCHEDULER",
+          ""
         );
 
         console.log("################ DB ################");
@@ -151,8 +153,27 @@ export const redditRouter = createTRPCRouter({
       let responseResult = "";
       let responseStatus = "";
 
+      const originalPost = await ctx.prisma.redditPost.findUnique({
+        where: {
+          redditPostId: postId,
+        },
+      });
+      const cronJobIdOriginal = originalPost.CronJobId;
+
       // ADD NEW CRON
       // IF UPDATE, REMOVE ID FROM PREVIOUS CRON
+      console.log(
+        "// *****************************************************************************************"
+      );
+      console.log(
+        "// *****************************************************************************************"
+      );
+      console.log(
+        "// *****************************************************************************************"
+      );
+      console.log(
+        "// *****************************************************************************************"
+      );
 
       const cronString = generateCronDateString(date);
       const cronJobs = await getCronsList();
@@ -161,26 +182,60 @@ export const redditRouter = createTRPCRouter({
       // ****************************************************
       if (isUpdate && cronJobs.length > 0) {
         console.log("IS UPDATE STARTED");
-        const originalPost = await ctx.prisma.redditPost.findUnique({
-          where: {
-            redditPostId: postId,
-          },
-        });
-
-        if (!originalPost || !originalPost.SubmissionDate)
-          throw new Error("Invalid submission date");
-
-        const cronStringOriginal = generateCronDateString(
-          originalPost?.SubmissionDate
+        console.log(
+          "// *****************************************************************************************"
+        );
+        console.log(
+          "// *****************************************************************************************"
+        );
+        console.log(
+          "// *****************************************************************************************"
+        );
+        console.log(
+          "// *****************************************************************************************"
+        );
+        console.log(
+          "// *****************************************************************************************"
+        );
+        console.log(
+          "// *****************************************************************************************"
         );
 
-        await removePostFromCronJob(cronStringOriginal, postId);
+        console.log(originalPost);
+
+        // TODO: ADD CRON JOB IDS TO DATABASE
+
+        if (
+          !originalPost ||
+          !originalPost.SubmissionDate ||
+          originalPost.CronJobId
+        )
+          throw new Error("Invalid post details");
+
+        console.log(
+          "________________________________________________________________________________________________"
+        );
+        console.log(
+          "________________________________________________________________________________________________"
+        );
+        console.log(
+          "________________________________________________________________________________________________"
+        );
+        console.log(
+          "________________________________________________________________________________________________"
+        );
+
+        await removePostFromCronJob(cronJobIdOriginal, postId);
       }
       // *****************************************************************************************
 
-      const matchingCronJob = await getMatchingCronJobByCronString(cronString);
+      const matchingCronJob = await getMatchingCronJobById(
+        Number(cronJobIdOriginal)
+      );
 
       // CHECK IF EXISTS IF NOT ADD SINGLE CRON ELSE MODIFY PAYLOAD
+
+      let cronJobId = "";
 
       // CASE: DOESN'T EXIST -> CREATE CRON
       if (matchingCronJob === undefined) {
@@ -189,6 +244,10 @@ export const redditRouter = createTRPCRouter({
 
         if (responseStatus !== "error") {
           responseResult = responseStatus;
+
+          if ("cron_job_id" in addCronResult.data) {
+            cronJobId = addCronResult.data.cron_job_id;
+          }
         } else {
           if ("error" in addCronResult.data) {
             responseResult = addCronResult.data.error.message;
@@ -201,6 +260,11 @@ export const redditRouter = createTRPCRouter({
 
         console.log(jobEditResult);
         responseStatus = jobEditResult.data.status;
+
+        if ("cron_job_id" in jobEditResult.data) {
+          cronJobId = jobEditResult.data.cron_job_id;
+        }
+
         if (responseStatus !== "error") {
           responseResult = jobEditResult.data.status;
         } else if ("error" in jobEditResult.data) {
@@ -223,7 +287,8 @@ export const redditRouter = createTRPCRouter({
         isScheduler,
         date,
         false,
-        "SCHEDULED OK"
+        "SCHEDULED OK",
+        cronJobId
       );
 
       if (responseStatus !== "error") {

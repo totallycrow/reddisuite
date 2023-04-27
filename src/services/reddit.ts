@@ -132,7 +132,8 @@ export const addPostToDb = async (
   isScheduled: boolean,
   ScheduleDate: number,
   SubmissionAttempted: boolean,
-  SubmissionDetails: string
+  SubmissionDetails: string,
+  cronJobId: string
 ) => {
   const result = await prisma.redditPost.upsert({
     where: {
@@ -151,6 +152,7 @@ export const addPostToDb = async (
       ScheduleDate: ScheduleDate,
       SubmissionAttempted: SubmissionAttempted,
       SubmissionDetails: SubmissionDetails,
+      CronJobId: cronJobId,
     },
     create: {
       redditPostId: postId,
@@ -165,6 +167,7 @@ export const addPostToDb = async (
       ScheduleDate: ScheduleDate,
       SubmissionAttempted: SubmissionAttempted,
       SubmissionDetails: SubmissionDetails,
+      CronJobId: cronJobId,
     },
   });
 
