@@ -62,11 +62,10 @@ export const redditRouter = createTRPCRouter({
       });
 
       if (post.redditPostId === null) throw new Error("Invalid redditPostId");
-      const date = post.SubmissionDate;
 
-      const cronString = generateCronDateString(date);
+      const jobId = post.CronJobId;
 
-      await removePostFromCronJob(cronString, post.redditPostId);
+      await removePostFromCronJob(jobId, post.redditPostId);
       return post;
     }),
   // ************************************************************
@@ -153,13 +152,6 @@ export const redditRouter = createTRPCRouter({
       let responseResult = "";
       let responseStatus = "";
 
-      const originalPost = await ctx.prisma.redditPost.findUnique({
-        where: {
-          redditPostId: postId,
-        },
-      });
-      const cronJobIdOriginal = originalPost.CronJobId;
-
       // ADD NEW CRON
       // IF UPDATE, REMOVE ID FROM PREVIOUS CRON
       console.log(
@@ -181,6 +173,14 @@ export const redditRouter = createTRPCRouter({
       // IS UPDATE? IF SO, REMOVE JOB FROM CURRENT CRON
       // ****************************************************
       if (isUpdate && cronJobs.length > 0) {
+        const originalPost = await ctx.prisma.redditPost.findUnique({
+          where: {
+            redditPostId: postId,
+          },
+        });
+        if (!originalPost) throw new Error("Post not found");
+        const cronJobIdOriginal = originalPost.CronJobId;
+
         console.log("IS UPDATE STARTED");
         console.log(
           "// *****************************************************************************************"
@@ -208,7 +208,7 @@ export const redditRouter = createTRPCRouter({
         if (
           !originalPost ||
           !originalPost.SubmissionDate ||
-          originalPost.CronJobId
+          !originalPost.CronJobId
         )
           throw new Error("Invalid post details");
 
@@ -229,9 +229,8 @@ export const redditRouter = createTRPCRouter({
       }
       // *****************************************************************************************
 
-      const matchingCronJob = await getMatchingCronJobById(
-        Number(cronJobIdOriginal)
-      );
+      // CHECK IF SAME TIME CRON JOB ALREADY EXIST
+      const matchingCronJob = await getMatchingCronJobByCronString(cronString);
 
       // CHECK IF EXISTS IF NOT ADD SINGLE CRON ELSE MODIFY PAYLOAD
 
