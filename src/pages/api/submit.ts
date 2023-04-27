@@ -88,29 +88,18 @@ export default async function handler(req: NextRequest, res: NextApiResponse) {
     ) {
       await refreshToken(result.redditAuthorId, refresh_token);
     }
-
-    // ***************************************
-    //   if (result.length === 0 || result === undefined) {
-    //     console.log("LIST EMPTY!!!!!");
-
-    //     res.status(200).json({ message: "EMPTY_QUEUE" });
-    //     return;
-
-    //     // res.status(200).json({ message: "QUEUE EMPTY" });
-    //   }
-
-    //   ______________-
-
-    console.log("****");
     const accessToken = user?.access_token;
 
     if (!accessToken) throw new Error("Invalid access token");
 
     const submission = await submitPost(accessToken, sub, url, title, flairId);
-    console.log(submission);
 
     if (!submission)
       throw new Error("Something went wrong when submitting the post ");
+
+    // REMOVE JOB FROM CRON
+    if (!result.redditPostId) throw new Error("PostId not found");
+    await removePostFromCronJob(result.CronJobId, result.redditPostId);
 
     const isOK = submission.json.errors.length === 0;
     console.log("IS RES OK?");
@@ -130,9 +119,15 @@ export default async function handler(req: NextRequest, res: NextApiResponse) {
       submission.json.errors[0][0] !== undefined &&
       submission.json.errors[0][0] === "RATELIMIT";
 
-    if (isRateLimit) {
-      console.log("RATE LIMIT ERROR, ABORTING OPERATION");
+    if (!isOK) {
+      let errorMessage = "";
 
+      if (isRateLimit) {
+        errorMessage = "RATE_LIMIT ERROR";
+      } else {
+        errorMessage = "Error submitting to reddit";
+      }
+      console.log("RATE LIMIT ERROR, ABORTING OPERATION");
       console.log(submission.json);
 
       const submissionResult = await prisma.redditPost.update({
@@ -143,11 +138,11 @@ export default async function handler(req: NextRequest, res: NextApiResponse) {
           isSuccess: false,
           isScheduled: false,
           SubmissionAttempted: true,
-          SubmissionDetails: "RATE_LIMIT ERROR",
+          SubmissionDetails: errorMessage,
         },
       });
 
-      res.status(200).json({ message: "RATE_LIMIT" });
+      res.status(200).json({ message: errorMessage });
       return;
     }
 
