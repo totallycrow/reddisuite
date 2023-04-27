@@ -1,5 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
-import { api } from "../../utils/api";
+import { NextRequest } from "next/server";
 import { refreshToken, submitPost } from "../../services/reddit";
 import { PrismaClient } from "@prisma/client";
 import { NextApiResponse } from "next";
