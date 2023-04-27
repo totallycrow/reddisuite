@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure } from "../trpc";
 import {
   addPostToDb,
   getSubredditRequirements,
@@ -13,7 +13,6 @@ import {
   generateCronDateString,
   getCronsList,
   getMatchingCronJobByCronString,
-  getMatchingCronJobById,
   removePostFromCronJob,
 } from "../../../services/cron";
 
@@ -93,7 +92,6 @@ export const redditRouter = createTRPCRouter({
       const refresh_token = ctx.session?.user.refresh_token;
 
       const submissionDate = Date.now();
-      const scheduledDate = date;
 
       if (!token)
         return {
@@ -154,18 +152,6 @@ export const redditRouter = createTRPCRouter({
 
       // ADD NEW CRON
       // IF UPDATE, REMOVE ID FROM PREVIOUS CRON
-      console.log(
-        "// *****************************************************************************************"
-      );
-      console.log(
-        "// *****************************************************************************************"
-      );
-      console.log(
-        "// *****************************************************************************************"
-      );
-      console.log(
-        "// *****************************************************************************************"
-      );
 
       const cronString = generateCronDateString(date);
       const cronJobs = await getCronsList();
@@ -181,49 +167,12 @@ export const redditRouter = createTRPCRouter({
         if (!originalPost) throw new Error("Post not found");
         const cronJobIdOriginal = originalPost.CronJobId;
 
-        console.log("IS UPDATE STARTED");
-        console.log(
-          "// *****************************************************************************************"
-        );
-        console.log(
-          "// *****************************************************************************************"
-        );
-        console.log(
-          "// *****************************************************************************************"
-        );
-        console.log(
-          "// *****************************************************************************************"
-        );
-        console.log(
-          "// *****************************************************************************************"
-        );
-        console.log(
-          "// *****************************************************************************************"
-        );
-
-        console.log(originalPost);
-
-        // TODO: ADD CRON JOB IDS TO DATABASE
-
         if (
           !originalPost ||
           !originalPost.SubmissionDate ||
           !originalPost.CronJobId
         )
           throw new Error("Invalid post details");
-
-        console.log(
-          "________________________________________________________________________________________________"
-        );
-        console.log(
-          "________________________________________________________________________________________________"
-        );
-        console.log(
-          "________________________________________________________________________________________________"
-        );
-        console.log(
-          "________________________________________________________________________________________________"
-        );
 
         await removePostFromCronJob(cronJobIdOriginal, postId);
       }

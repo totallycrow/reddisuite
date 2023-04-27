@@ -18,16 +18,6 @@ const getBaseUrl = () => {
   return `http://localhost:${process.env.PORT ?? 3000}`; // dev SSR should use localhost
 };
 
-// const client = createTRPCProxyClient<AppRouter>({
-//   links: [
-//     httpBatchLink({
-//       url: `${getBaseUrl()}/api/trpc`,
-//     }),
-//   ],
-// });
-
-// const bilbo = await client.getUser.query("id_bilbo");
-// const frodo = await client.createUser.mutate({ name: "Frodo" });
 /**
  * A set of typesafe react-query hooks for your tRPC API
  */

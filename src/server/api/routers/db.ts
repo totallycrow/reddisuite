@@ -72,30 +72,6 @@ export const dbRouter = createTRPCRouter({
         console.log("_________________________RES____________________________");
         console.log(response);
 
-        // ************************************************************
-        // ADD POST TO DATABASE?
-        // ************************************************************
-
-        // CHECK RESPONSE HERE OR FRONT? SUCCESS / ERROR
-
-        // await ctx.prisma.redditPost.upsert({
-        //   where: {
-        //     redditId: "test",
-        //   },
-        //   update: {
-        //     authorId: "test",
-        //   },
-        //   create: {
-        //     redditId: "Test",
-        //     title: "string",
-        //     authorId: "test",
-        //     url: "test",
-        //     sub: "test",
-        //     isSubmitted: true,
-        //     isSuccess: false,
-        //   },
-        // });
-
         return response.json();
       } catch (error) {
         throw error;

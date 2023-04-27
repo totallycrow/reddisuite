@@ -3,6 +3,7 @@ import axios from "axios";
 const token = process.env.CRON_TOKEN;
 const secret = process.env.API_SECRET;
 
+// *********************************************************************************************************
 export const generateCronDateString = (date: bigint | number) => {
   const dateFormatted = new Date(Number(date));
 
@@ -30,6 +31,7 @@ export const getCronsList = async (): Promise<ICronJob[]> => {
     return [];
   }
 };
+// *********************************************************************************************************
 
 export const addNewCronJob = async (cronString: string, postId: string) => {
   if (!token) throw new Error("invalid token");
@@ -41,6 +43,7 @@ export const addNewCronJob = async (cronString: string, postId: string) => {
   );
   return res;
 };
+// *********************************************************************************************************
 
 export const editCronJob = async (cronJob: ICronJob, id: string) => {
   if (!token) throw new Error("Invalid token");
@@ -59,6 +62,7 @@ export const editCronJob = async (cronJob: ICronJob, id: string) => {
   );
   return res;
 };
+// *********************************************************************************************************
 
 export const getMatchingCronJobByCronString = async (cronString: string) => {
   const cronJobs = await getCronsList();
@@ -69,6 +73,7 @@ export const getMatchingCronJobByCronString = async (cronString: string) => {
   );
   return matchingCronJob;
 };
+// *********************************************************************************************************
 
 export const getMatchingCronJobById = async (cronId: number) => {
   const cronJobs = await getCronsList();
@@ -77,6 +82,7 @@ export const getMatchingCronJobById = async (cronId: number) => {
   const matchingCronJob = cronJobs.find((cron) => cron.cron_job_id === cronId);
   return matchingCronJob;
 };
+// *********************************************************************************************************
 
 export const removePostFromCronJob = async (
   cronJobIdOriginal: string,
@@ -84,19 +90,9 @@ export const removePostFromCronJob = async (
 ): Promise<ICrobJobResponseOk | ICrobJobResponseError> => {
   if (!token) throw new Error("invalid token");
 
-  console.log("CRON REMOVE POST STARTED");
-  console.log(
-    "________________________________________________________________________________________________"
-  );
-  console.log(
-    "________________________________________________________________________________________________"
-  );
-
   const matchingCronJob = await getMatchingCronJobById(
     Number(cronJobIdOriginal)
   );
-
-  console.log(matchingCronJob);
 
   if (!matchingCronJob) {
     const res = {
@@ -179,8 +175,8 @@ export const removePostFromCronJob = async (
     return res;
   }
 };
-
-// *************************************
+// *********************************************************************************************************
+// *********************************************************************************************************
 
 interface ICrobJobResponseOk {
   status: string;
