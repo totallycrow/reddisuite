@@ -26,6 +26,7 @@ export const MainPostController = ({
   const config = useFormController();
 
   const {
+    // below potentially global?
     isMainPostControllerFullyValidated,
     isAnySubmitted,
     debouncedStatus,

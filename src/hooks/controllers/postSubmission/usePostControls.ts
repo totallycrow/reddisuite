@@ -29,7 +29,11 @@ export const usePostControls = (config: IConfig) => {
     formObserver.isAnyInputSubmitting()
   );
 
-  //   Listen for change in debouced inputs and split & generate list of subreddits
+  // *********************************************************
+  // MANAGING THE LIST OF SUBREDDITS PROVIDED BY USER
+  // Listen for change in debouced inputs and split & generate list of subreddits
+  // *********************************************************
+
   useEffect(() => {
     if (debouncedInput === "") {
       setSubsList(new Set());
@@ -55,9 +59,13 @@ export const usePostControls = (config: IConfig) => {
     setClean(true);
     setSubsList(sanitizedSet);
     const status = formObserver.isFullyValidated();
-
     setIsMainPostControllerFullyValidated(status);
   }, [debouncedInput]);
+
+  // *********************************************************
+  // OBSERVING CHANGES IN GENERATED INPUTS FOR SPECIFIED POSTS
+  // TWO TYPES OF CHANGES: POST DATA & SUBMISSION STATUS / INPUT VALUES CHANGE
+  // *********************************************************
 
   useEffect(() => {
     setLocalChangeTriggered(false);
@@ -68,17 +76,13 @@ export const usePostControls = (config: IConfig) => {
     setIsMainPostControllerFullyValidated(status);
   }, [localChangeTriggered]);
 
-  useEffect(() => {
-    setClean(false);
-    setIsMainPostControllerFullyValidated(false);
-    const status = formObserver.isFullyValidated();
-    setIsMainPostControllerFullyValidated(status);
-    formObserver.cleanSubscribers();
-  }, [config.userInput]);
+  // *********************************************************
 
   const isTitleValidated = isTitleValid(config.title);
   const isLinkValidated = isValidUrl(config.link);
   const isSubListValidated = subsList.size > 0;
+
+  // *********************************************************
 
   const publish = () => {
     setIsAnyInputSubmitting(true);
