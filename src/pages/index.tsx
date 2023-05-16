@@ -64,7 +64,10 @@ const AuthShowcase: React.FC = () => {
 /hooks/controllers/postSubmission/usePostControls
 
 -> Move mainPostController state values
-to a global state (Zustand?) instead of prop-drill? However, mainPostController is only used in the schedule-posts view, and not in the manage-posts view, is it ok to keep it global/separated like this?
+to a global state (Zustand?) instead of prop-drill? However, 
+mainPostController is only used in the schedule-posts view, 
+and not in the manage-posts view, 
+is it ok to keep it global/separated like this?
 
 -> keep the posts related data in formObserver class? (as they currently are)
 

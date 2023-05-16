@@ -54,7 +54,8 @@ export const PostItem = (postConfig: IPostFormValues) => {
         <PostItemScheduler setPostDate={setPostDate} date={postDate} />
 
         {/* FORM CONTROLS */}
-        <SubmitButton
+        {postConfig.formControls}
+        {/* <SubmitButton
           isButtonDisabled={
             isButtonDisabled === true ||
             postConfig.controllerConfig.isLocked === true
@@ -68,7 +69,7 @@ export const PostItem = (postConfig: IPostFormValues) => {
             callback={postConfig.removal}
             buttonText={"Remove"}
           />
-        )}
+        )} */}
 
         {/* RESULT FEEDBACK */}
         <PostItemFeedback

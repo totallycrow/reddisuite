@@ -39,6 +39,15 @@ export const PostModify = ({ post }: { post: RedditPost }) => {
           controllerConfig={config}
           postId={post.redditPostId || ""}
           postDate={date}
+          formControls={
+            <SubmitButton
+              isButtonDisabled={false}
+              callback={() => {
+                removal.mutate({ internalId: post.id });
+              }}
+              buttonText={"Remove"}
+            />
+          }
           removal={() => {
             removal.mutate({ internalId: post.id });
           }}

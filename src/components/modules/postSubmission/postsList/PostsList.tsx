@@ -45,6 +45,16 @@ export const PostsList = ({
               controllerConfig={controllerConfig}
               postId={""}
               removal={() => ""}
+              formControls={
+                <SubmitButton
+                  isButtonDisabled={
+                    isButtonDisabled === true ||
+                    postConfig.controllerConfig.isLocked === true
+                  }
+                  callback={() => void formConfig.sendData()}
+                  buttonText={isUpdater ? "Update" : "Submit"}
+                />
+              }
             />
           );
         })}
