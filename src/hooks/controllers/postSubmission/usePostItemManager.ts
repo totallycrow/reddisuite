@@ -78,7 +78,7 @@ export const usePostItemManager = (postConfig: IPostFormValues) => {
     }
   }, [subRedditController.isLoading]);
 
-  // LIST FOR LOCAL INPUT CHANGES
+  // LISTEN FOR LOCAL INPUT CHANGES
   useEffect(() => {
     postConfig.triggerLocalChange(true);
 

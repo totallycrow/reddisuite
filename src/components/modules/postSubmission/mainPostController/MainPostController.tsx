@@ -26,14 +26,19 @@ export const MainPostController = ({
   const config = useFormController();
 
   const {
-    // below potentially global?
+    // potentially global?
     isMainPostControllerFullyValidated,
     isAnySubmitted,
+    // global?
     debouncedStatus,
+
+    // global --??
     subsList,
     isLinkValidated,
     isTitleValidated,
     isSubListValidated,
+    // global --??
+
     setLocalChangeTriggered,
     isAnyInputSubmitting,
     setIsAnyInputSubmitting,

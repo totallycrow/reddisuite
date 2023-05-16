@@ -16,15 +16,20 @@ export const usePostControls = (config: IConfig) => {
 
   const [subsList, setSubsList] = useState(new Set<string>());
   const [clean, setClean] = useState(false);
+
+  // potentially global?
   const [localChangeTriggered, setLocalChangeTriggered] = useState(false);
   const [
     isMainPostControllerFullyValidated,
     setIsMainPostControllerFullyValidated,
   ] = useState(false);
 
+  // potentially redundant? Instead of prop-drilling, get that info from component that needs it
+  // potentially global?
   const [isAnySubmitted, setIsAnySubmitted] = useState(
     formObserver.isAnyInputSubmitted()
   );
+  // potentially global?
   const [isAnyInputSubmitting, setIsAnyInputSubmitting] = useState(
     formObserver.isAnyInputSubmitting()
   );
